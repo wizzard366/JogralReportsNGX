@@ -1,0 +1,179 @@
+<div class="row">
+    <div class="col-md-12 ">
+        <div class="row">
+            <div class="col-md-12 "> 
+                <ba-card title="Top 10 Clientes (x10,000)" baCardClass="with-scroll">
+                    <ba-chartist-chart baChartistChartClass="ct-chart"
+                        baChartistChartType="Bar"
+                        [baChartistChartData]="barChartData"
+                        [baChartistChartOptions]="barChartOptions">
+                    </ba-chartist-chart>
+                    <div class="table-responsive" >
+                        <table class="table compact table-bordered table-condensed table-sm">
+                                <thead>
+                                    <tr class="black-muted-bg">
+                                        <th class="align-center">Nombre</th>
+                                        <th class="align-center">ID</th>
+                                        <th class="align-center">Vendedor</th>
+                                        <th class="align-center">Total</th>
+                                        <th class="align-center">Enero</th>
+                                        <th class="align-center">Febrero</th>
+                                        <th class="align-center">Marzo</th>
+                                        <th class="align-center">Abril</th>
+                                        <th class="align-center">Mayo</th>
+                                        <th class="align-center">Junio</th>
+                                        <th class="align-center">Julio</th>
+                                        <th class="align-center">Agosto</th>
+                                        <th class="align-center">Septiembre</th>
+                                        <th class="align-center">Octubre</th>
+                                        <th class="align-center">Noviembre</th>
+                                        <th class="align-center">Diciembre</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of clients_data" class="no-top-border">
+                                        
+                                        <td class="align-right">{{item.NombreCliente}}</td>
+                                        <td class="align-right">{{item.Cliente}}</td>
+                                        <td class="align-right">{{item.Vendedor}}</td>
+                                        <td class="align-right">Q.{{item.Total}}</td>  
+                                        <td class="align-right">Q.{{item.Enero}}</td>
+                                        <td class="align-right">Q.{{item.Febrero}}</td>
+                                        <td class="align-right">Q.{{item.Marzo}}</td>
+                                        <td class="align-right">Q.{{item.Abril}}</td>
+                                        <td class="align-right">Q.{{item.Mayo}}</td>
+                                        <td class="align-right">Q.{{item.Junio}}</td>
+                                        <td class="align-right">Q.{{item.Julio}}</td>
+                                        <td class="align-right">Q.{{item.Agosto}}</td>
+                                        <td class="align-right">Q.{{item.Septiembre}}</td>
+                                        <td class="align-right">Q.{{item.Octubre}}</td>
+                                        <td class="align-right">Q.{{item.Noviembre}}</td>
+                                        <td class="align-right">Q.{{item.Diciembre}}</td>
+                                                                                                             
+                                    </tr>
+                                </tbody>
+                        </table>
+                    </div>
+                </ba-card>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 ">
+                <ba-card title="Clientes" baCardClass="with-scroll">
+                    <div class="row">
+                        <div class=" col-xlg-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <form (submit)="getClientInfoById($event)">
+                                <div class="form-group">
+                                    <label for="clientId">Código Cliente:</label>
+                                    <input type="Text" [(ngModel)]="clienteId" name="clienteId" class="form-control" id="clienteId" >
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <div class="row">
+                                    <div class=" col-xlg-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <label for="clientName">Búsqueda de Clientes por Nombre Comercial</label>
+                                        <input autocomplete="off" type="text" [(ngModel)]="clientName" name="clientName" class="form-control" id="clientName" (input)="input()">
+                                        <select #focusable multiple class="form-control tablet-landscape-and-below" id="selectedClientId" name="selectedClientId" *ngIf="showSelect" (keypress)="selectKeyPress($event)" (click)="selectClick($event)" [(ngModel)]="selectedClientId">
+                                            <option *ngFor="let client of clients" [value]="client.ClienteId">{{client.NombreComercial}} - {{client.ClienteId}}</option>
+                                        </select>
+                                        <div class="desktop-and-up form-control" *ngIf="showSelect">
+                                            <div tabindex="1"  class="clickablediv"  *ngFor="let client of clients" style="overflow-x: hidden;" (click)="selectClickOption($event,client.NombreComercial)">{{client.NombreComercial}} - {{client.NombreComercial}}</div>
+                                        </div>
+                                    </div>
+                                    
+
+                            </div>
+                        
+                            
+                        </div>
+                    </form>
+                    <img src='../../../assets/img/app/loading2.gif' *ngIf='showLoading' width="40px">
+                    <div class="alert alert-danger" role="alert" *ngIf="showNotFoundAlert">No se encontraron datos.</div>
+                    
+                </ba-card>
+                <ba-card title="Ventas por Cliente" baCardClass="with-scroll" *ngIf="display_graph">
+                    <div class="row">
+                            <div class=" col-xlg-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <form>
+                                    <div class="form-group">
+                                        <label>ClienteId:</label>  
+                                        <input type="text" [(ngModel)]="clienteId" name="clienteId" class="form-control" id="clienteId" disabled>
+                                        <label>Nombre Comercial:</label>  
+                                        <input type="text" [(ngModel)]="name" name="name" class="form-control" id="name" disabled>
+                                        <label>Vendedor</label>  
+                                        <input type="text" [(ngModel)]="seller" name="seller" class="form-control" id="seller" disabled>
+                                    </div>    
+                                </form>                             
+                               <!--  <form (submit)="getClientInfoByYear()">
+                                    <div class="form-group">
+                                        <label>Año</label>  
+                                        
+                                        <select class="form-control" id="currentYear" name="currentYear" (change)="setSelectedYear($event.target.value)" [(ngModel)]="currentYear">
+                                            <option *ngFor="let year of years; let i=index" [value]="year" [selected]="isFirst(i)">{{year}}</option>
+                                        </select>
+                                    </div>
+                                </form> -->
+                            </div>
+                        </div>
+                    <ba-chartist-chart  baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="graph_data" [baChartistChartOptions]="chart_options" >
+                    </ba-chartist-chart> 
+                    
+                    
+                    <div class="table-responsive" *ngIf="display_graph">
+                            <table class="table compact table-bordered table-condensed">
+                                    <thead>
+                                        <tr class="black-muted-bg">
+                                                <th class="align-center"></th>
+                                                <th class="align-center">Año</th>
+                                                <th class="align-center">Vendedor</th>
+                                                <th class="align-center">Total</th>
+                                            <th class="align-center">Enero</th>
+                                            <th class="align-center">Febrero</th>
+                                            <th class="align-center">Marzo</th>
+                                            <th class="align-center">Abril</th>
+                                            <th class="align-center">Mayo</th>
+                                            <th class="align-center">Junio</th>
+                                            <th class="align-center">Julio</th>
+                                            <th class="align-center">Agosto</th>
+                                            <th class="align-center">Septiembre</th>
+                                            <th class="align-center">Octubre</th>
+                                            <th class="align-center">Noviembre</th>
+                                            <th class="align-center">Diciembre</th>
+                                           
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of table_data" class="no-top-border">
+                                            <td class="align-right">
+                                                    <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
+                                                </td>
+                                            <td class="align-right">{{item.Ano}}</td> 
+                                            <td class="align-right">{{item.Vendedor}}</td>  
+                                            <td class="align-right">Q.{{item.Total}}</td> 
+                                            <td class="align-right">Q.{{item.Enero}}</td>
+                                            <td class="align-right">Q.{{item.Febrero}}</td>
+                                            <td class="align-right">Q.{{item.Marzo}}</td>
+                                            <td class="align-right">Q.{{item.Abril}}</td>
+                                            <td class="align-right">Q.{{item.Mayo}}</td>
+                                            <td class="align-right">Q.{{item.Junio}}</td>
+                                            <td class="align-right">Q.{{item.Julio}}</td>
+                                            <td class="align-right">Q.{{item.Agosto}}</td>
+                                            <td class="align-right">Q.{{item.Septiembre}}</td>
+                                            <td class="align-right">Q.{{item.Octubre}}</td>
+                                            <td class="align-right">Q.{{item.Noviembre}}</td>
+                                            <td class="align-right">Q.{{item.Diciembre}}</td>
+                                                                                                                 
+                                        </tr>
+                                    </tbody>
+                            </table>
+                    </div>    
+                </ba-card>
+            </div>
+        </div>
+    </div>
+</div>
+

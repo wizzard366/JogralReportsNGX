@@ -1,0 +1,16 @@
+<div class="table-responsive" *ngIf="!isStockEmpty()">
+<table class="table table-hover table-bordered ">
+    <thead>
+        <tr class="black-muted-bg">
+            <th class="align-left">Bodega</th>
+            <th class="align-left">Saldo Actual</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of stock" class="no-top-border">
+            <td class="align-right">{{item.Bodega}}</td>
+            <td class="align-right">{{item.SaldoActual}}</td>
+        </tr>
+    </tbody>
+</table>

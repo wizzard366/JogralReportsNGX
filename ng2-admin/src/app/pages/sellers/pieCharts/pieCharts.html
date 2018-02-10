@@ -1,0 +1,46 @@
+
+
+
+<div class="row" *ngIf="show_monthSelector" >
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            
+            <ba-card  class="pie-chart-item-container col-xlg-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <div class="row">
+              <div class=" col-xlg-3 col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                <div class="form-group">
+                  <label for="descripcion">Año</label>
+                  <select  class="form-control" id="selectedYear" name="selectedYear" (change)="selectYear($event.target.value)" [(ngModel)]="selectedYear">
+                          <option *ngFor="let year of availableYears; let i = index" [value]="year" [selected]="isCurrentYear(i)">{{year}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class=" col-xlg-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="form-group">
+                  <label for="descripcion">Mes</label>
+                  <select  class="form-control" id="selectedMonth" name="selectedMonth" (change)="selectMonth($event.target.value)" [(ngModel)]="selectedMonth">
+                          <option *ngFor="let key of keys; let i = index" [value]="i" [selected]="isCurrentMonth(i)">{{key}}</option>
+                  </select>
+                </div>
+              </div>
+              </div>
+            </ba-card>
+        </div>
+</div>
+
+<div class="row pie-charts">
+  
+  <ba-card *ngFor="let chart of charts" class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+
+    <div class="pie-chart-item">
+      <div class="chart" [attr.data-percent]="chart.percentageOfProyection">
+        <span class="percent"></span>
+      </div>
+      <div class="description">
+        <p>{{ chart.name }}</p>
+        <div class="sales" *ngIf="show_monthSelector">Q.{{ chart.currentLocale }}</div>
+      </div>
+      <i class="chart-icon i-{{ chart.icon }}"></i>
+    </div>
+
+  </ba-card>
+</div>

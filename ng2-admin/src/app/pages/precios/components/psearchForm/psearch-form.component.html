@@ -1,0 +1,51 @@
+<form (submit)="getProductbyID($event)">
+    <div class="form-group">
+        <label for="productoId">Código:</label>
+        <input type="Text" [(ngModel)]="productoId" name="productoId" class="form-control" id="productoId" >
+    </div>
+</form>
+<form (submit)="getProductbyDescription($event)">
+    <div class="form-group">
+        <label for="descripcion">Descripción:</label>
+        <input type="text" [(ngModel)]="descripcion" name="descripcion" class="form-control" id="descripcion" (input)="input(focusable)" (keypress)="descriptionInputKeyPress($event,focusable)">
+        <select #focusable multiple class="form-control tablet-landscape-and-below" id="selectedProductId" name="selectedProductId" *ngIf="showSelect" (keypress)="selectKeyPress($event)" (click)="selectClick($event)" [(ngModel)]="productoId">
+            <option *ngFor="let product of productSuggestionList" [value]="product.productoId">{{product.descripcion}}</option>
+        </select>
+        <div class="desktop-and-up form-control" *ngIf="showSelect">
+            <div tabindex="1"  class="clickablediv"  *ngFor="let product of productSuggestionList" style="overflow-x: hidden;" (click)="selectClickOption($event,product.productoId)">{{product.descripcion}}</div>
+        </div>
+
+        
+    </div>
+    
+
+</form>
+<!--<ul>
+    <li  *ngFor="let product of productSuggestionList">{{product.productoId}}</li>
+</ul>-->
+<div class="table-responsive" *ngIf="showTable">
+<table class=" table table-bordered  table-striped" >
+    <thead>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="align-right">Marca: </td>
+            <td class="align-left">{{productMarca}}</td>
+        </tr>
+        <tr>
+            <td class="align-right">Area: </td>
+            <td class="align-left">{{productArea}}</td>
+        </tr>
+        <tr>
+            <td class="align-right">Sub-Area: </td>
+            <td class="align-left">{{productSubArea}}</td>
+        </tr>
+        <tr>
+            <td class="align-right">Afecto I.V.A. </td>
+            <td class="align-left">{{productIVA}}</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<div class="alert alert-danger" role="alert" *ngIf="showNotFoundAlert">Producto no encontrado.</div>
+

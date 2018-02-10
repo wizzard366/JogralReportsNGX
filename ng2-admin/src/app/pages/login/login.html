@@ -1,0 +1,31 @@
+<div class="auth-main">
+  <div class="auth-block" >
+    <!--<h1>JOGRAL-admin</h1>-->
+    <div style="text-align:center">
+      <img src="../../assets/img/app/negfarma2.png" width="200px" style="text-align: left;padding-bottom: 10px;">
+    </div>
+    <form  (ngSubmit)="login()" class="form-horizontal">
+      <div class="form-group row" >
+        <label for="inputEmail3" class="col-sm-2 control-label">Usuario</label>
+
+        <div class="col-sm-10">
+          
+          <input type="text" class="form-control" name="username" [(ngModel)]="model.username" #username="ngModel" required />
+        </div>
+      </div>
+      <div class="form-group row" >
+        <label for="inputPassword3" class="col-sm-2 control-label">Contraseña</label>
+
+        <div class="col-sm-10">
+          <input type="password" class="form-control" name="password" [(ngModel)]="model.password" #password="ngModel" required />
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="offset-sm-2 col-sm-10">
+          <button  type="submit" class="btn btn-info ">Ingresar</button>
+        </div>
+      </div>
+      <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+    </form>
+  </div>
+</div>

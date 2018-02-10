@@ -1,0 +1,43 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/ng2-admin/dist
+/ng2-admin/tmp
+/ng2-admin/out-tsc
+/ng2-admin/docs/build/ng2-admin
+
+# dependencies
+**/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+/ng2-admin/.vscode/*
+/ng2-admin/!.vscode/settings.json
+/ng2-admin/!.vscode/tasks.json
+/ng2-admin/!.vscode/launch.json
+/ng2-admin/!.vscode/extensions.json
+
+# misc
+/ng2-admin/.sass-cache
+/ng2-admin/connect.lock
+/ng2-admin/coverage
+/ng2-admin/libpeerconnection.log
+/ng2-admin/npm-debug.log
+/ng2-admin/testem.log
+/ng2-admin/typings
+
+# e2e
+/ng2-admin/e2e/*.js
+/ng2-admin/e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db

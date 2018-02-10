@@ -1,0 +1,68 @@
+
+<div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            
+            <pie-charts [mode]="'mensual'" (onYearSelected)="onYearSelected($event)"></pie-charts>
+        </div>
+    </div>
+<div class="row">
+    <div class="col-md-12 ">
+        
+        <ba-card title="Ventas actuales vs Proyección x10,000" baCardClass="with-scroll">
+                <select class="form-control" id="sallers" name="sellers"   (change)="selected()" [(ngModel)]="selected_seller">
+                    <option *ngFor="let seller of sellers_names_data; let i = index" [value]="seller.id" [attr.selected]="i == 0 ? true : null" >{{seller.name}}</option>
+                </select>
+                <ba-chartist-chart  baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="sellers_graph_data" [baChartistChartOptions]="chart_options" *ngIf="display_graph">
+                </ba-chartist-chart>
+                <div class="table-responsive" *ngIf="display_graph">
+                    <table class="table table-bordered table-condensed">
+                            <thead>
+                                <tr class="black-muted-bg">
+                                    <th class="align-center"></th>
+                                    <th class="align-center">Fuente</th>
+
+                                    <th class="align-center">Enero</th>
+                                    <th class="align-center">Febrero</th>
+                                    <th class="align-center">Marzo</th>
+                                    <th class="align-center">Abril</th>
+                                    <th class="align-center">Mayo</th>
+                                    <th class="align-center">Junio</th>
+                                    <th class="align-center">Julio</th>
+                                    <th class="align-center">Agosto</th>
+                                    <th class="align-center">Septiembre</th>
+                                    <th class="align-center">Octubre</th>
+                                    <th class="align-center">Noviembre</th>
+                                    <th class="align-center">Diciembre</th>
+                                    <th class="align-center">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of sellers_table_data" class="no-top-border">
+                                    <td class="align-right">
+                                        <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
+                                    </td>
+                                    <td class="align-right">{{item.Fuente}}</td>
+
+                                    <td class="align-right">Q.{{item.Enero}}</td>
+                                    <td class="align-right">Q.{{item.Febrero}}</td>
+                                    <td class="align-right">Q.{{item.Marzo}}</td>
+                                    <td class="align-right">Q.{{item.Abril}}</td>
+                                    <td class="align-right">Q.{{item.Mayo}}</td>
+                                    <td class="align-right">Q.{{item.Junio}}</td>
+                                    <td class="align-right">Q.{{item.Julio}}</td>
+                                    <td class="align-right">Q.{{item.Agosto}}</td>
+                                    <td class="align-right">Q.{{item.Septiembre}}</td>
+                                    <td class="align-right">Q.{{item.Octubre}}</td>
+                                    <td class="align-right">Q.{{item.Noviembre}}</td>
+                                    <td class="align-right">Q.{{item.Diciembre}}</td>
+                                    <td class="align-right">Q.{{item.Total}}</td>                                                                       
+                                </tr>
+                            </tbody>
+                    </table>
+            </div>
+        </ba-card>
+            
+    </div>
+</div>
+
+

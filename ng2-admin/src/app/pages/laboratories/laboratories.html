@@ -1,0 +1,84 @@
+<section class="chartist">
+    <div class="row">
+        <div class="col-md-12 ">
+            <ba-card title="Búsqueda por Laboratorio" baCardClass="with-scroll">
+                <form (submit)="getLaboratoryByDescription($event)">
+                    <div class="form-group">
+                        <label for="description">Búsqueda de Laboratorios (Marcas)</label>
+                        <input autocomplete="off" type="text" [(ngModel)]="description" name="description" class="form-control" id="description" (input)="input()">
+                        <select #focusable multiple class="form-control tablet-landscape-and-below" id="selectedMarcaId" name="selectedMarcaId" *ngIf="showSelect" (keypress)="selectKeyPress($event)" (click)="selectClick($event)" [(ngModel)]="selectedMarcaId">
+                            <option *ngFor="let lab of laboratories" [value]="lab.MarcaId">{{lab.Descripcion}} - {{lab.MarcaId}}</option>
+                        </select>
+                        <div class="desktop-and-up form-control" *ngIf="showSelect">
+                            <div tabindex="1"  class="clickablediv"  *ngFor="let lab of laboratories" style="overflow-x: hidden;" (click)="selectClickOption($event,lab.MarcaId)">{{lab.Descripcion}} - {{lab.MarcaId}}</div>
+                        </div>
+                    </div>
+                </form>
+                <img src='../../../assets/img/app/loading2.gif' *ngIf='showLoading' width="40px">
+                <div class="alert alert-danger" role="alert" *ngIf="showNotFoundAlert">No se encontraron datos.</div>
+            </ba-card>
+            <ba-card *ngIf="lab_sales_last_3yrs_show" title="Ventas ultimos 3 años por mes (x10,000)" baCardClass="with-scroll">
+                <ba-chartist-chart  baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="lab_sales_last_3yrs" [baChartistChartOptions]="lab_sales_last_3yrs_options">
+                </ba-chartist-chart>
+                    
+                <div class="table-responsive">
+                <table class="table table-bordered table-condensed">
+                        <thead>
+                            <tr class="black-muted-bg">
+                                <th class="align-center"></th>
+                                <th class="align-center">Año</th>
+                                <th class="align-center">Total</th>
+                                <th class="align-center">Enero</th>
+                                <th class="align-center">Febrero</th>
+                                <th class="align-center">Marzo</th>
+                                <th class="align-center">Abril</th>
+                                <th class="align-center">Mayo</th>
+                                <th class="align-center">Junio</th>
+                                <th class="align-center">Julio</th>
+                                <th class="align-center">Agosto</th>
+                                <th class="align-center">Septiembre</th>
+                                <th class="align-center">Octubre</th>
+                                <th class="align-center">Noviembre</th>
+                                <th class="align-center">Diciembre</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of lab_sales_last_3yrs_table_data" class="no-top-border">
+                                <td class="align-right">
+                                    <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
+                                </td>
+                                <td class="align-right">{{item.Year}}</td>
+                                <td class="align-right"><strong>Q.{{item.Total}}</strong></td>
+                                <td class="align-right">Q.{{item.Enero}}</td>
+                                <td class="align-right">Q.{{item.Febrero}}</td>
+                                <td class="align-right">Q.{{item.Marzo}}</td>
+                                <td class="align-right">Q.{{item.Abril}}</td>
+                                <td class="align-right">Q.{{item.Mayo}}</td>
+                                <td class="align-right">Q.{{item.Junio}}</td>
+                                <td class="align-right">Q.{{item.Julio}}</td>
+                                <td class="align-right">Q.{{item.Agosto}}</td>
+                                <td class="align-right">Q.{{item.Septiembre}}</td>
+                                <td class="align-right">Q.{{item.Octubre}}</td>
+                                <td class="align-right">Q.{{item.Noviembre}}</td>
+                                <td class="align-right">Q.{{item.Diciembre}}</td>
+                                
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+            </ba-card>
+             <ba-card *ngIf="lab_sales_last_3yrs_show" title="Ventas ultimos 3 años todos los productos" baCardClass="with-scroll">
+                 <form>
+                    <div class="form-group" *ngIf='false'>
+                        <input #search class="form-control" type="text" placeholder="Búsqueda Año, Producto, Producto ID..." (keydown.enter)="onSearch(search.value)" autocomplete="off">
+                    </div>
+                 </form>
+                 <button (click)="getFilterElements()" *ngIf="false">holad</button>
+                <ng2-smart-table [settings]="settings" [source]="lab_sales_by_lab_and_product_source"></ng2-smart-table>
+             </ba-card>
+        </div>
+         
+    </div>
+</section>

@@ -1,0 +1,119 @@
+<section class="chartist">
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <label>Ventas por Vendedor Año Corriente</label>
+            <pie-charts ></pie-charts>
+        </div>
+    </div>
+    <div class="row">
+        
+
+        <div class="col-md-12 ">
+            <ba-card title="Ventas por Año (x10,000)" baCardClass="with-scroll">
+                <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="SalesPerYearData" [baChartistChartOptions]="SalesPerYearOptions">
+                </ba-chartist-chart>
+                <!--ion-ios-circle-filled-->
+                <div class="table-responsive">
+                <table class="table table-bordered table-condensed">
+                        <thead>
+                            <tr class="black-muted-bg">
+                                <th class="align-center"></th>
+                                <th class="align-center">Año</th>
+                                <th class="align-center">Total</th>
+                                <th class="align-center">Enero</th>
+                                <th class="align-center">Febrero</th>
+                                <th class="align-center">Marzo</th>
+                                <th class="align-center">Abril</th>
+                                <th class="align-center">Mayo</th>
+                                <th class="align-center">Junio</th>
+                                <th class="align-center">Julio</th>
+                                <th class="align-center">Agosto</th>
+                                <th class="align-center">Septiembre</th>
+                                <th class="align-center">Octubre</th>
+                                <th class="align-center">Noviembre</th>
+                                <th class="align-center">Diciembre</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of _data" class="no-top-border">
+                                <td class="align-right">
+                                    <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
+                                </td>
+                                <td class="align-right">{{item.Year}}</td>
+                                <td class="align-right">Q.{{item.Total}}</td>
+                                <td class="align-right">Q.{{item.Enero}}</td>
+                                <td class="align-right">Q.{{item.Febrero}}</td>
+                                <td class="align-right">Q.{{item.Marzo}}</td>
+                                <td class="align-right">Q.{{item.Abril}}</td>
+                                <td class="align-right">Q.{{item.Mayo}}</td>
+                                <td class="align-right">Q.{{item.Junio}}</td>
+                                <td class="align-right">Q.{{item.Julio}}</td>
+                                <td class="align-right">Q.{{item.Agosto}}</td>
+                                <td class="align-right">Q.{{item.Septiembre}}</td>
+                                <td class="align-right">Q.{{item.Octubre}}</td>
+                                <td class="align-right">Q.{{item.Noviembre}}</td>
+                                <td class="align-right">Q.{{item.Diciembre}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </ba-card>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 ">
+            <ba-card title="Ventas por Marca del Mes Actual" baCardClass="with-scroll">
+                <ba-chartist-chart baChartistChartClass="ct-chart stacked-bar" baChartistChartType="Pie" [baChartistChartData]="SalesByBrandData"
+                    [baChartistChartOptions]="SalesByBrandOptions" [baChartistChartResponsive]="pieResponsiveOptions">
+                </ba-chartist-chart>
+                <div class="table-responsive">
+                    <table class="table table-bordered  table-striped table-condensed">
+                        <thead>
+                            <tr class="black-muted-bg">
+                                <th class="align-center">Marca</th>
+                                <th class="align-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of SalesByBrandTableData" class="no-top-border">
+                                <td class="align-right">
+                                    <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
+                                   {{item.label}}
+                                </td>
+                                <td class="align-right">Q.{{item.number}}</td>
+                                
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </ba-card>
+        </div>
+        <div class="col-md-6 ">
+            <ba-card title="Ventas por Vendedor (x1000)" baCardClass="with-scroll">
+                <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Bar" [baChartistChartData]="SalesBySalesManData"
+                    [baChartistChartOptions]="SalesBySalesManOptions">
+                </ba-chartist-chart>
+                <div class="table-responsive">
+                <table class="table table-bordered  table-striped table-condensed">
+                        <thead>
+                            <tr class="black-muted-bg">
+                                <th class="align-right">Vendedor</th>
+                                <th class="align-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of _sales_by_sales_man_data" class="no-top-border">
+                                <td class="align-right">
+                                    {{item.Vendedor}}
+                                </td>
+                                <td class="align-right">Q.{{item.Total}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </ba-card>
+            
+        </div>
+    </div>
+    
+</section>
