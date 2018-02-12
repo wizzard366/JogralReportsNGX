@@ -29,10 +29,8 @@
 /ng2-admin/.sass-cache
 /ng2-admin/connect.lock
 /ng2-admin/coverage
-/ng2-admin/libpeerconnection.log
-/ng2-admin/npm-debug.log
-/ng2-admin/testem.log
 /ng2-admin/typings
+*.log
 
 # e2e
 /ng2-admin/e2e/*.js
