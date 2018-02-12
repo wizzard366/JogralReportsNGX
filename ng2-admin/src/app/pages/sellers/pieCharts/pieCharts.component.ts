@@ -179,11 +179,12 @@ export class PieCharts implements AfterViewInit{
     this.selectedMonth=element;
     this.processChartData(this.raw_data,element);
     this._loadPieCharts(1000);
+    this.onYearSelected.emit([this.selectedYear,this.selectedMonth]);
   }
 
   public selectYear(element){
     
-    this.onYearSelected.emit(this.selectedYear);
+    
     this.selectedYear=element;
     this.piechartService.setReferenceYear(this.selectedYear);
     this.productSerive.getSalesBySalesManProyectionsByYear(element).subscribe(data=>{
@@ -193,6 +194,7 @@ export class PieCharts implements AfterViewInit{
       this.processChartData(data,this.selectedMonth);
       this._loadPieCharts(2000);
     });
+    this.onYearSelected.emit([this.selectedYear,this.selectedMonth]);
   }
 
   private _loadPieCharts(milisecs) {

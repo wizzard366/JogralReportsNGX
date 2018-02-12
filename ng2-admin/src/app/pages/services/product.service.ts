@@ -115,7 +115,13 @@ export class ProductService {
             .map(res => res.json()).catch(this.handleError);
         
     }
-
+    getTopClientsBySalesman(salesmanId,year,month){
+        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let options = new RequestOptions({headers:headers});
+        return this.http.get('/api/sales/salesman/'+salesmanId+'/topclients/'+year+'/'+month,options)
+            .map(res => res.json()).catch(this.handleError);
+        
+    }
 //****************************************************************************************************************************************** */
    
 }

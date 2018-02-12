@@ -3,7 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var sql = require("mssql");
 var path = require('path');
-//var morgan      = require('morgan');
+var morgan      = require('morgan');
 var jwt    = require('jsonwebtoken'); 
 var compression = require('compression');
 
@@ -23,7 +23,7 @@ var HOST = '0.0.0.0'; */
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-//app.use(morgan('dev'));
+app.use(morgan('dev'));
 
 
 
@@ -511,9 +511,33 @@ apiRoutes.get('/sales/brand/:marcaId/:year', function (req, res) {
 });
 
 
+/**  top 10 clientes por vendedor */
+apiRoutes.get('/sales/salesman/:salesmanId/topclients/:year/:month', function (req, res) {
+    
+    var salesmanId = req.params.salesmanId;
+    var year = req.params.year;
+    var month = req.params.month;
+    
+    
+    
+    var query = 'SELECT  TOP 5 f.EmpresaId, f.ClienteId, f.Nombre, VendedorId = v.VendedorId, Nombre = v.NombreCompleto, Total = Sum(f.Total)\
+                    FROM    dbo.FACDocumento f, dbo.FACXVendedor v\
+                    WHERE   f.EmpresaId = 9 AND f.AplicadoInvent = 1 AND f.Anulado = 0 AND datepart(yyyy, f.Fecha) = @year And datepart(MM, f.Fecha) = @month AND f.UsuarioPedido <> \'NPineda9\' AND \
+                            v.EmpresaId = f.EmpresaId AND v.VendedorId = f.VendedorId And v.VendedorId=@salesmanId\
+                    GROUP BY f.EmpresaId, f.ClienteId, f.Nombre, v.VendedorId, v.NombreCompleto\
+                    ORDER BY Sum(f.Total) DESC\
+                    ';
 
-/* no enmpresa parameter */
-/*Ventas por laboratorio mostrando todos los productos*/
+    var pool = new sql.Connection(config, function (err) {
+        if (err) {
+            res.send(err);
+        }
+        pool.request().input('salesmanId', sql.Int, salesmanId).input('year', sql.Int, year).input('month', sql.Int, month).query(query, (err, result) => {
+            res.send(result);
+        });
+
+    })
+});
 
 
 
