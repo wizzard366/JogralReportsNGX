@@ -10,15 +10,17 @@
         <ba-card title="Ventas actuales vs Proyección x10,000" baCardClass="with-scroll">
             <div class="row">
                 <div class="col-md-12 col-lg-12">
+                    
                     <select class="form-control" id="sallers" name="sellers" (change)="selected()" [(ngModel)]="selected_seller">
                         <option *ngFor="let seller of sellers_names_data; let i = index" [value]="seller.id" [attr.selected]="i == 0 ? true : null">{{seller.name}}</option>
                     </select>
+                    <div class="separator" *ngIf="display_graph"></div>
+                    <label *ngIf="display_graph">Ventas Anuales</label>
                     <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="sellers_graph_data"
                         [baChartistChartOptions]="chart_options" *ngIf="display_graph">
                     </ba-chartist-chart>
                     <div *ngIf="display_graph">
-                        <div class="separator"></div>
-                        <label>Ventas Anuales</label>
+
                         <div class="table-responsive">
                             <table class="table table-bordered table-condensed">
                                 <thead>
