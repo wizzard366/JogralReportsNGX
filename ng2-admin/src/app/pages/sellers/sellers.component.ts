@@ -36,6 +36,7 @@ export class SellersComponent {
     labelsPieOptions: any;
     top_clients_graph_data: any;
     top_clients_table_data: any;
+    graph_total:any;
 
     constructor(private productSerive: ProductService,
         private authenticationService: AuthenticationService,
@@ -66,15 +67,20 @@ export class SellersComponent {
                 weight: '300px',
                 labelDirection: 'explode',
 
-                labelInterpolationFnc: function (value) {
-                    return '';
-                }
+                labelInterpolationFnc: this.returnlabel,
             }
 
 
         });
 
 
+    }
+
+
+    returnlabel(value){
+        console.log(value);
+        //return Math.round(value / this.graph_total * 100) + '%';
+        return '';
     }
 
     getSellersData(data) {
@@ -215,26 +221,29 @@ export class SellersComponent {
                 let tempLabels = [];
                 let tempSeries = [];
                 let tempTableData = [];
+                let total=0;
                 data.forEach((element, index) => {
 
-                    tempLabels.push(element.Nombre[0]);
+                    tempLabels.push(element.Total);
                     tempSeries.push(element.Total);
+                    total+=Number(element.Total);
                     tempTableData.push({
                         class: chartistColorClasses[index],
                         ClienteId: element.ClienteId,
                         Nombre: element.Nombre[0],
-                        Total: element.Total,
+                        Total: element.Total.toLocaleString('en-US'),
                         Vendedor: element.Nombre[1]
                     })
                 });
-
+                this.graph_total=total;
+                console.log('total',this.graph_total);
                 this.top_clients_graph_data = {
                     labels: tempLabels,
                     series: tempSeries
                 }
                 this.top_clients_table_data = tempTableData;
                 this.display_pieChart = true;
-                console.log('chart data:', [tempLabels, tempSeries, tempTableData, year, month]);
+                //console.log('chart data:', [tempLabels, tempSeries, tempTableData, year, month]);
 
             }else{
                 this.display_pieChart = false;
