@@ -20,8 +20,21 @@ export class Stock {
   getStock($event){
     //console.log('get stock...')
     this.productSerive.getStock($event.productoId,$event.factor).subscribe(stock => {
+        let tmp_total=0;
+        stock.forEach(element => {
+          tmp_total+=Number(element.SaldoActual);
+          element.SaldoActual=Number(element.SaldoActual).toLocaleString('en-US');
+        });
+        stock.push(
+          {
+            Bodega:"Total",
+            SaldoActual:Number(tmp_total).toLocaleString('en-US')
+          }
+        )
+
+
         this.stock=stock;
-        
+        console.log('stock:',this.stock);
     }); 
   }
 
