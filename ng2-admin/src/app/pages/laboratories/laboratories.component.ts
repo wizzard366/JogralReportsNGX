@@ -10,6 +10,8 @@ import { chartistColorClasses } from '../../theme/chartist-color-classes';
 import { LocalDataSource } from 'ng2-smart-table';
 
 
+
+
 import 'style-loader!./smartTable-custom.scss';
 
 @Component({
@@ -61,16 +63,19 @@ export class LaboratoriesComponent {
             },
             Producto:{
                 title: 'Producto',
+                type: 'html',
+                valuePrepareFunction:this.parseProductName
             },
             ProductoId:{
                 title: 'P. ID',
                 class: 'pid-class',
-                                         
+                                       
             },
             Enero:{
                 title: 'Enero',
                 filter: false,
                 valuePrepareFunction:this.parseNumbers
+                
             },
             Febrero:{
                 title: 'Febrero',
@@ -138,8 +143,15 @@ export class LaboratoriesComponent {
     }
 
     parseNumbers(cell,row){
+        
         return 'Q.' + cell.toLocaleString('en-US');
     }
+    parseProductName(cell,row){
+
+        return cell;
+        //return "<a href='/pages/laboratorios/productInfo/"+row.ProductoId+"'>"+cell+"</a>";
+    }
+
     
     onSearch(query: string = '') {
         this.lab_sales_by_lab_and_product_source.setFilter([

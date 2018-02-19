@@ -10,6 +10,7 @@ import { routing }       from './laboratories.routing';
 
 
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -21,7 +22,9 @@ import { routing }       from './laboratories.routing';
     
   ],
   declarations: [
-    LaboratoriesComponent
-  ]
+    LaboratoriesComponent,
+
+  ],
+  
 })
 export class LaboratoriesModule {}
