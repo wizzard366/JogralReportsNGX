@@ -30,7 +30,7 @@ export const PAGES_MENU = [
         }
       },
       {
-        path: 'laboratorios',  // path for our page
+        path: 'labs',  // path for our page
         data: { // custom menu declaration
           menu: {
             title: 'Laboratorios', // menu title

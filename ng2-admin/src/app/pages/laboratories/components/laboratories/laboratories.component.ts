@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { ProductService } from '../services/product.service';
-import { LaboratoriesService } from '../services/laboratories.service';
-import { DateService } from '../services/date.service';
+import { ProductService } from '../../../services/product.service';
+import { LaboratoriesService } from '../../../services/laboratories.service';
+import { DateService } from '../../../services/date.service';
 
 
-import 'style-loader!../../theme/chartistJs.scss';
-import { ChartistJsService } from '../charts/components/chartistJs/chartistJs.service';
-import { chartistColorClasses } from '../../theme/chartist-color-classes';
+import 'style-loader!../../../../theme/chartistJs.scss';
+import { ChartistJsService } from '../../../charts/components/chartistJs/chartistJs.service';
+import { chartistColorClasses } from '../../../../theme/chartist-color-classes';
 import { LocalDataSource } from 'ng2-smart-table';
 
 
@@ -18,7 +18,7 @@ import 'style-loader!./smartTable-custom.scss';
   selector: 'dash-laboratories',
   templateUrl: 'laboratories.html',
   providers: [ProductService, ChartistJsService,DateService],
-  styleUrls: ['../forms/components/inputs/components/selectInputs/selectInput.scss', '../../theme/sass/user-defined/media-querys.scss']
+  styleUrls: ['../../../forms/components/inputs/components/selectInputs/selectInput.scss', '../../../../theme/sass/user-defined/media-querys.scss']
 })
 export class LaboratoriesComponent {
 
@@ -148,8 +148,8 @@ export class LaboratoriesComponent {
     }
     parseProductName(cell,row){
 
-        return cell;
-        //return "<a href='/pages/laboratorios/productInfo/"+row.ProductoId+"'>"+cell+"</a>";
+        //return cell;
+        return "<a href='/#/pages/labs/productinfo/"+row.ProductoId+"'>"+cell+"</a>";
     }
 
     
