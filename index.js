@@ -31,7 +31,7 @@ app.use(morgan('dev'));
 var config = {
     user: 'sa',
     password: 'OEM02panorama',
-    server: '186.151.248.234',//Internal:10.10.1.4 External:186.151.248.234
+    server: '10.10.1.4',//Internal:10.10.1.4 External:186.151.248.234
     database: 'PCINVJes'
 };
 
@@ -176,6 +176,52 @@ apiRoutes.use(function(req, res, next) {
 apiRoutes.get('/set', function(req, res) {
   res.json({ message: 'Welcome to the coolest API on earth!' });
 });
+
+//get product sales info
+apiRoutes.get('/producto/:id/ventas', function(req, res){
+
+    var id_parameter = req.params.id;
+    console.log("ventas");
+    var response=[
+        {
+            "Fecha":"1/10/2018",
+            "Cantidad":100,
+            "Monto":10580
+        },
+        {
+            "Fecha":"2/10/2018",
+            "Cantidad":50,
+            "Monto":16540
+        },
+        {
+            "Fecha":"3/10/2018",
+            "Cantidad":45,
+            "Monto":54856
+        },
+        {
+            "Fecha":"4/10/2018",
+            "Cantidad":312,
+            "Monto":88556
+        },
+        {
+            "Fecha":"5/10/2018",
+            "Cantidad":88,
+            "Monto":865332
+        },
+        {
+            "Fecha":"6/10/2018",
+            "Cantidad":100,
+            "Monto":89652
+        },
+        {
+            "Fecha":"1/10/2018",
+            "Cantidad":100,
+            "Monto":74445
+        },
+
+    ]
+    res.send(response);
+})
 
 
 // Get product by id

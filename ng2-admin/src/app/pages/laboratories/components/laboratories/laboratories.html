@@ -1,7 +1,7 @@
 <section class="chartist">
     <div class="row">
         <div class="col-md-12 ">
-            <ba-card title="Búsqueda por Laboratorio" baCardClass="with-scroll">
+            <ba-card cardTitle="Búsqueda por Laboratorio" baCardClass="with-scroll">
                 <form (submit)="getLaboratoryByDescription($event)">
                     <div class="form-group">
                         <label for="description">Búsqueda de Laboratorios (Marcas)</label>
@@ -17,7 +17,7 @@
                 <img src='../../../assets/img/app/loading2.gif' *ngIf='showLoading' width="40px">
                 <div class="alert alert-danger" role="alert" *ngIf="showNotFoundAlert">No se encontraron datos.</div>
             </ba-card>
-            <ba-card *ngIf="lab_sales_last_3yrs_show" title="Ventas ultimos 3 años por mes (x10,000)" baCardClass="with-scroll">
+            <ba-card *ngIf="lab_sales_last_3yrs_show" cardTitle="Ventas ultimos 3 años por mes (x10,000)" baCardClass="with-scroll">
                 <ba-chartist-chart  baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="lab_sales_last_3yrs" [baChartistChartOptions]="lab_sales_last_3yrs_options">
                 </ba-chartist-chart>
                     
@@ -69,7 +69,7 @@
                 </div>
                 
             </ba-card>
-             <ba-card *ngIf="lab_sales_last_3yrs_show" title="Ventas ultimos 3 años todos los productos" baCardClass="with-scroll">
+             <ba-card *ngIf="lab_sales_last_3yrs_show" cardTitle="Ventas ultimos 3 años todos los productos" baCardClass="with-scroll">
                  <form>
                     <div class="form-group" *ngIf='false'>
                         <input #search class="form-control" type="text" placeholder="Búsqueda Año, Producto, Producto ID..." (keydown.enter)="onSearch(search.value)" autocomplete="off">

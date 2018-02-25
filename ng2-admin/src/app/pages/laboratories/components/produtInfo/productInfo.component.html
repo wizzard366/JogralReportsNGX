@@ -1,1 +1,44 @@
-<h1>product info component: {{id}}</h1>
+<div class="row">
+    <div class="col-md-12">
+        <ba-card cardTitle="Ventas por producto" baCardClass="with-scroll">
+            <form class="form-horizontal">
+                <div class="form-group row">
+                    <label class="col-sm-1 form-control-label">ProductoId:</label>
+                    <div class="col-sm-5">
+                        <input type="text" [(ngModel)]="product_id" name="product_id" class="form-control" id="product_id" disabled>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 form-control-label">Nombre:</label>
+                    <div class="col-sm-5">
+                        <input type="text" [(ngModel)]="product_name" name="product_name" class="form-control" id="product_name" disabled>
+                    </div>
+                </div>
+                <div class="form-group row">
+
+                    <label class="col-sm-1 form-control-label">Marca</label>
+                    <div class="col-sm-5">
+                        <input type="text" [(ngModel)]="product_marca" name="product_marca" class="form-control" id="product_marca" disabled>
+                    </div>
+                </div>
+                <div class="form-group row">
+
+                        <label class="col-sm-2 form-control-label">Mostrar Cantidades:</label>
+                        <div class="col-sm-1">
+                            <input type="checkbox" [(ngModel)]="show_quantites" name="show_quantites" class="form-control" id="show_quantites">
+                        </div>
+                    </div>
+            </form>
+
+            <h4>Mostrando: {{show_quantites ? 'Cantidad de unidades vendidas' : 'Monto vendido en Quetzalez'}}</h4>
+            <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="show_quantites ?  graph_data_quantity : graph_data_money" [baChartistChartOptions]="graph_options">
+            </ba-chartist-chart>
+
+
+        </ba-card>
+    </div>
+
+
+
+</div>
+

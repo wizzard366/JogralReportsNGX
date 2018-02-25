@@ -94,6 +94,13 @@ export class ProductService {
             .map(res => res.json()).catch(this.handleError);
     }
 
+    getSalesByProduct(pid){
+        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let options = new RequestOptions({headers:headers});
+        return this.http.get('/api/producto/'+pid+'/ventas',options)
+            .map(res => res.json()).catch(this.handleError);
+    }
+
     getSalesBySalesMan(){
         let headers = new Headers({'x-access-token':this.authenticationService.token});
         let options = new RequestOptions({headers:headers});
