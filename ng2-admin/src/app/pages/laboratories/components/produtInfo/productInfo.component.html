@@ -1,39 +1,85 @@
 <div class="row">
     <div class="col-md-12">
         <ba-card cardTitle="Ventas por producto" baCardClass="with-scroll">
-            <form class="form-horizontal">
-                <div class="form-group row">
-                    <label class="col-sm-1 form-control-label">ProductoId:</label>
-                    <div class="col-sm-5">
-                        <input type="text" [(ngModel)]="product_id" name="product_id" class="form-control" id="product_id" disabled>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-1 form-control-label">Nombre:</label>
-                    <div class="col-sm-5">
-                        <input type="text" [(ngModel)]="product_name" name="product_name" class="form-control" id="product_name" disabled>
-                    </div>
-                </div>
-                <div class="form-group row">
 
-                    <label class="col-sm-1 form-control-label">Marca</label>
-                    <div class="col-sm-5">
-                        <input type="text" [(ngModel)]="product_marca" name="product_marca" class="form-control" id="product_marca" disabled>
-                    </div>
-                </div>
-                <div class="form-group row">
+            <div class="row">
 
-                        <label class="col-sm-2 form-control-label">Mostrar Cantidades:</label>
-                        <div class="col-sm-1">
-                            <input type="checkbox" [(ngModel)]="show_quantites" name="show_quantites" class="form-control" id="show_quantites">
+                <div class="col-md-6">
+                    <form class="form-horizontal">
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">ProductoId:</label>
+                            <div class="col-sm-10">
+                                <input type="text" [(ngModel)]="product_id" name="product_id" class="form-control" id="product_id" disabled>
+                            </div>
                         </div>
-                    </div>
-            </form>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label">Nombre:</label>
+                            <div class="col-sm-10">
+                                <input type="text" [(ngModel)]="product_name" name="product_name" class="form-control" id="product_name" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group row">
 
-            <h4>Mostrando: {{show_quantites ? 'Cantidad de unidades vendidas' : 'Monto vendido en Quetzalez'}}</h4>
-            <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="show_quantites ?  graph_data_quantity : graph_data_money" [baChartistChartOptions]="graph_options">
-            </ba-chartist-chart>
+                            <label class="col-sm-2 form-control-label">Marca</label>
+                            <div class="col-sm-10">
+                                <input type="text" [(ngModel)]="product_marca" name="product_marca" class="form-control" id="product_marca" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group row">
 
+                            <label class="col-sm-4 form-control-label">Mostrar Cantidades:</label>
+                            <div class="col-sm-2">
+                                <input type="checkbox" [(ngModel)]="show_quantites" name="show_quantites" class="form-control" id="show_quantites">
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="col-md-6">
+                    <form>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input class="form-control" placeholder="fecha inicio" name="dp1" [(ngModel)]="startDate" ngbDatepicker #d1="ngbDatepicker">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
+                                                    <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input class="form-control" placeholder="fecha Final" name="dp" [(ngModel)]="endDate" ngbDatepicker #d="ngbDatepicker">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                                                    <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <button (click)="updateGraph(product_id)">Actualizar Gráfica</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div *ngIf="show_graph">
+                <h4>Mostrando: {{show_quantites ? 'Cantidad de unidades vendidas' : 'Monto vendido en Quetzalez'}}</h4>
+                <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="show_quantites ?  graph_data_quantity : graph_data_money"
+                    [baChartistChartOptions]="graph_options">
+                </ba-chartist-chart>
+            </div>
 
         </ba-card>
     </div>
@@ -41,4 +87,3 @@
 
 
 </div>
-

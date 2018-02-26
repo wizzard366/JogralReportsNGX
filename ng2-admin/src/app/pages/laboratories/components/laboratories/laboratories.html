@@ -5,12 +5,14 @@
                 <form (submit)="getLaboratoryByDescription($event)">
                     <div class="form-group">
                         <label for="description">Búsqueda de Laboratorios (Marcas)</label>
-                        <input autocomplete="off" type="text" [(ngModel)]="description" name="description" class="form-control" id="description" (input)="input()">
-                        <select #focusable multiple class="form-control tablet-landscape-and-below" id="selectedMarcaId" name="selectedMarcaId" *ngIf="showSelect" (keypress)="selectKeyPress($event)" (click)="selectClick($event)" [(ngModel)]="selectedMarcaId">
+                        <input autocomplete="off" type="text" [(ngModel)]="description" name="description" class="form-control" id="description"
+                            (input)="input()">
+                        <select #focusable multiple class="form-control tablet-landscape-and-below" id="selectedMarcaId" name="selectedMarcaId" *ngIf="showSelect"
+                            (keypress)="selectKeyPress($event)" (click)="selectClick($event)" [(ngModel)]="selectedMarcaId">
                             <option *ngFor="let lab of laboratories" [value]="lab.MarcaId">{{lab.Descripcion}} - {{lab.MarcaId}}</option>
                         </select>
                         <div class="desktop-and-up form-control" *ngIf="showSelect">
-                            <div tabindex="1"  class="clickablediv"  *ngFor="let lab of laboratories" style="overflow-x: hidden;" (click)="selectClickOption($event,lab.MarcaId)">{{lab.Descripcion}} - {{lab.MarcaId}}</div>
+                            <div tabindex="1" class="clickablediv" *ngFor="let lab of laboratories" style="overflow-x: hidden;" (click)="selectClickOption($event,lab.MarcaId)">{{lab.Descripcion}} - {{lab.MarcaId}}</div>
                         </div>
                     </div>
                 </form>
@@ -18,11 +20,12 @@
                 <div class="alert alert-danger" role="alert" *ngIf="showNotFoundAlert">No se encontraron datos.</div>
             </ba-card>
             <ba-card *ngIf="lab_sales_last_3yrs_show" cardTitle="Ventas ultimos 3 años por mes (x10,000)" baCardClass="with-scroll">
-                <ba-chartist-chart  baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="lab_sales_last_3yrs" [baChartistChartOptions]="lab_sales_last_3yrs_options">
+                <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="lab_sales_last_3yrs"
+                    [baChartistChartOptions]="lab_sales_last_3yrs_options">
                 </ba-chartist-chart>
-                    
+
                 <div class="table-responsive">
-                <table class="table table-bordered table-condensed">
+                    <table class="table table-bordered table-condensed">
                         <thead>
                             <tr class="black-muted-bg">
                                 <th class="align-center"></th>
@@ -40,7 +43,7 @@
                                 <th class="align-center">Octubre</th>
                                 <th class="align-center">Noviembre</th>
                                 <th class="align-center">Diciembre</th>
-                                
+
                             </tr>
                         </thead>
                         <tbody>
@@ -49,7 +52,9 @@
                                     <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
                                 </td>
                                 <td class="align-right">{{item.Year}}</td>
-                                <td class="align-right"><strong>Q.{{item.Total}}</strong></td>
+                                <td class="align-right">
+                                    <strong>Q.{{item.Total}}</strong>
+                                </td>
                                 <td class="align-right">Q.{{item.Enero}}</td>
                                 <td class="align-right">Q.{{item.Febrero}}</td>
                                 <td class="align-right">Q.{{item.Marzo}}</td>
@@ -62,23 +67,68 @@
                                 <td class="align-right">Q.{{item.Octubre}}</td>
                                 <td class="align-right">Q.{{item.Noviembre}}</td>
                                 <td class="align-right">Q.{{item.Diciembre}}</td>
-                                
+
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                
+                <button (click)="open(content)">x</button>
             </ba-card>
-             <ba-card *ngIf="lab_sales_last_3yrs_show" cardTitle="Ventas ultimos 3 años todos los productos" baCardClass="with-scroll">
-                 <form>
+            <ba-card *ngIf="lab_sales_last_3yrs_show" cardTitle="Ventas ultimos 3 años todos los productos" baCardClass="with-scroll">
+                <form>
                     <div class="form-group" *ngIf='false'>
-                        <input #search class="form-control" type="text" placeholder="Búsqueda Año, Producto, Producto ID..." (keydown.enter)="onSearch(search.value)" autocomplete="off">
+                        <input #search class="form-control" type="text" placeholder="Búsqueda Año, Producto, Producto ID..." (keydown.enter)="onSearch(search.value)"
+                            autocomplete="off">
                     </div>
-                 </form>
-                 <button (click)="getFilterElements()" *ngIf="false">holad</button>
+                </form>
+                <button (click)="getFilterElements()" *ngIf="false">holad</button>
                 <ng2-smart-table [settings]="settings" [source]="lab_sales_by_lab_and_product_source"></ng2-smart-table>
-             </ba-card>
+            </ba-card>
         </div>
-         
+
     </div>
 </section>
+<!-- Modal to select date interval to show product info -->
+<ng-template #content let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title">Mostrar Ventas Producto</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input class="form-control" placeholder="fecha inicio" name="dp1" [(ngModel)]="model1" ngbDatepicker #d1="ngbDatepicker">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
+                                        <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input class="form-control" placeholder="fecha inicio" name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                                        <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Close</button>
+    </div>
+</ng-template>

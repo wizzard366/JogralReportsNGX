@@ -10,6 +10,7 @@ import { chartistColorClasses } from '../../../../theme/chartist-color-classes';
 import { LocalDataSource } from 'ng2-smart-table';
 
 
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 
 import 'style-loader!./smartTable-custom.scss';
@@ -35,10 +36,15 @@ export class LaboratoriesComponent {
     public lab_sales_by_lab_and_product_source:any;
     public lab_sales_by_lab_and_product_data=[];
     public date:any;
+    public model;
+    public model1;
+    closeResult: string;
 
     constructor(private laboratoriesService:LaboratoriesService, 
     private productService:ProductService,
-    private _chartistJsService: ChartistJsService, private dateService:DateService){
+    private _chartistJsService: ChartistJsService, 
+    private dateService:DateService,
+    private modalService: NgbModal){
         this.lab_sales_last_3yrs_options = this._chartistJsService.getAll()['simpleLineOptions'];
         this.lab_sales_by_lab_and_product_source = new LocalDataSource(this.lab_sales_by_lab_and_product_data);
         this.dateService.getServerDate().subscribe(date=>{
@@ -64,12 +70,15 @@ export class LaboratoriesComponent {
             Producto:{
                 title: 'Producto',
                 type: 'html',
+                class: 'producto-class',
                 valuePrepareFunction:this.parseProductName
+                
             },
             ProductoId:{
                 title: 'P. ID',
                 class: 'pid-class',
-                                       
+                type: 'text',
+                                   
             },
             Enero:{
                 title: 'Enero',
@@ -148,8 +157,9 @@ export class LaboratoriesComponent {
     }
     parseProductName(cell,row){
 
-        //return cell;
+        
         return "<a href='/#/pages/labs/productinfo/"+row.ProductoId+"'>"+cell+"</a>";
+        
     }
 
     
@@ -286,5 +296,23 @@ export class LaboratoriesComponent {
         console.log("get all elements:")
         console.log(this.lab_sales_by_lab_and_product_source.getElements());
     }
+
+    open(content) {
+        this.modalService.open(content).result.then((result) => {
+          this.closeResult = `Closed with: ${result}`;
+        }, (reason) => {
+          this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        });
+      }
+    
+      private getDismissReason(reason: any): string {
+        if (reason === ModalDismissReasons.ESC) {
+          return 'by pressing ESC';
+        } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+          return 'by clicking on a backdrop';
+        } else {
+          return  `with: ${reason}`;
+        }
+      }
 
 }

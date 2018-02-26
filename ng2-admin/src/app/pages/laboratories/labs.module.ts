@@ -4,11 +4,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgaModule } from '../../theme/nga.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 import {LabsComponent} from './labs.component';
 
 import { LaboratoriesComponent } from './components/laboratories/laboratories.component';
 import { routing }       from './labs.routing';
 import {ProductInfoComponent} from  './components/produtInfo/productInfo.component';
+
 
 
 
@@ -23,13 +26,16 @@ import {ProductInfoComponent} from  './components/produtInfo/productInfo.compone
     NgaModule,
     routing,
     Ng2SmartTableModule,
+    NgbModule
     
   ],
   declarations: [
     LabsComponent,
     LaboratoriesComponent,
     ProductInfoComponent,
+
   ],
+ 
   
 })
 export class LabsModule {}
