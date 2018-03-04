@@ -9,9 +9,9 @@ const routes: Routes = [
     component: LabsComponent,
     
     children:[
-      {path: '',redirectTo:'laboratories'},
+      {path: '',redirectTo:'laboratories/search'},
       {path:'productinfo/:pid',component:ProductInfoComponent},
-      {path:'laboratories',component:LaboratoriesComponent}
+      {path:'laboratories/:pid',component:LaboratoriesComponent}
     ]
   }
 ];

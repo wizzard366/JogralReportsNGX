@@ -66,7 +66,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <button (click)="updateGraph(product_id)">Actualizar Gráfica</button>
+                                    <button (click)="showGraph()">Actualizar Gráfica</button>
                                 </div>
                             </div>
                         </div>
@@ -79,6 +79,30 @@
                 <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="show_quantites ?  graph_data_quantity : graph_data_money"
                     [baChartistChartOptions]="graph_options">
                 </ba-chartist-chart>
+                <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <thead>
+                                <tr class="black-muted-bg">
+                                    <th class="align-center">Fecha</th>
+                                    <th class="align-center">Monto</th>
+                                    <th class="align-center">Cantidad</th>
+                                    <th class="align-center">Total Acumulado</th>
+                                
+    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of table_data" class="no-top-border">
+                                    
+                                    <td class="align-right">{{item.Fecha}}</td>
+                                    <td class="align-right">Q.{{item.Monto}}</td>
+                                    <td class="align-right">{{item.Cantidad}}</td>
+                                    <td class="align-right">Q.{{item.Total}}</td>
+    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
             </div>
 
         </ba-card>

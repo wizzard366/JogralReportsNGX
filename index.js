@@ -105,40 +105,7 @@ apiRoutes.post('/authenticate', function(req, res) {
         });
 
     });
-  // Profcom:spegos
-  
- /* User.findOne({
-    name: req.body.username
-  }, function(err, user) {
 
-    if (err) throw err;
-
-    if (!user) {
-      res.json({ success: false, message: 'Authentication failed. User not found.' });
-    } else if (user) {
-
-      // check if password matches
-      if (user.password != req.body.password) {
-        res.json({ success: false, message: 'Authentication failed. Wrong password.' });
-      } else {
-
-        // if user is found and password is right
-        // create a token
-        var token = jwt.sign(user, app.get('superSecret'), {
-          //expiresInMinutes: 1440 // expires in 24 hours
-        });
-
-        // return the information including token as JSON
-        res.json({
-          success: true,
-          message: 'Enjoy your token!',
-          token: token
-        });
-      }   
-
-    }
-
-  });*/
 });
 
 // TODO: route middleware to verify a token
@@ -179,9 +146,41 @@ apiRoutes.get('/set', function(req, res) {
 
 //get product sales info
 apiRoutes.get('/producto/:id/ventas', function(req, res){
+    
+    var ProductoId = req.params.id;
+    var startDate =decodeURIComponent(req.query['startDate']);
+    var endDate = decodeURIComponent(req.query['endDate']);
+    
+    console.log('productoid:',ProductoId);
+    console.log('startDate:',startDate);
+    console.log('endDate:',endDate+' 23:59');
 
-    var id_parameter = req.params.id;
-    console.log("ventas");
+    var query = "Select  fd.EmpresaId, fd.ProductoId, f.Fecha,  Cantidad=Sum(fd.Cantidad*um.Factor), Monto=Sum(fd.PrecioTotal)\
+    From FACDocumento f, FACDocumentoDet fd, INVProducto p, INVProductoUMedida um\
+    Where f.EmpresaId=9 and f.AplicadoInvent=1 And f.Anulado=0 and \
+            f.Fecha between @Desde And @Hasta And\
+            fd.EmpresaId=f.EmpresaId And fd.TurnoId=f.TurnoId And fd.TipoDocId=f.TipoDocId and f.NumeroDoc=fd.NumeroDoc and\
+            p.EmpresaId=fd.EmpresaId and p.ProductoId=fd.ProductoId and p.ProductoId=@ProductoId And\
+            um.EmpresaId=fd.EmpresaId And um.ProductoId=fd.ProductoId and um.UMedidaId=fd.UMedidaId And um.Descripcion=fd.DescUMedida\
+    Group by fd.EmpresaId, fd.ProductoId, f.Fecha\
+    Order By f.Fecha"
+
+    var pool = new sql.Connection(config, function (err) {
+        if (err) {
+            res.send(err);
+        }
+        
+        pool.request()
+        .input('ProductoId', sql.Int, ProductoId)
+        .input('Desde', sql.NVarChar, startDate)
+        .input('Hasta',sql.NVarChar,endDate).query(query, (err, result) => {
+            res.send(result);
+            console.log(err);
+        });
+
+    })
+
+
     var response=[
         {
             "Fecha":"1/10/2018",
@@ -220,7 +219,7 @@ apiRoutes.get('/producto/:id/ventas', function(req, res){
         },
 
     ]
-    res.send(response);
+    //res.send(response);
 })
 
 
@@ -521,7 +520,7 @@ apiRoutes.get('/sales/brand/product/:marcaId/:year', function (req, res) {
     var marcaId = req.params.marcaId;
     var year = req.params.year;
 
-    var query = 'Select * From INVRepWEBMarcaProducto where MarcaId=@marcaId and Ano>=@year';
+    var query = 'Select * From INVRepWEBMarcaProducto where MarcaId=@marcaId and Ano>=@year order by Ano DESC';
     
     var pool = new sql.Connection(config, function (err) {
         if (err) {

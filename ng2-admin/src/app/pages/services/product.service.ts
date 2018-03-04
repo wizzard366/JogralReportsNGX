@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers, RequestOptions, Response} from '@angular/http';
+import {Http, Headers, RequestOptions, Response,URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import {AuthenticationService} from './oauth/authentication.service';
 
 import { SalesMan } from '../reports/salesman';
+//import { URLSearchParams } from '@angular/http/src/url_search_params';
 
 @Injectable()
 export class ProductService {
@@ -94,9 +95,13 @@ export class ProductService {
             .map(res => res.json()).catch(this.handleError);
     }
 
-    getSalesByProduct(pid){
+    getSalesByProduct(pid, startDate, endDate){
+        
         let headers = new Headers({'x-access-token':this.authenticationService.token});
-        let options = new RequestOptions({headers:headers});
+        let params = new URLSearchParams();
+        params.append('startDate',encodeURIComponent(startDate));
+        params.append('endDate',encodeURIComponent(endDate));
+        let options = new RequestOptions({headers:headers,search:params});
         return this.http.get('/api/producto/'+pid+'/ventas',options)
             .map(res => res.json()).catch(this.handleError);
     }
