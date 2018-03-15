@@ -2,7 +2,7 @@
     <div class="col-md-12 ">
         <div class="row">
             <div class="col-md-12 "> 
-                <ba-card title="Top 10 Clientes (x10,000)" baCardClass="with-scroll">
+                <ba-card cardTitle="Top 10 Clientes (x10,000)" baCardClass="with-scroll">
                     <ba-chartist-chart baChartistChartClass="ct-chart"
                         baChartistChartType="Bar"
                         [baChartistChartData]="barChartData"
@@ -60,7 +60,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 ">
-                <ba-card title="Clientes" baCardClass="with-scroll">
+                <ba-card cardTitle="Clientes" baCardClass="with-scroll">
                     <div class="row">
                         <div class=" col-xlg-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <form (submit)="getClientInfoById($event)">
@@ -95,7 +95,7 @@
                     <div class="alert alert-danger" role="alert" *ngIf="showNotFoundAlert">No se encontraron datos.</div>
                     
                 </ba-card>
-                <ba-card title="Ventas por Cliente" baCardClass="with-scroll" *ngIf="display_graph">
+                <ba-card cardTitle="Ventas por Cliente" baCardClass="with-scroll" *ngIf="display_graph">
                     <div class="row">
                             <div class=" col-xlg-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <form>

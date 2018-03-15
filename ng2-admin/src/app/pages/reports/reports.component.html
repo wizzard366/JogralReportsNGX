@@ -9,7 +9,7 @@
         
 
         <div class="col-md-12 ">
-            <ba-card title="Ventas por Año (x10,000)" baCardClass="with-scroll">
+            <ba-card cardTitle="Ventas por Año (x10,000)" baCardClass="with-scroll">
                 <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="SalesPerYearData" [baChartistChartOptions]="SalesPerYearOptions">
                 </ba-chartist-chart>
                 <!--ion-ios-circle-filled-->
@@ -62,7 +62,7 @@
     </div>
     <div class="row">
         <div class="col-md-6 ">
-            <ba-card title="Ventas por Marca del Mes Actual" baCardClass="with-scroll">
+            <ba-card cardTitle="Ventas por Marca del Mes Actual" baCardClass="with-scroll">
                 <ba-chartist-chart baChartistChartClass="ct-chart stacked-bar" baChartistChartType="Pie" [baChartistChartData]="SalesByBrandData"
                     [baChartistChartOptions]="SalesByBrandOptions" [baChartistChartResponsive]="pieResponsiveOptions">
                 </ba-chartist-chart>
@@ -89,7 +89,7 @@
             </ba-card>
         </div>
         <div class="col-md-6 ">
-            <ba-card title="Ventas por Vendedor (x1000)" baCardClass="with-scroll">
+            <ba-card cardTitle="Ventas por Vendedor (x1000)" baCardClass="with-scroll">
                 <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Bar" [baChartistChartData]="SalesBySalesManData"
                     [baChartistChartOptions]="SalesBySalesManOptions">
                 </ba-chartist-chart>
