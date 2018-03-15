@@ -149,11 +149,9 @@ apiRoutes.get('/producto/:id/ventas', function(req, res){
     
     var ProductoId = req.params.id;
     var startDate =decodeURIComponent(req.query['startDate']);
-    var endDate = decodeURIComponent(req.query['endDate']);
+    var endDate = decodeURIComponent(req.query['endDate'])+' 23:59';
     
-    console.log('productoid:',ProductoId);
-    console.log('startDate:',startDate);
-    console.log('endDate:',endDate+' 23:59');
+    
 
     var query = "Select  fd.EmpresaId, fd.ProductoId, f.Fecha,  Cantidad=Sum(fd.Cantidad*um.Factor), Monto=Sum(fd.PrecioTotal)\
     From FACDocumento f, FACDocumentoDet fd, INVProducto p, INVProductoUMedida um\
@@ -181,45 +179,8 @@ apiRoutes.get('/producto/:id/ventas', function(req, res){
     })
 
 
-    var response=[
-        {
-            "Fecha":"1/10/2018",
-            "Cantidad":100,
-            "Monto":10580
-        },
-        {
-            "Fecha":"2/10/2018",
-            "Cantidad":50,
-            "Monto":16540
-        },
-        {
-            "Fecha":"3/10/2018",
-            "Cantidad":45,
-            "Monto":54856
-        },
-        {
-            "Fecha":"4/10/2018",
-            "Cantidad":312,
-            "Monto":88556
-        },
-        {
-            "Fecha":"5/10/2018",
-            "Cantidad":88,
-            "Monto":865332
-        },
-        {
-            "Fecha":"6/10/2018",
-            "Cantidad":100,
-            "Monto":89652
-        },
-        {
-            "Fecha":"1/10/2018",
-            "Cantidad":100,
-            "Monto":74445
-        },
-
-    ]
-    //res.send(response);
+    
+    
 })
 
 
@@ -231,7 +192,7 @@ apiRoutes.get('/producto/:id', function (req, res) {
 
     var query = 'Select p.EmpresaId as empresaId,p.ProductoId as productoId,p.Descripcion as descripcion, a.Descripcion as area, s.Descripcion as subArea, m.Descripcion as marca, p.Costo as costo, p.AfectoIVA as afectoIva ' +
         'from INVProducto p, INVXArea a, INVXAreaSubArea s, INVXMarca m ' +
-        'Where p.EmpresaId=9 And ProductoId=\'' + id_parameter + '\' ' +
+        'Where p.EmpresaId=9 And ProductoId=@id_parameter ' +
         'And a.EmpresaId=p.EmpresaId and a.AreaId=p.AreaID ' +
         'And s.EmpresaId=p.EmpresaId and s.AreaID=p.AreaID and s.SubAreaId=p.SubAreaID ' +
         'And m.EmpresaId=p.EmpresaId and m.MarcaId=p.MarcaId;';
@@ -241,7 +202,7 @@ apiRoutes.get('/producto/:id', function (req, res) {
         if (err) {
             res.send(err);
         }
-        pool.request().query(query, (err, result) => {
+        pool.request().input('id_parameter',sql.Int,id_parameter).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -254,10 +215,11 @@ apiRoutes.get('/producto/description/:desc', function (req, res) {
     
 
     var desc_parameter = req.params.desc;
+    var desc_queryParam = '%' + desc_parameter + '%'
 
     var query = 'Select p.EmpresaId as empresaId,p.ProductoId as productoId,p.Descripcion as descripcion, a.Descripcion as area, s.Descripcion as subArea, m.Descripcion as marca, p.Costo as costo, p.AfectoIVA as afectoIva ' +
         'from INVProducto p, INVXArea a, INVXAreaSubArea s, INVXMarca m ' +
-        'Where p.EmpresaId=9 And p.Descripcion LIKE \'%' + desc_parameter + '%\' ' +
+        'Where p.EmpresaId=9 And p.Descripcion LIKE @descParam ' +
         'And a.EmpresaId=p.EmpresaId and a.AreaId=p.AreaID ' +
         'And s.EmpresaId=p.EmpresaId and s.AreaID=p.AreaID and s.SubAreaId=p.SubAreaID ' +
         'And m.EmpresaId=p.EmpresaId and m.MarcaId=p.MarcaId;';
@@ -267,7 +229,7 @@ apiRoutes.get('/producto/description/:desc', function (req, res) {
         if (err) {
             res.send(err);
         }
-        pool.request().query(query, (err, result) => {
+        pool.request().input('descParam',sql.NVarChar,desc_queryParam).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -283,14 +245,14 @@ apiRoutes.get('/producto/:id/umedida', function (req, res) {
 
     var query = 'Select EmpresaId,ProductoId,UMedidaId,Descripcion,Base,Factor  ' +
         'From INVProductoUMedida ' +
-        'Where EmpresaId=9 And ProductoId=\'' + id_parameter + '\'; ';
+        'Where EmpresaId=9 And ProductoId=@id_parameter ';
 
 
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
-        pool.request().query(query, (err, result) => {
+        pool.request().input('id_parameter',sql.Int,id_parameter).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -307,18 +269,20 @@ apiRoutes.get('/precios/producto/:id/umedida/:umid/:umdesc', function (req, res)
     var id_umedida = req.params.umid;
     var desc_umedida = req.params.umdesc;
 
+    
+
     var query = 'Select pr.EmpresaId,pr.ProductoId,pr.UMedidaId,pr.DescUMedida, pr.TipoPrecioId ,tp.Descripcion as TipoPrecio, pr.PrecioVenta, Round(pr.MargenSobreCosto,4) as MargenSobreCosto ' +
         'From INVProductoPrecio pr, INVXTipoPrecio tp ' +
-        'Where pr.EmpresaId=9 And pr.ProductoId=\'' + id_parameter + '\' ' +
-        'And pr.UMedidaId=\'' + id_umedida + '\' ' +
-        'And pr.DescUMedida=\'' + desc_umedida + '\' ' +
+        'Where pr.EmpresaId=9 And pr.ProductoId=@id_parameter ' +
+        'And pr.UMedidaId=@id_umedida ' +
+        'And pr.DescUMedida=@desc_umedida ' +
         'And tp.EmpresaId=pr.EmpresaId And tp.TipoPrecioId=pr.TipoPrecioId;'
 
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
-        pool.request().query(query, (err, result) => {
+        pool.request().input('id_umedida',sql.NVarChar,id_umedida).input('desc_umedida',sql.NVarChar,desc_umedida).input('id_parameter',sql.Int,id_parameter).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -336,19 +300,23 @@ apiRoutes.get('/precios/rangos/producto/:id/umedida/:umid/:umdesc/pricetype/:pty
     var id_umedida = req.params.umid;
     var desc_umedida = req.params.umdesc;
     var id_ptype = req.params.ptypeid;
+
+    
+
+
     var query = 'Select pr.EmpresaId, pr.ProductoId, pr.UMedidaId, pr.DescUMedidaId, pr.TipoPrecioId, pr.Desde, pr.Hasta, pr.PrecioVenta, Round(pr.MargenSobreCosto,4) as MargenSobreCosto  ' +
         'From INVProductoPRRango pr ' +
-        'Where pr.EmpresaId=9 And pr.ProductoId=\'' + id_parameter + '\' ' +
-        'And pr.UMedidaId=\'' + id_umedida + '\' ' +
-        'And pr.DescUMedidaId=\'' + desc_umedida + '\' ' +
-        'And TipoPrecioId=\'' + id_ptype + '\';'
+        'Where pr.EmpresaId=9 And pr.ProductoId=@id_parameter ' +
+        'And pr.UMedidaId=@id_umedida ' +
+        'And pr.DescUMedidaId=@desc_umedida ' +
+        'And TipoPrecioId=@id_ptype;'
 
 
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
-        pool.request().query(query, (err, result) => {
+        pool.request().input('id_ptype',sql.Int,id_ptype).input('id_umedida',sql.NVarChar,id_umedida).input('desc_umedida',sql.Int,desc_umedida).input('id_parameter',sql.Int,id_parameter).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -366,14 +334,14 @@ apiRoutes.get('/producto/:id/existencias/umedida/factor/:factor', function (req,
 
     var query = 'Select pb.EmpresaId,pb.ProductoId,b.Descripcion as Bodega, pb.UMedidaId, pb.DescUMedidaId, (pb.SaldoActual / @Factor) as SaldoActual  ' +
         'From INVProductoBodega pb, INVXBodega b ' +
-        'where pb.EmpresaId=9 And pb.ProductoId=\'' + id_parameter + '\' ' +
+        'where pb.EmpresaId=9 And pb.ProductoId=@id_parameter ' +
         'And b.EmpresaId=pb.EmpresaId and b.BodegaId=pb.BodegaId; ';
 
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
-        pool.request().input('Factor', sql.Int, factor_umedida).query(query, (err, result) => {
+        pool.request().input('id_parameter',sql.Int,id_parameter).input('Factor', sql.Int, factor_umedida).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -590,15 +558,16 @@ apiRoutes.get('/sales/salesman/:salesmanId/topclients/:year/:month', function (r
 apiRoutes.get('/brand/:brandName', function (req, res) {
 
     var brandName = req.params.brandName;
+    var brand_queryParam = '%' + brandName + '%'
 
     var query = 'Select * from INVXMarca  ' + 
-                'Where Descripcion like \'%' + brandName + '%\' AND EmpresaId=9';
+                'Where Descripcion like @brandName AND EmpresaId=9';
 
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
-        pool.request().query(query, (err, result) => {
+        pool.request().input('brandName',sql.NVarChar,brand_queryParam).query(query, (err, result) => {
             
             res.send(result);
         });
@@ -634,7 +603,7 @@ apiRoutes.get('/clients/salesperyear/:year/:cuser', function (req, res) {
         ') d WHERE d.Cliente = @clientUser GROUP BY d.EmpresaId,d.Ano,d.Cliente,d.NombreCliente,d.Vendedor ' +
         'Order By Ano ASC ';
 
-    console.log("query:",query);    
+    
     
     var pool = new sql.Connection(config, function (err) {
         if (err) {
@@ -746,7 +715,6 @@ app.use('/api', apiRoutes);
 var server = app.listen(3000, function () {
     console.log('Server is running.. port:3000');
 });
-
 
 /* var server = https.createServer(https_options, app).listen(PORT, HOST);
 console.log('HTTPS Server listening on %s:%s', HOST, PORT); */
