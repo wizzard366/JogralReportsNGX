@@ -2,36 +2,41 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../../services/product.service';
 import { ChartistJsService } from '../../../charts/components/chartistJs/chartistJs.service';
+import { DateService } from '../../../services/date.service';
 
 
 
 @Component({
     selector: 'product-info',
     templateUrl: './productInfo.component.html',
-    providers: [ProductService, ChartistJsService]
+    providers: [ProductService, ChartistJsService,DateService]
 })
 export class ProductInfoComponent {
 
     id: any;
-    private sub: any;
-    private show_money: any;
-    private graph_data_money: any;
-    private graph_data_quantity: any;
-    private labels: any;
-    private graph_options: any;
-    private product_name: any;
-    private product_id: any;
-    private product_marca: any;
-    private show_quantites: any;
-    private startDate;
-    private endDate;
-    private show_graph: boolean;
-    private table_data:any;
+    public sub: any;
+    public show_money: any;
+    public graph_data_money: any;
+    public graph_data_quantity: any;
+    public labels: any;
+    public graph_options: any;
+    public product_name: any;
+    public product_id: any;
+    public product_marca: any;
+    public show_quantites: any;
+    public startDate;
+    public endDate;
+    public show_graph: boolean;
+    public table_data:any;
+    public date:any;
 
 
 
 
-    constructor(private route: ActivatedRoute, private productService: ProductService, private chartistJsService: ChartistJsService) {
+    constructor(private route: ActivatedRoute, 
+        private productService: ProductService, 
+        private chartistJsService: ChartistJsService,
+        private dateService: DateService) {
         this.show_money = false;
         this.show_quantites = false;
         this.show_graph = false;
@@ -39,33 +44,53 @@ export class ProductInfoComponent {
         this.labels = [];
         this.graph_options = this.chartistJsService.getAll()['simpleLineOptions'];
 
-        this.sub = this.route.params.subscribe(params => {
-            this.id = params['pid'];
+        this.dateService.getServerDate().subscribe(date=>{
+            this.date = new Date(date.server_date);
+            let currentYear=this.date.getFullYear();
+            let currentMonth=this.date.getMonth()+1;
+            let currentDay=this.date.getDate();
 
-            this.productService.getProduct(this.id).subscribe(data => {
+            this.startDate={
+                day:1,
+                month:currentMonth,
+                year:currentYear
+            }
+            this.endDate={
+                day:currentDay,
+                month:currentMonth,
+                year:currentYear
+            }
 
-
-
-                if (typeof data[0] !== 'undefined' && data[0] !== null) {
-
-                    this.product_id = data[0].productoId;
-                    this.product_marca = data[0].marca;
-                    this.product_name = data[0].descripcion;
-
-                }
-
-
+            this.sub = this.route.params.subscribe(params => {
+                this.id = params['pid'];
+    
+                this.productService.getProduct(this.id).subscribe(data => {
+    
+                    if (typeof data[0] !== 'undefined' && data[0] !== null) {
+    
+                        this.product_id = data[0].productoId;
+                        this.product_marca = data[0].marca;
+                        this.product_name = data[0].descripcion;
+    
+                    }
+    
+                    this.updateGraph(this.id,this.startDate,this.endDate);
+                })
+    
             })
 
+            
         })
+
+        
 
 
     }
 
 
     showGraph() {
-        console.log('startDate:', this.startDate);
-        console.log('endDate:', this.endDate);
+        /* console.log('startDate:', this.startDate);
+        console.log('endDate:', this.endDate); */
         this.updateGraph(this.product_id, this.startDate, this.endDate);
     }
 
@@ -98,7 +123,7 @@ export class ProductInfoComponent {
                     this.table_data.push({
                         Fecha:this.parseDate(element.Fecha,'/'),
                         Monto:element.Monto.toLocaleString('en-US'),
-                        Cantidad:element.Cantidad,
+                        Cantidad:element.Cantidad.toLocaleString('en-US'),
                         Total:tempQ.toLocaleString('en-US')
                     });
                     graph_data_money.push(element.Monto);

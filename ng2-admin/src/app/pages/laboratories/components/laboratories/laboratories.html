@@ -2,11 +2,11 @@
     <div class="row">
         <div class="col-md-12 ">
             <ba-card cardTitle="Búsqueda por Laboratorio" baCardClass="with-scroll">
-                <form (submit)="getLaboratoryByDescription($event)">
+                <form (submit)="input($event)">
                     <div class="form-group">
                         <label for="description">Búsqueda de Laboratorios (Marcas)</label>
                         <input autocomplete="off" type="text" [(ngModel)]="description" name="description" class="form-control" id="description"
-                            (input)="input()">
+                            (input)="input($event)">
                         <select #focusable multiple class="form-control tablet-landscape-and-below" id="selectedMarcaId" name="selectedMarcaId" *ngIf="showSelect"
                             (keypress)="selectKeyPress($event)" (click)="selectClick($event)" [(ngModel)]="selectedMarcaId">
                             <option *ngFor="let lab of laboratories" [value]="lab.MarcaId">{{lab.Descripcion}} - {{lab.MarcaId}}</option>

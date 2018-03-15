@@ -329,5 +329,5 @@ export class LaboratoriesComponent {
     }
 
     
-
+    
 }
