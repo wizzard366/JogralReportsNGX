@@ -152,15 +152,9 @@ export class PsearchComponent {
     this.selectClick($event);
   }
 
-  descriptionInputKeyPress($event,el){
-    
-      if($event.charCode===40){
-        
-        el.focus(); 
-      }
-  }
+  
 
-  input(element){
+  input(){
     
     if(this.descripcion.length > 2){
       this.showSelect=true;

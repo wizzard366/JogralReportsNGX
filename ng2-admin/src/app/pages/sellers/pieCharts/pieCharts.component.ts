@@ -37,7 +37,7 @@ export class PieCharts implements AfterViewInit{
   private raw_data:any;
   public availableYears:any;
   private insideloop:any;
-  private show_monthSelector:boolean = true;
+  public show_monthSelector:boolean = true;
   keys=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
   key:any;
   constructor(private productSerive: ProductService, private dateService: DateService,
