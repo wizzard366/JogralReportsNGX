@@ -144,7 +144,41 @@ apiRoutes.get('/set', function(req, res) {
   res.json({ message: 'Welcome to the coolest API on earth!' });
 });
 
-//get product sales info
+//get product sales info last 3 years
+apiRoutes.get('/producto/:pid/yearsales/',function(req, res){
+
+    let ProductoId=req.params.pid;
+
+    let query = "Select  fd.EmpresaId, fd.ProductoId, Ano=Datepart(yyyy,f.Fecha), \
+    Mes=Datepart(MM,f.Fecha),  Cantidad=Sum(fd.Cantidad*um.Factor), Monto=Round(Sum(fd.PrecioTotal),2) \
+    From FACDocumento f, FACDocumentoDet fd, INVProducto p, INVProductoUMedida um \
+    Where f.EmpresaId=9 and f.AplicadoInvent=1 And f.Anulado=0 and \
+            Datepart(yyyy,f.Fecha)>= Datepart(yyyy,getdate())-2  And \
+            fd.EmpresaId=f.EmpresaId And fd.TurnoId=f.TurnoId And fd.TipoDocId=f.TipoDocId and f.NumeroDoc=fd.NumeroDoc and \
+            p.EmpresaId=fd.EmpresaId and p.ProductoId=fd.ProductoId and p.ProductoId=@ProductoId And \
+            um.EmpresaId=fd.EmpresaId And um.ProductoId=fd.ProductoId and um.UMedidaId=fd.UMedidaId And um.Descripcion=fd.DescUMedida \
+    Group by fd.EmpresaId, fd.ProductoId,  Datepart(yyyy,f.Fecha), Datepart(MM,f.Fecha) \
+    Order By  Datepart(yyyy,f.Fecha), Datepart(MM,f.Fecha)";
+
+
+    var pool = new sql.Connection(config, function (err) {
+        if (err) {
+            res.send(err);
+        }
+        
+        pool.request()
+        .input('ProductoId', sql.Int, ProductoId)
+        .query(query, (err, result) => {
+            res.send(result);
+            console.log(err);
+        });
+
+    })
+
+    
+});
+
+//get product sales info date interval
 apiRoutes.get('/producto/:id/ventas', function(req, res){
     
     var ProductoId = req.params.id;

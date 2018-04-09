@@ -9,7 +9,8 @@ import { PreciosComponent } from './precios.component';
 import { PsearchComponent } from './components/psearchForm/psearch-form.component';
 import { PricesTable } from './components/pricesTable/prices-table.component';
 import { Stock } from './components/stock/stock.component';
-import { MeasuresComponent } from './components/measurements/measures.component'
+import { MeasuresComponent } from './components/measurements/measures.component';
+import { SalesGraphComponent } from './components/salesGraph/sales-graph.component';
 
 
 
@@ -26,6 +27,7 @@ import { MeasuresComponent } from './components/measurements/measures.component'
     PricesTable,
     Stock,
     MeasuresComponent,
+    SalesGraphComponent
   ]
 })
 export class PreciosModule {}

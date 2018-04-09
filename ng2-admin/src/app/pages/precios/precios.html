@@ -5,6 +5,7 @@
             (initRenderPrices)="pricesTable.getPrices($event)" 
             (initRenderStock)="stockTable.getStock($event)" 
             (initRenderMeasures)="measuresTable.getMeasures($event);"
+            (initRenderGraphs)="salesGraph.render($event);"
             (clearAll)="pricesTable.clear();measuresTable.clear();stockTable.clear();"></product-search-forms>
         </ba-card>
         <ba-card cardTitle="Precios Actuales" baCardClass="with-scroll">
@@ -20,5 +21,8 @@
         <ba-card cardTitle="Existencias" baCardClass="with-scroll">
             <stock-table #stockTable></stock-table>
         </ba-card>
+        <ba-card cardTitle="Ventas Últimos 3 años" baCardClass="with-scroll">
+            <sales-graph #salesGraph ></sales-graph>
+    </ba-card>
     </div>
 </div>

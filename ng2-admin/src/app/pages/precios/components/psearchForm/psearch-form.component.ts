@@ -14,6 +14,7 @@ export class PsearchComponent {
   @Output() initRenderPrices = new EventEmitter();
   @Output() initRenderStock = new EventEmitter();
   @Output() initRenderMeasures = new EventEmitter();
+  @Output() initRenderGraphs= new EventEmitter();
   @Output() clearAll = new EventEmitter();
 
   productoId: string;
@@ -65,6 +66,7 @@ export class PsearchComponent {
             this.uMedidas = umedidas;         
             this._initRenderPrices(this._initRenderStock(0));
             this._initRenderMeasures(this.uMedidas);
+            this._initRenderGraphs(this.productoId);
           }else{
             umedidas=[];
           }
@@ -87,6 +89,11 @@ export class PsearchComponent {
 
   _initRenderMeasures(params){
     this.initRenderMeasures.emit(params);
+  }
+
+
+  _initRenderGraphs(params){
+    this.initRenderGraphs.emit(params);
   }
 
   _initRenderPrices(callback){
