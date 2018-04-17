@@ -4,6 +4,12 @@
 .pie-charts {
   color: $content-text;
 
+  .pie-chart-item-container.total-card{
+    .card {
+      background-color: rgba(45, 172, 209, 0.21);
+    }
+  }
+
   .pie-chart-item-container {
     position: relative;
     padding: 0 15px;
@@ -40,6 +46,11 @@
       position: absolute;
       right: 0;
       top: 3px;
+    }
+    .description{
+      .total-text{
+        font-weight: bold;
+      }
     }
   }
   @media screen and

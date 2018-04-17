@@ -20,6 +20,11 @@ export class PieCharts implements AfterViewChecked{
 
   public charts: any;
   private _init = false;
+  private current_sum:any;
+  private proyection_sum:any;
+  public total_percentage:any;
+  public total_percentage_locale:any;
+
   @Input() mode: string; 
   @Input() mode2: string;
   keys=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
@@ -31,7 +36,7 @@ export class PieCharts implements AfterViewChecked{
 
       this.date=new Date(date.server_date);
       this.productSerive.getSalesBySalesManProyectionsByYear(this.date.getFullYear()).subscribe(data=>{
-      
+        console.log('charts data:',data);
         this.processChartData(data);
       });
     })
@@ -41,6 +46,8 @@ export class PieCharts implements AfterViewChecked{
   }
 
   processChartData(data){
+    this.current_sum=0;
+    this.proyection_sum=0;
     let salesMans={};
       let date= new Date;
       let temSalesMan:SalesMan;
@@ -61,6 +68,7 @@ export class PieCharts implements AfterViewChecked{
             temp.setName(element.Nombre);
             //temp.setCurrent(element.Total);
             temp.setCurrent(element[this.key]);
+            this.current_sum+=element[this.key];
             salesMans[element.VendedorId]=temp;
             
           }else if(element.Fuente==='Proyeccion'){
@@ -69,17 +77,20 @@ export class PieCharts implements AfterViewChecked{
             temp.setName(element.Nombre);
             //temp.setProyection(element.Total);
             temp.setProyection(element[this.key]);
+            this.proyection_sum+=element[this.key];
             salesMans[element.VendedorId]=temp;
             
           }
         }else{
           if(element.Fuente==='Ventas'){
             salesMans[element.VendedorId].setCurrent(element[this.key]);
+            this.current_sum+=element[this.key];
             if(typeof salesMans[element.VendedorId].proyection !== 'undefined'){
               salesMans[element.VendedorId].setPercentageOfProyection();
             }
           }else if(element.Fuente==='Proyeccion'){
             salesMans[element.VendedorId].setProyection(element[this.key]);
+            this.proyection_sum+=element[this.key];
             if(typeof salesMans[element.VendedorId].current !== 'undefined'){
               salesMans[element.VendedorId].setPercentageOfProyection();
             }
@@ -97,6 +108,10 @@ export class PieCharts implements AfterViewChecked{
       });
       this.charts = arr;
       this.ready=true;
+      this.total_percentage=(this.current_sum/this.proyection_sum)*100;
+      this.total_percentage_locale = this.current_sum.toLocaleString('en-US');
+      console.log('chart_processed_data:',this.charts);
+      console.log('total_percentage:',this.total_percentage);
 
   }
 

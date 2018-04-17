@@ -46,7 +46,7 @@ export class ReportsComponent {
       this.year = this.date.getFullYear() - 2;
       this.productSerive.getSalesPerYear(this.year).subscribe(data => {
         this._data = data;
-        console.log("data:",data);
+        
         this.SalesPerYearData = {
           labels: [],
           series: []
@@ -135,7 +135,7 @@ export class ReportsComponent {
         series: series
       }
       this.SalesPerYearData = SalesPerYearData;
-      console.log("_data:",this._data);
+      
     }
   }
 
@@ -240,7 +240,7 @@ export class ReportsComponent {
     keys.forEach(key=>{
         arr.push(salesMans[key]); 
     })
-    console.log( 'arr:',arr);
+    
     return arr;
 
   } 
@@ -255,7 +255,7 @@ export class ReportsComponent {
   }
 
   private _loadPieCharts() {
-      console.log(jQuery('.chart'));
+      
     jQuery('.chart').each(function () {
       let chart = jQuery(this);
       

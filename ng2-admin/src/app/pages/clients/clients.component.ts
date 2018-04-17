@@ -195,7 +195,7 @@ export class ClientsComponent {
     }
 
     download(){
-        console.log("donwload button pressed",this.clients_data);
+        
 
         /* generate worksheet */
 		const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.clients_data);
@@ -205,7 +205,7 @@ export class ClientsComponent {
 		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
 		/* save to file */
-		XLSX.writeFile(wb, "top-10-clientes-"+this.date.getFullYear()+"-"+(this.date.getMonth()+1)+"-"+this.date.getDate()+".xlsx");
+		XLSX.writeFile(wb, "top-10-clientes-"+this.date.getFullYear()+""+(this.date.getMonth()+1)+""+this.date.getDate()+".xlsx");
 
     }
     selectKeyPress($event){

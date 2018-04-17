@@ -3,11 +3,11 @@ var app = express();
 var bodyParser = require('body-parser');
 var sql = require("mssql");
 var path = require('path');
-var morgan      = require('morgan');
-var jwt    = require('jsonwebtoken'); 
+var morgan = require('morgan');
+var jwt = require('jsonwebtoken');
 var compression = require('compression');
 
-
+//var public_app = express();
 
 /* var fs = require('fs');
 var https = require('https');
@@ -47,18 +47,22 @@ app.set('view engine', 'html');*/
 
 
 
-app.use(express.static(path.join(__dirname, 'ng2-admin/dist/')));
+app.use(express.static(path.join(__dirname, 'ng2-admin/dist/'), { dotfiles: 'allow' }));
 app.use('/node_modules', express.static(path.join(__dirname, 'ng2-admin/node_modules/')));
 
+/* public_app.use(express.static(path.join(__dirname,'ng2-admin/dist/.well-known/'),{dotfiles:'allow'}));
+public_app.get('/',function(req,res){
+    res.redirect('https://' + req.header('Host') + req.url);
+}); */
 
 
 // get an instance of the router for api routes
-var apiRoutes = express.Router(); 
+var apiRoutes = express.Router();
 
 // TODO: route to authenticate a user (POST http://localhost:8080/api/authenticate)
-apiRoutes.post('/authenticate', function(req, res) {
+apiRoutes.post('/authenticate', function (req, res) {
 
-  // find the user
+    // find the user
 
     let UsuarioId = req.body.username;
     let query = "Select Nombre,Password,UsuarioId,Corre1 from ERPUsuarios where UsuarioId=@usuarioid";
@@ -69,24 +73,24 @@ apiRoutes.post('/authenticate', function(req, res) {
         }
         pool.request().input('usuarioid', sql.VarChar, UsuarioId).query(query, (err, result) => {
 
-            
+
             if (err) {
                 console.log(err);
-                res.json({'err':err});
+                res.json({ 'err': err });
             }
 
-            if(typeof result[0] == 'undefined' || result[0]==null){
+            if (typeof result[0] == 'undefined' || result[0] == null) {
                 res.json({ success: false, message: 'Authentication failed. User not found.' });
-            }else {
+            } else {
                 let pass = result[0].Password;
                 let userid = result[0].UsuarioId;
                 let name = result[0].Nombre;
                 let corre = result[0].Corre1;
-                if(pass === req.body.password){
+                if (pass === req.body.password) {
                     // if user is found and password is right
                     // create a token
-                    var token = jwt.sign({data:userid,exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)}, app.get('superSecret'), {
-                        
+                    var token = jwt.sign({ data: userid, exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24) }, app.get('superSecret'), {
+
                     });
 
                     // return the information including token as JSON
@@ -97,7 +101,7 @@ apiRoutes.post('/authenticate', function(req, res) {
                         name: name,
                         corre: corre
                     });
-                }else{
+                } else {
                     res.json({ success: false, message: 'Authentication failed. Wrong password.' });
                 }
 
@@ -109,45 +113,47 @@ apiRoutes.post('/authenticate', function(req, res) {
 });
 
 // TODO: route middleware to verify a token
-apiRoutes.use(function(req, res, next) {
+apiRoutes.use(function (req, res, next) {
 
-  // check header or url parameters or post parameters for token
-  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    // check header or url parameters or post parameters for token
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
 
-  // decode token
-  if (token) {
+    // decode token
+    if (token) {
 
-    // verifies secret and checks exp
-    jwt.verify(token, app.get('superSecret'), function(err, decoded) {      
-      if (err) {
-        return res.status(401).send({ success: false, message: 'Failed to authenticate token.' });    
-      } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded;    
-        next();
-      }
-    });
+        // verifies secret and checks exp
+        jwt.verify(token, app.get('superSecret'), function (err, decoded) {
+            if (err) {
+                return res.status(401).send({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                // if everything is good, save to request for use in other routes
+                req.decoded = decoded;
+                next();
+            }
+        });
 
-  } else {
+    } else {
 
-    // if there is no token
-    // return an error
-    return res.status(403).send({ 
-        success: false, 
-        message: 'No token provided.' 
-    });
+        // if there is no token
+        // return an error
+        return res.status(403).send({
+            success: false,
+            message: 'No token provided.'
+        });
 
-  }
+    }
 });
 
-apiRoutes.get('/set', function(req, res) {
-  res.json({ message: 'Welcome to the coolest API on earth!' });
+apiRoutes.get('/set', function (req, res) {
+    res.json({ message: 'Welcome to the coolest API on earth!' });
 });
+
+
 
 //get product sales info last 3 years
-apiRoutes.get('/producto/:pid/yearsales/',function(req, res){
+apiRoutes.get('/producto/:pid/yearsales/', function (req, res) {
 
-    let ProductoId=req.params.pid;
+    let ProductoId = req.params.pid;
 
     let query = "Select  fd.EmpresaId, fd.ProductoId, Ano=Datepart(yyyy,f.Fecha), \
     Mes=Datepart(MM,f.Fecha),  Cantidad=Sum(fd.Cantidad*um.Factor), Monto=Round(Sum(fd.PrecioTotal),2) \
@@ -165,27 +171,27 @@ apiRoutes.get('/producto/:pid/yearsales/',function(req, res){
         if (err) {
             res.send(err);
         }
-        
+
         pool.request()
-        .input('ProductoId', sql.Int, ProductoId)
-        .query(query, (err, result) => {
-            res.send(result);
-            console.log(err);
-        });
+            .input('ProductoId', sql.Int, ProductoId)
+            .query(query, (err, result) => {
+                res.send(result);
+                console.log(err);
+            });
 
     })
 
-    
+
 });
 
 //get product sales info date interval
-apiRoutes.get('/producto/:id/ventas', function(req, res){
-    
+apiRoutes.get('/producto/:id/ventas', function (req, res) {
+
     var ProductoId = req.params.id;
-    var startDate =decodeURIComponent(req.query['startDate']);
-    var endDate = decodeURIComponent(req.query['endDate'])+' 23:59';
-    
-    
+    var startDate = decodeURIComponent(req.query['startDate']);
+    var endDate = decodeURIComponent(req.query['endDate']) + ' 23:59';
+
+
 
     var query = "Select  fd.EmpresaId, fd.ProductoId, f.Fecha,  Cantidad=Sum(fd.Cantidad*um.Factor), Monto=Sum(fd.PrecioTotal)\
     From FACDocumento f, FACDocumentoDet fd, INVProducto p, INVProductoUMedida um\
@@ -201,20 +207,20 @@ apiRoutes.get('/producto/:id/ventas', function(req, res){
         if (err) {
             res.send(err);
         }
-        
+
         pool.request()
-        .input('ProductoId', sql.Int, ProductoId)
-        .input('Desde', sql.NVarChar, startDate)
-        .input('Hasta',sql.NVarChar,endDate).query(query, (err, result) => {
-            res.send(result);
-            console.log(err);
-        });
+            .input('ProductoId', sql.Int, ProductoId)
+            .input('Desde', sql.NVarChar, startDate)
+            .input('Hasta', sql.NVarChar, endDate).query(query, (err, result) => {
+                res.send(result);
+                console.log(err);
+            });
 
     })
 
 
-    
-    
+
+
 })
 
 
@@ -236,7 +242,7 @@ apiRoutes.get('/producto/:id', function (req, res) {
         if (err) {
             res.send(err);
         }
-        pool.request().input('id_parameter',sql.Int,id_parameter).query(query, (err, result) => {
+        pool.request().input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -246,7 +252,7 @@ apiRoutes.get('/producto/:id', function (req, res) {
 
 // Get product by description
 apiRoutes.get('/producto/description/:desc', function (req, res) {
-    
+
 
     var desc_parameter = req.params.desc;
     var desc_queryParam = '%' + desc_parameter + '%'
@@ -258,18 +264,18 @@ apiRoutes.get('/producto/description/:desc', function (req, res) {
         'And s.EmpresaId=p.EmpresaId and s.AreaID=p.AreaID and s.SubAreaId=p.SubAreaID ' +
         'And m.EmpresaId=p.EmpresaId and m.MarcaId=p.MarcaId;';
 
-    
+
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
-        pool.request().input('descParam',sql.NVarChar,desc_queryParam).query(query, (err, result) => {
+        pool.request().input('descParam', sql.NVarChar, desc_queryParam).query(query, (err, result) => {
             res.send(result);
         });
 
     })
 
-  
+
 
 });
 
@@ -286,7 +292,7 @@ apiRoutes.get('/producto/:id/umedida', function (req, res) {
         if (err) {
             res.send(err);
         }
-        pool.request().input('id_parameter',sql.Int,id_parameter).query(query, (err, result) => {
+        pool.request().input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -303,7 +309,7 @@ apiRoutes.get('/precios/producto/:id/umedida/:umid/:umdesc', function (req, res)
     var id_umedida = req.params.umid;
     var desc_umedida = req.params.umdesc;
 
-    
+
 
     var query = 'Select pr.EmpresaId,pr.ProductoId,pr.UMedidaId,pr.DescUMedida, pr.TipoPrecioId ,tp.Descripcion as TipoPrecio, pr.PrecioVenta, Round(pr.MargenSobreCosto,4) as MargenSobreCosto ' +
         'From INVProductoPrecio pr, INVXTipoPrecio tp ' +
@@ -316,7 +322,7 @@ apiRoutes.get('/precios/producto/:id/umedida/:umid/:umdesc', function (req, res)
         if (err) {
             res.send(err);
         }
-        pool.request().input('id_umedida',sql.NVarChar,id_umedida).input('desc_umedida',sql.NVarChar,desc_umedida).input('id_parameter',sql.Int,id_parameter).query(query, (err, result) => {
+        pool.request().input('id_umedida', sql.NVarChar, id_umedida).input('desc_umedida', sql.NVarChar, desc_umedida).input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -335,7 +341,7 @@ apiRoutes.get('/precios/rangos/producto/:id/umedida/:umid/:umdesc/pricetype/:pty
     var desc_umedida = req.params.umdesc;
     var id_ptype = req.params.ptypeid;
 
-    
+
 
 
     var query = 'Select pr.EmpresaId, pr.ProductoId, pr.UMedidaId, pr.DescUMedidaId, pr.TipoPrecioId, pr.Desde, pr.Hasta, pr.PrecioVenta, Round(pr.MargenSobreCosto,4) as MargenSobreCosto  ' +
@@ -350,7 +356,7 @@ apiRoutes.get('/precios/rangos/producto/:id/umedida/:umid/:umdesc/pricetype/:pty
         if (err) {
             res.send(err);
         }
-        pool.request().input('id_ptype',sql.Int,id_ptype).input('id_umedida',sql.NVarChar,id_umedida).input('desc_umedida',sql.Int,desc_umedida).input('id_parameter',sql.Int,id_parameter).query(query, (err, result) => {
+        pool.request().input('id_ptype', sql.Int, id_ptype).input('id_umedida', sql.NVarChar, id_umedida).input('desc_umedida', sql.Int, desc_umedida).input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -375,7 +381,7 @@ apiRoutes.get('/producto/:id/existencias/umedida/factor/:factor', function (req,
         if (err) {
             res.send(err);
         }
-        pool.request().input('id_parameter',sql.Int,id_parameter).input('Factor', sql.Int, factor_umedida).query(query, (err, result) => {
+        pool.request().input('id_parameter', sql.Int, id_parameter).input('Factor', sql.Int, factor_umedida).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -478,17 +484,17 @@ apiRoutes.get('/sales/salesman', function (req, res) {
 /* ventas por vendedor y proyecciones */
 apiRoutes.get('/sales/salesman/proyections', function (req, res) {
 
-    
+
 
     var query = 'Select * From INVRepWEBVentasVendedor order by VendedorId ';
-                
+
 
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
         pool.request().query(query, (err, result) => {
-            
+
             res.send(result);
         });
 
@@ -499,23 +505,23 @@ apiRoutes.get('/sales/salesman/proyections', function (req, res) {
 /* no enmpresa parameter */
 /* ventas por vendedor y proyecciones por año */
 apiRoutes.get('/sales/salesman/proyections/:year', function (req, res) {
-    
-        var year = req.params.year;
-    
-        var query = 'Select * From INVRepWEBVentasVendedor where Ano=@year order by VendedorId ';
-                    
-    
-        var pool = new sql.Connection(config, function (err) {
-            if (err) {
-                res.send(err);
-            }
-            pool.request().input('year',sql.Int,year).query(query, (err, result) => {
-                
-                res.send(result);
-            });
-    
-        })
-    });
+
+    var year = req.params.year;
+
+    var query = 'Select * From INVRepWEBVentasVendedor where Ano=@year order by VendedorId ';
+
+
+    var pool = new sql.Connection(config, function (err) {
+        if (err) {
+            res.send(err);
+        }
+        pool.request().input('year', sql.Int, year).query(query, (err, result) => {
+
+            res.send(result);
+        });
+
+    })
+});
 
 apiRoutes.get('/sales/brand/product/:marcaId/:year', function (req, res) {
 
@@ -523,13 +529,13 @@ apiRoutes.get('/sales/brand/product/:marcaId/:year', function (req, res) {
     var year = req.params.year;
 
     var query = 'Select * From INVRepWEBMarcaProducto where MarcaId=@marcaId and Ano>=@year order by Ano DESC';
-    
+
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
-        pool.request().input('marcaId', sql.Int, marcaId).input('year',sql.Int,year).query(query, (err, result) => {
-            
+        pool.request().input('marcaId', sql.Int, marcaId).input('year', sql.Int, year).query(query, (err, result) => {
+
             res.send(result);
         });
 
@@ -539,18 +545,18 @@ apiRoutes.get('/sales/brand/product/:marcaId/:year', function (req, res) {
 /* no enmpresa parameter */
 /* Ventas por Laboratorio ultimos 3 años */
 apiRoutes.get('/sales/brand/:marcaId/:year', function (req, res) {
-    
+
     var marcaId = req.params.marcaId;
     var year = req.params.year;
-    
-    
+
+
     var query = 'Select * From INVRepWEBMarca where MarcaId=@marcaId and Ano>=@year  ';
 
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
-        pool.request().input('marcaId', sql.Int, marcaId).input('year',sql.Int,year).query(query, (err, result) => {
+        pool.request().input('marcaId', sql.Int, marcaId).input('year', sql.Int, year).query(query, (err, result) => {
             res.send(result);
         });
 
@@ -560,13 +566,13 @@ apiRoutes.get('/sales/brand/:marcaId/:year', function (req, res) {
 
 /**  top 10 clientes por vendedor */
 apiRoutes.get('/sales/salesman/:salesmanId/topclients/:year/:month', function (req, res) {
-    
+
     var salesmanId = req.params.salesmanId;
     var year = req.params.year;
     var month = req.params.month;
-    
-    
-    
+
+
+
     var query = 'SELECT  TOP 5 f.EmpresaId, f.ClienteId, f.Nombre, VendedorId = v.VendedorId, Nombre = v.NombreCompleto, Total = Sum(f.Total)\
                     FROM    dbo.FACDocumento f, dbo.FACXVendedor v\
                     WHERE   f.EmpresaId = 9 AND f.AplicadoInvent = 1 AND f.Anulado = 0 AND datepart(yyyy, f.Fecha) = @year And datepart(MM, f.Fecha) = @month AND f.UsuarioPedido <> \'NPineda9\' AND \
@@ -594,15 +600,15 @@ apiRoutes.get('/brand/:brandName', function (req, res) {
     var brandName = req.params.brandName;
     var brand_queryParam = '%' + brandName + '%'
 
-    var query = 'Select * from INVXMarca  ' + 
-                'Where Descripcion like @brandName AND EmpresaId=9';
+    var query = 'Select * from INVXMarca  ' +
+        'Where Descripcion like @brandName AND EmpresaId=9';
 
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
-        pool.request().input('brandName',sql.NVarChar,brand_queryParam).query(query, (err, result) => {
-            
+        pool.request().input('brandName', sql.NVarChar, brand_queryParam).query(query, (err, result) => {
+
             res.send(result);
         });
 
@@ -637,14 +643,14 @@ apiRoutes.get('/clients/salesperyear/:year/:cuser', function (req, res) {
         ') d WHERE d.Cliente = @clientUser GROUP BY d.EmpresaId,d.Ano,d.Cliente,d.NombreCliente,d.Vendedor ' +
         'Order By Ano ASC ';
 
-    
-    
+
+
     var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
-        
-        pool.request().input('year', sql.Int,year).input('clientUser', sql.Int, clientUser).input('empresaid',sql.Int,empresaid).query(query, (err, result) => {
+
+        pool.request().input('year', sql.Int, year).input('clientUser', sql.Int, clientUser).input('empresaid', sql.Int, empresaid).query(query, (err, result) => {
             res.send(result);
             console.log(err);
         });
@@ -657,77 +663,77 @@ apiRoutes.get('/clients/salesperyear/:year/:cuser', function (req, res) {
 /******** */
 /* Ventas por Cliente por Año Top 10*/
 apiRoutes.get('/clients/top/salesperyear/:year', function (req, res) {
-    
-        var empresaid = 9;
-        var clientUser = req.params.cuser;
-        var year = req.params.year;
-    
-        var query = 'SELECT top 10 d.EmpresaId,d.Ano,d.Cliente,d.NombreCliente,d.Vendedor, ' +
-            'Round(SUM(CASE WHEN Mes = 01 THEN Total ELSE 0 END),2) AS Enero, ' +
-            'Round(SUM(CASE WHEN Mes = 02 THEN Total ELSE 0 END),2) AS Febrero, ' +
-            'Round(SUM(CASE WHEN Mes = 03 THEN Total ELSE 0 END),2) AS Marzo, ' +
-            'Round(SUM(CASE WHEN Mes = 04 THEN Total ELSE 0 END),2) AS Abril, ' +
-            'Round(SUM(CASE WHEN Mes = 05 THEN Total ELSE 0 END),2) AS Mayo, ' +
-            'Round(SUM(CASE WHEN Mes = 06 THEN Total ELSE 0 END),2) AS Junio, ' +
-            'Round(SUM(CASE WHEN Mes = 07 THEN Total ELSE 0 END),2) AS Julio, ' +
-            'Round(SUM(CASE WHEN Mes = 08 THEN Total ELSE 0 END),2) AS Agosto, ' +
-            'Round(SUM(CASE WHEN Mes = 09 THEN Total ELSE 0 END),2) AS Septiembre, ' +
-            'Round(SUM(CASE WHEN Mes = 10 THEN Total ELSE 0 END),2) AS Octubre, ' +
-            'Round(SUM(CASE WHEN Mes = 11 THEN Total ELSE 0 END),2) AS Noviembre, ' +
-            'Round(SUM(CASE WHEN Mes = 12 THEN Total ELSE 0 END),2) AS Diciembre, ' +
-            'Round(SUM(Total),2) AS Total ' +
-            'FROM (SELECT f.EmpresaId,Ano = DATEPART(YYYY,f.Fecha), Mes = DATEPART(MM,f.Fecha),Cliente = f.ClienteId,NombreCliente = f.Nombre,Vendedor = v.NombreCompleto,Total = Sum(f.Total)FROM dbo.FACDocumento f, dbo.FACXVendedor v ' +
-            'Where f.EmpresaId=@empresaid And f.AplicadoInvent=1 And f.Anulado=0 And datepart(yyyy,f.Fecha)=@year And f.UsuarioPedido <> \'NPineda9\' and v.EmpresaId=f.EmpresaId And v.UsuarioId=f.UsuarioPedido ' +
-            'GROUP BY f.EmpresaId, DATEPART(YYYY,f.Fecha),DATEPART(MM,f.Fecha), f.ClienteId, f.Nombre,v.NombreCompleto ' +
-            ') d GROUP BY d.EmpresaId,d.Ano,d.Cliente,d.NombreCliente,d.Vendedor ' +
-            'Order By Total DESC ';
-    
-            
-        
-        var pool = new sql.Connection(config, function (err) {
-            if (err) {
-                res.send(err);
-            }
-            
-            pool.request().input('year', sql.Int,year).input('clientUser', sql.Int, clientUser).input('empresaid',sql.Int,empresaid).query(query, (err, result) => {
-                res.send(result);
-                console.log(err);
-            });
-    
-        })
-    });
-    
+
+    var empresaid = 9;
+    var clientUser = req.params.cuser;
+    var year = req.params.year;
+
+    var query = 'SELECT top 10 d.EmpresaId,d.Ano,d.Cliente,d.NombreCliente,d.Vendedor, ' +
+        'Round(SUM(CASE WHEN Mes = 01 THEN Total ELSE 0 END),2) AS Enero, ' +
+        'Round(SUM(CASE WHEN Mes = 02 THEN Total ELSE 0 END),2) AS Febrero, ' +
+        'Round(SUM(CASE WHEN Mes = 03 THEN Total ELSE 0 END),2) AS Marzo, ' +
+        'Round(SUM(CASE WHEN Mes = 04 THEN Total ELSE 0 END),2) AS Abril, ' +
+        'Round(SUM(CASE WHEN Mes = 05 THEN Total ELSE 0 END),2) AS Mayo, ' +
+        'Round(SUM(CASE WHEN Mes = 06 THEN Total ELSE 0 END),2) AS Junio, ' +
+        'Round(SUM(CASE WHEN Mes = 07 THEN Total ELSE 0 END),2) AS Julio, ' +
+        'Round(SUM(CASE WHEN Mes = 08 THEN Total ELSE 0 END),2) AS Agosto, ' +
+        'Round(SUM(CASE WHEN Mes = 09 THEN Total ELSE 0 END),2) AS Septiembre, ' +
+        'Round(SUM(CASE WHEN Mes = 10 THEN Total ELSE 0 END),2) AS Octubre, ' +
+        'Round(SUM(CASE WHEN Mes = 11 THEN Total ELSE 0 END),2) AS Noviembre, ' +
+        'Round(SUM(CASE WHEN Mes = 12 THEN Total ELSE 0 END),2) AS Diciembre, ' +
+        'Round(SUM(Total),2) AS Total ' +
+        'FROM (SELECT f.EmpresaId,Ano = DATEPART(YYYY,f.Fecha), Mes = DATEPART(MM,f.Fecha),Cliente = f.ClienteId,NombreCliente = f.Nombre,Vendedor = v.NombreCompleto,Total = Sum(f.Total)FROM dbo.FACDocumento f, dbo.FACXVendedor v ' +
+        'Where f.EmpresaId=@empresaid And f.AplicadoInvent=1 And f.Anulado=0 And datepart(yyyy,f.Fecha)=@year And f.UsuarioPedido <> \'NPineda9\' and v.EmpresaId=f.EmpresaId And v.UsuarioId=f.UsuarioPedido ' +
+        'GROUP BY f.EmpresaId, DATEPART(YYYY,f.Fecha),DATEPART(MM,f.Fecha), f.ClienteId, f.Nombre,v.NombreCompleto ' +
+        ') d GROUP BY d.EmpresaId,d.Ano,d.Cliente,d.NombreCliente,d.Vendedor ' +
+        'Order By Total DESC ';
+
+
+
+    var pool = new sql.Connection(config, function (err) {
+        if (err) {
+            res.send(err);
+        }
+
+        pool.request().input('year', sql.Int, year).input('clientUser', sql.Int, clientUser).input('empresaid', sql.Int, empresaid).query(query, (err, result) => {
+            res.send(result);
+            console.log(err);
+        });
+
+    })
+});
+
 
 /* clientes */
 apiRoutes.get('/clients/:name', function (req, res) {
-    
-        var empresaid = 9;
-        var name = req.params.name;
-        name = "%" + name + "%";
-    
-        var query = 'select C.ClienteId, C.NIT, C.Nombre, C.Apellido, C.NombreComercial from CXCCliente  as C ' +
-            'where C.EmpresaId = @empresaid and C.NombreComercial like @name ' +
-            'Order By C.NombreComercial DESC ';
-    
-            
-        
-        var pool = new sql.Connection(config, function (err) {
-            if (err) {
-                res.send(err);
-            }
-            
-            pool.request().input('name', sql.NVarChar, name).input('empresaid',sql.Int,empresaid).query(query, (err, result) => {
-                res.send(result);
-                console.log(err);
-            });
-    
-        })
-    });
 
-apiRoutes.get('/date',function (req,res){
+    var empresaid = 9;
+    var name = req.params.name;
+    name = "%" + name + "%";
+
+    var query = 'select C.ClienteId, C.NIT, C.Nombre, C.Apellido, C.NombreComercial from CXCCliente  as C ' +
+        'where C.EmpresaId = @empresaid and C.NombreComercial like @name ' +
+        'Order By C.NombreComercial DESC ';
+
+
+
+    var pool = new sql.Connection(config, function (err) {
+        if (err) {
+            res.send(err);
+        }
+
+        pool.request().input('name', sql.NVarChar, name).input('empresaid', sql.Int, empresaid).query(query, (err, result) => {
+            res.send(result);
+            console.log(err);
+        });
+
+    })
+});
+
+apiRoutes.get('/date', function (req, res) {
     let server_date = new Date();
     let response = {
-        "server_date":server_date.getTime()
+        "server_date": server_date.getTime()
     }
 
     res.send(response);
@@ -749,6 +755,10 @@ app.use('/api', apiRoutes);
 var server = app.listen(3000, function () {
     console.log('Server is running.. port:3000');
 });
+
+/* var public_server = public_app.listen(4000,function(){
+    console.log('Public server is running.. port:4000')
+}) */
 
 /* var server = https.createServer(https_options, app).listen(PORT, HOST);
 console.log('HTTPS Server listening on %s:%s', HOST, PORT); */

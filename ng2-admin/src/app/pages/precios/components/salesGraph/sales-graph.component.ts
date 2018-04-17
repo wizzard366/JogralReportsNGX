@@ -46,7 +46,7 @@ export class SalesGraphComponent {
   render(productId){
     
     this.productSerive.getLast3YearsSalesByProduct(productId).subscribe(data=>{
-      console.log("data:",data);
+      
       this.transformData(data);
       
     })

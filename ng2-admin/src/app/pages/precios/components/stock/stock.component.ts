@@ -34,7 +34,7 @@ export class Stock {
 
 
         this.stock=stock;
-        console.log('stock:',this.stock);
+        
     }); 
   }
 
