@@ -40,7 +40,7 @@ export class ProductService {
     }
 
     getProduct(id){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/producto/'+id,options)
             .map(res => res.json()).catch(this.handleError);
@@ -135,7 +135,7 @@ export class ProductService {
         
     }
     getLast3YearsSalesByProduct(pid){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/producto/'+pid+'/yearsales/',options)
             .map(res => res.json()).catch(this.handleError);
