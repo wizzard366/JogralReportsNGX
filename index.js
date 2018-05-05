@@ -6,19 +6,60 @@ var path = require('path');
 var morgan = require('morgan');
 var jwt = require('jsonwebtoken');
 var compression = require('compression');
+var fs = require('fs');
 
-//var public_app = express();
+var public_app = express();
 
-/* var fs = require('fs');
-var https = require('https');
-var key = fs.readFileSync('/etc/letsencrypt/live/jogral.info/privkey.pem');
-var cert = fs.readFileSync('/etc/letsencrypt/live/jogral.info/cert.pem');
-var https_options = {
-    key: key,
-    cert: cert
-};
-var PORT = 443;
-var HOST = '0.0.0.0'; */
+
+var PUBLIC_PORT = 80;
+var conf_file = JSON.parse(fs.readFileSync('./server_config.json','utf8'));
+var environment = conf_file.conf.environment;
+var servers = conf_file.servers;
+
+var connectionPools={};
+
+/* create coonection pools for each environment */
+
+servers.forEach(element=>{
+
+    if(element.enabled){
+        var config = {
+            user:element["db-user"],
+            password:element["db-pass"],
+            server:element["db-server"],
+            database:element["db-name"]
+        }
+        console.log('config:',config)
+        connectionPools[config.server+":"+config.database] = new sql.Connection(config);
+        connectionPools[config.server+":"+config.database].on('error',err=>{
+            console.log("ERROR: Pool["+""+config.server+config.database+"]=> ",err);
+        });
+        connectionPools[config.server+":"+config.database].connect(err=>{
+            if(err)
+            console.log("ERROR: Testing Pool["+""+config.server+config.database+"]=> ",err);
+        })
+    }
+})
+
+
+
+
+
+if(environment=="prod"){
+    var fs = require('fs');
+    var https = require('https');
+    var key = fs.readFileSync('/etc/letsencrypt/live/jogral.info/privkey.pem');
+    var cert = fs.readFileSync('/etc/letsencrypt/live/jogral.info/cert.pem');
+    var https_options = {
+        key: key,
+        cert: cert
+    };
+    var PORT = 443;
+    var HOST = '0.0.0.0';
+}else{
+    var PORT = 3000;
+}
+
 
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -50,10 +91,11 @@ app.set('view engine', 'html');*/
 app.use(express.static(path.join(__dirname, 'ng2-admin/dist/'), { dotfiles: 'allow' }));
 app.use('/node_modules', express.static(path.join(__dirname, 'ng2-admin/node_modules/')));
 
-/* public_app.use(express.static(path.join(__dirname,'ng2-admin/dist/.well-known/'),{dotfiles:'allow'}));
+public_app.use(express.static(path.join(__dirname,'./public_root/'),{dotfiles:'allow'}));
+
 public_app.get('/',function(req,res){
-    res.redirect('https://' + req.header('Host') + req.url);
-}); */
+    res.redirect('http://' + req.header('Host') + req.url+':3000');
+});
 
 
 // get an instance of the router for api routes
@@ -112,6 +154,40 @@ apiRoutes.post('/authenticate', function (req, res) {
 
 });
 
+
+apiRoutes.get('/servers', function (req, res) {
+    var response=[];
+
+    servers.forEach((element,i) => {
+        
+        response.push({
+            name:element["db-server-name"],
+            index:element["db-server"]+":"+element["db-name"],
+        })
+    });
+
+    res.json(response);
+});
+
+
+
+apiRoutes.get('/test', function (req, res) {
+    
+    pool = req.headers['db-pool'];
+    console.log(pool);
+    if(pool){
+
+        //request = new sql.Request(connectionPools[pool]);
+
+        connectionPools[pool].request().query("select 1 as number",(err,result)=>{
+            if(err){res.send(err)}
+            res.send(result);
+        });
+    }
+
+});
+
+
 // TODO: route middleware to verify a token
 apiRoutes.use(function (req, res, next) {
 
@@ -144,9 +220,8 @@ apiRoutes.use(function (req, res, next) {
     }
 });
 
-apiRoutes.get('/set', function (req, res) {
-    res.json({ message: 'Welcome to the coolest API on earth!' });
-});
+
+
 
 
 
@@ -154,6 +229,8 @@ apiRoutes.get('/set', function (req, res) {
 apiRoutes.get('/producto/:pid/yearsales/', function (req, res) {
 
     let ProductoId = req.params.pid;
+
+    let poolKey = req.headers['db-pool']
 
     let query = "Select  fd.EmpresaId, fd.ProductoId, Ano=Datepart(yyyy,f.Fecha), \
     Mes=Datepart(MM,f.Fecha),  Cantidad=Sum(fd.Cantidad*um.Factor), Monto=Round(Sum(fd.PrecioTotal),2) \
@@ -167,7 +244,15 @@ apiRoutes.get('/producto/:pid/yearsales/', function (req, res) {
     Order By  Datepart(yyyy,f.Fecha), Datepart(MM,f.Fecha)";
 
 
-    var pool = new sql.Connection(config, function (err) {
+    connectionPools[poolKey].request()
+    .input('ProductoId', sql.Int, ProductoId)
+    .query(query, (err, result) => {
+        res.send(result);
+        console.log(err);
+    });
+
+
+    /* var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
@@ -179,7 +264,7 @@ apiRoutes.get('/producto/:pid/yearsales/', function (req, res) {
                 console.log(err);
             });
 
-    })
+    }) */
 
 
 });
@@ -230,6 +315,8 @@ apiRoutes.get('/producto/:id', function (req, res) {
 
     var id_parameter = req.params.id;
 
+    let poolKey = req.headers['db-pool']
+
     var query = 'Select p.EmpresaId as empresaId,p.ProductoId as productoId,p.Descripcion as descripcion, a.Descripcion as area, s.Descripcion as subArea, m.Descripcion as marca, p.Costo as costo, p.AfectoIVA as afectoIva ' +
         'from INVProducto p, INVXArea a, INVXAreaSubArea s, INVXMarca m ' +
         'Where p.EmpresaId=9 And ProductoId=@id_parameter ' +
@@ -237,8 +324,11 @@ apiRoutes.get('/producto/:id', function (req, res) {
         'And s.EmpresaId=p.EmpresaId and s.AreaID=p.AreaID and s.SubAreaId=p.SubAreaID ' +
         'And m.EmpresaId=p.EmpresaId and m.MarcaId=p.MarcaId;';
 
+    connectionPools[poolKey].request().input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
+        res.send(result);
+    });
 
-    var pool = new sql.Connection(config, function (err) {
+    /* var pool = new sql.Connection(config, function (err) {
         if (err) {
             res.send(err);
         }
@@ -246,7 +336,7 @@ apiRoutes.get('/producto/:id', function (req, res) {
             res.send(result);
         });
 
-    })
+    }) */
 
 });
 
@@ -752,13 +842,21 @@ app.use('/api', apiRoutes);
 
 
 /* server listening */
-var server = app.listen(3000, function () {
-    console.log('Server is running.. port:3000');
-});
 
-/* var public_server = public_app.listen(4000,function(){
-    console.log('Public server is running.. port:4000')
-}) */
 
-/* var server = https.createServer(https_options, app).listen(PORT, HOST);
-console.log('HTTPS Server listening on %s:%s', HOST, PORT); */
+
+
+if(environment=="prod"){
+    var server = https.createServer(https_options, app).listen(PORT, HOST);
+    onsole.log('HTTPS Server listening on %s:%s', HOST, PORT);
+}else{
+
+    var server = app.listen(PORT, function () {
+        console.log('Server is running.. port:'+PORT);
+    });
+    
+}
+var public_server = public_app.listen(PUBLIC_PORT,function(){
+    console.log('Public server is running.. port:'+PUBLIC_PORT)
+})
+/*  */
