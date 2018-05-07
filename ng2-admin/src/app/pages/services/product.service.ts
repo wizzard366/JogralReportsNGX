@@ -47,49 +47,49 @@ export class ProductService {
     }
 
     getProductByDescription(description){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/producto/description/'+description,options)
             .map(res => res.json()).catch(this.handleError);
     }
 
     getUnitMeasurements(id){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/producto/'+id+'/umedida',options)
             .map(res => res.json()).catch(this.handleError);
     }
     
     getPrices(pid,umedidaid,umedidadesc){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/precios/producto/'+pid+'/umedida/'+umedidaid+'/'+umedidadesc,options)
             .map(res => res.json()).catch(this.handleError);
     }
 
     getPriceRanges(pid,umedidaid,umedidadesc,priceTypeId){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/precios/rangos/producto/'+pid+'/umedida/'+umedidaid+'/'+umedidadesc+'/pricetype/'+priceTypeId,options)
             .map(res => res.json()).catch(this.handleError);
     }
     
     getStock(pid,factor){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/producto/' + pid + '/existencias/umedida/factor/' + factor,options)
             .map(res => res.json()).catch(this.handleError);
     }
 
     getSalesPerYear(year){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/sales/year/' + year ,options)
             .map(res => res.json()).catch(this.handleError);
     }
 
     getSalesByBrand(){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/sales/brand',options)
             .map(res => res.json()).catch(this.handleError);
@@ -97,7 +97,7 @@ export class ProductService {
 
     getSalesByProduct(pid, startDate, endDate){
         
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let params = new URLSearchParams();
         params.append('startDate',encodeURIComponent(startDate));
         params.append('endDate',encodeURIComponent(endDate));
@@ -107,28 +107,28 @@ export class ProductService {
     }
 
     getSalesBySalesMan(){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/sales/salesman',options)
             .map(res => res.json()).catch(this.handleError);
     }
 
     getSalesBySalesManProyectionsAll(){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/sales/salesman/proyections',options)
             .map(res => res.json()).catch(this.handleError);
         
     }
     getSalesBySalesManProyectionsByYear(year){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/sales/salesman/proyections/'+year,options)
             .map(res => res.json()).catch(this.handleError);
         
     }
     getTopClientsBySalesman(salesmanId,year,month){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/sales/salesman/'+salesmanId+'/topclients/'+year+'/'+month,options)
             .map(res => res.json()).catch(this.handleError);

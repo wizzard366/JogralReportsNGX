@@ -37,14 +37,14 @@ export class ClientsService {
 
 
     getClientsByName(name){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/clients/'+name,options)
             .map(res => res.json()).catch(this.handleError);
     }
 
     getClientInfo(id,year){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/clients/salesperyear/'+year+'/'+id,options)
             .map(res => res.json()).catch(this.handleError);   
@@ -52,7 +52,7 @@ export class ClientsService {
     }
 
     getTopClients(year){
-        let headers = new Headers({'x-access-token':this.authenticationService.token});
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let options = new RequestOptions({headers:headers});
         return this.http.get('/api/clients/top/salesperyear/'+year,options)
             .map(res => res.json()).catch(this.handleError);   

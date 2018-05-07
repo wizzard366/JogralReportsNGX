@@ -12,31 +12,31 @@ var public_app = express();
 
 
 var PUBLIC_PORT = 80;
-var conf_file = JSON.parse(fs.readFileSync('./server_config.json','utf8'));
+var conf_file = JSON.parse(fs.readFileSync('./server_config.json', 'utf8'));
 var environment = conf_file.conf.environment;
 var servers = conf_file.servers;
 
-var connectionPools={};
+var connectionPools = {};
 
 /* create coonection pools for each environment */
 
-servers.forEach(element=>{
+servers.forEach(element => {
 
-    if(element.enabled){
+    if (element.enabled) {
         var config = {
-            user:element["db-user"],
-            password:element["db-pass"],
-            server:element["db-server"],
-            database:element["db-name"]
+            user: element["db-user"],
+            password: element["db-pass"],
+            server: element["db-server"],
+            database: element["db-name"]
         }
-        console.log('config:',config)
-        connectionPools[config.server+":"+config.database] = new sql.Connection(config);
-        connectionPools[config.server+":"+config.database].on('error',err=>{
-            console.log("ERROR: Pool["+""+config.server+config.database+"]=> ",err);
+        console.log('config:', config)
+        connectionPools[config.server + ":" + config.database] = new sql.Connection(config);
+        connectionPools[config.server + ":" + config.database].on('error', err => {
+            console.log("ERROR: Pool[" + "" + config.server + config.database + "]=> ", err);
         });
-        connectionPools[config.server+":"+config.database].connect(err=>{
-            if(err)
-            console.log("ERROR: Testing Pool["+""+config.server+config.database+"]=> ",err);
+        connectionPools[config.server + ":" + config.database].connect(err => {
+            if (err)
+                console.log("ERROR: Testing Pool[" + "" + config.server + config.database + "]=> ", err);
         })
     }
 })
@@ -45,7 +45,7 @@ servers.forEach(element=>{
 
 
 
-if(environment=="prod"){
+if (environment == "prod") {
     var fs = require('fs');
     var https = require('https');
     var key = fs.readFileSync('/etc/letsencrypt/live/jogral.info/privkey.pem');
@@ -56,7 +56,7 @@ if(environment=="prod"){
     };
     var PORT = 443;
     var HOST = '0.0.0.0';
-}else{
+} else {
     var PORT = 3000;
 }
 
@@ -91,10 +91,10 @@ app.set('view engine', 'html');*/
 app.use(express.static(path.join(__dirname, 'ng2-admin/dist/'), { dotfiles: 'allow' }));
 app.use('/node_modules', express.static(path.join(__dirname, 'ng2-admin/node_modules/')));
 
-public_app.use(express.static(path.join(__dirname,'./public_root/'),{dotfiles:'allow'}));
+public_app.use(express.static(path.join(__dirname, './public_root/'), { dotfiles: 'allow' }));
 
-public_app.get('/',function(req,res){
-    res.redirect('http://' + req.header('Host') + req.url+':3000');
+public_app.get('/', function (req, res) {
+    res.redirect('http://' + req.header('Host') + req.url + ':3000');
 });
 
 
@@ -156,13 +156,13 @@ apiRoutes.post('/authenticate', function (req, res) {
 
 
 apiRoutes.get('/servers', function (req, res) {
-    var response=[];
+    var response = [];
 
-    servers.forEach((element,i) => {
-        
+    servers.forEach((element, i) => {
+
         response.push({
-            name:element["db-server-name"],
-            index:element["db-server"]+":"+element["db-name"],
+            name: element["db-server-name"],
+            index: element["db-server"] + ":" + element["db-name"],
         })
     });
 
@@ -172,15 +172,15 @@ apiRoutes.get('/servers', function (req, res) {
 
 
 apiRoutes.get('/test', function (req, res) {
-    
+
     pool = req.headers['db-pool'];
     console.log(pool);
-    if(pool){
+    if (pool) {
 
         //request = new sql.Request(connectionPools[pool]);
 
-        connectionPools[pool].request().query("select 1 as number",(err,result)=>{
-            if(err){res.send(err)}
+        connectionPools[pool].request().query("select 1 as number", (err, result) => {
+            if (err) { res.send(err) }
             res.send(result);
         });
     }
@@ -245,11 +245,11 @@ apiRoutes.get('/producto/:pid/yearsales/', function (req, res) {
 
 
     connectionPools[poolKey].request()
-    .input('ProductoId', sql.Int, ProductoId)
-    .query(query, (err, result) => {
-        res.send(result);
-        console.log(err);
-    });
+        .input('ProductoId', sql.Int, ProductoId)
+        .query(query, (err, result) => {
+            res.send(result);
+            console.log(err);
+        });
 
 
     /* var pool = new sql.Connection(config, function (err) {
@@ -275,7 +275,7 @@ apiRoutes.get('/producto/:id/ventas', function (req, res) {
     var ProductoId = req.params.id;
     var startDate = decodeURIComponent(req.query['startDate']);
     var endDate = decodeURIComponent(req.query['endDate']) + ' 23:59';
-
+    let poolKey = req.headers['db-pool'];
 
 
     var query = "Select  fd.EmpresaId, fd.ProductoId, f.Fecha,  Cantidad=Sum(fd.Cantidad*um.Factor), Monto=Sum(fd.PrecioTotal)\
@@ -288,20 +288,17 @@ apiRoutes.get('/producto/:id/ventas', function (req, res) {
     Group by fd.EmpresaId, fd.ProductoId, f.Fecha\
     Order By f.Fecha"
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
 
-        pool.request()
-            .input('ProductoId', sql.Int, ProductoId)
-            .input('Desde', sql.NVarChar, startDate)
-            .input('Hasta', sql.NVarChar, endDate).query(query, (err, result) => {
-                res.send(result);
-                console.log(err);
-            });
 
-    })
+    connectionPools[poolKey].request()
+        .input('ProductoId', sql.Int, ProductoId)
+        .input('Desde', sql.NVarChar, startDate)
+        .input('Hasta', sql.NVarChar, endDate).query(query, (err, result) => {
+            res.send(result);
+            console.log(err);
+        });
+
+
 
 
 
@@ -346,6 +343,7 @@ apiRoutes.get('/producto/description/:desc', function (req, res) {
 
     var desc_parameter = req.params.desc;
     var desc_queryParam = '%' + desc_parameter + '%'
+    let poolKey = req.headers['db-pool']
 
     var query = 'Select p.EmpresaId as empresaId,p.ProductoId as productoId,p.Descripcion as descripcion, a.Descripcion as area, s.Descripcion as subArea, m.Descripcion as marca, p.Costo as costo, p.AfectoIVA as afectoIva ' +
         'from INVProducto p, INVXArea a, INVXAreaSubArea s, INVXMarca m ' +
@@ -355,15 +353,12 @@ apiRoutes.get('/producto/description/:desc', function (req, res) {
         'And m.EmpresaId=p.EmpresaId and m.MarcaId=p.MarcaId;';
 
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('descParam', sql.NVarChar, desc_queryParam).query(query, (err, result) => {
-            res.send(result);
-        });
 
-    })
+    connectionPools[poolKey].request().input('descParam', sql.NVarChar, desc_queryParam).query(query, (err, result) => {
+        res.send(result);
+    });
+
+
 
 
 
@@ -372,21 +367,20 @@ apiRoutes.get('/producto/description/:desc', function (req, res) {
 // get measurements by product id
 apiRoutes.get('/producto/:id/umedida', function (req, res) {
     var id_parameter = req.params.id;
+    let poolKey = req.headers['db-pool']
+
 
     var query = 'Select EmpresaId,ProductoId,UMedidaId,Descripcion,Base,Factor  ' +
         'From INVProductoUMedida ' +
         'Where EmpresaId=9 And ProductoId=@id_parameter ';
 
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
-            res.send(result);
-        });
 
-    })
+    connectionPools[poolKey].request().input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
+        res.send(result);
+    });
+
+
 
 });
 
@@ -398,7 +392,7 @@ apiRoutes.get('/precios/producto/:id/umedida/:umid/:umdesc', function (req, res)
     var id_parameter = req.params.id;
     var id_umedida = req.params.umid;
     var desc_umedida = req.params.umdesc;
-
+    let poolKey = req.headers['db-pool']
 
 
     var query = 'Select pr.EmpresaId,pr.ProductoId,pr.UMedidaId,pr.DescUMedida, pr.TipoPrecioId ,tp.Descripcion as TipoPrecio, pr.PrecioVenta, Round(pr.MargenSobreCosto,4) as MargenSobreCosto ' +
@@ -408,15 +402,12 @@ apiRoutes.get('/precios/producto/:id/umedida/:umid/:umdesc', function (req, res)
         'And pr.DescUMedida=@desc_umedida ' +
         'And tp.EmpresaId=pr.EmpresaId And tp.TipoPrecioId=pr.TipoPrecioId;'
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('id_umedida', sql.NVarChar, id_umedida).input('desc_umedida', sql.NVarChar, desc_umedida).input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
-            res.send(result);
-        });
 
-    })
+    connectionPools[poolKey].request().input('id_umedida', sql.NVarChar, id_umedida).input('desc_umedida', sql.NVarChar, desc_umedida).input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
+        res.send(result);
+    });
+
+
 
 
 });
@@ -430,7 +421,7 @@ apiRoutes.get('/precios/rangos/producto/:id/umedida/:umid/:umdesc/pricetype/:pty
     var id_umedida = req.params.umid;
     var desc_umedida = req.params.umdesc;
     var id_ptype = req.params.ptypeid;
-
+    let poolKey = req.headers['db-pool']
 
 
 
@@ -442,15 +433,12 @@ apiRoutes.get('/precios/rangos/producto/:id/umedida/:umid/:umdesc/pricetype/:pty
         'And TipoPrecioId=@id_ptype;'
 
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('id_ptype', sql.Int, id_ptype).input('id_umedida', sql.NVarChar, id_umedida).input('desc_umedida', sql.Int, desc_umedida).input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
-            res.send(result);
-        });
 
-    })
+    connectionPools[poolKey].request().input('id_ptype', sql.Int, id_ptype).input('id_umedida', sql.NVarChar, id_umedida).input('desc_umedida', sql.Int, desc_umedida).input('id_parameter', sql.Int, id_parameter).query(query, (err, result) => {
+        res.send(result);
+    });
+
+
 
 });
 
@@ -459,7 +447,7 @@ apiRoutes.get('/producto/:id/existencias/umedida/factor/:factor', function (req,
 
     var id_parameter = req.params.id;
     var factor_umedida = req.params.factor;
-
+    let poolKey = req.headers['db-pool']
 
 
     var query = 'Select pb.EmpresaId,pb.ProductoId,b.Descripcion as Bodega, pb.UMedidaId, pb.DescUMedidaId, (pb.SaldoActual / @Factor) as SaldoActual  ' +
@@ -467,15 +455,12 @@ apiRoutes.get('/producto/:id/existencias/umedida/factor/:factor', function (req,
         'where pb.EmpresaId=9 And pb.ProductoId=@id_parameter ' +
         'And b.EmpresaId=pb.EmpresaId and b.BodegaId=pb.BodegaId; ';
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('id_parameter', sql.Int, id_parameter).input('Factor', sql.Int, factor_umedida).query(query, (err, result) => {
-            res.send(result);
-        });
 
-    })
+    connectionPools[poolKey].request().input('id_parameter', sql.Int, id_parameter).input('Factor', sql.Int, factor_umedida).query(query, (err, result) => {
+        res.send(result);
+    });
+
+
 
 
 
@@ -489,7 +474,7 @@ apiRoutes.get('/producto/:id/existencias/umedida/factor/:factor', function (req,
 apiRoutes.get('/sales/year/:year', function (req, res) {
 
     var year = req.params.year;
-
+    let poolKey = req.headers['db-pool']
 
     var query = 'Select Datepart(yyyy,f.fecha) as Year, ' +
         '(Select Sum(x.Total) From FACDocumento x Where x.EmpresaId=f.EmpresaId And Year(x.Fecha)=Year(f.fecha) And Month(x.Fecha)=1 And x.AplicadoInvent=1 And x.Anulado=0 ) as Enero, ' +
@@ -509,15 +494,12 @@ apiRoutes.get('/sales/year/:year', function (req, res) {
         'Group by Datepart(yyyy,f.fecha),f.EmpresaId ' +
         'Order by Datepart(yyyy,f.fecha) ';
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('Year', sql.Int, year).query(query, (err, result) => {
-            res.send(result);
-        });
 
-    })
+    connectionPools[poolKey].request().input('Year', sql.Int, year).query(query, (err, result) => {
+        res.send(result);
+    });
+
+
 
 
 
@@ -527,7 +509,7 @@ apiRoutes.get('/sales/year/:year', function (req, res) {
 apiRoutes.get('/sales/brand', function (req, res) {
 
     var year = req.params.year;
-
+    let poolKey = req.headers['db-pool']
 
     var query = 'Select top 5 m.Descripcion as Marca, Round(Sum(d.PrecioTotal),2) as Total ' +
         'from FACDocumento f, FACDocumentoDet d, INVXMarca m, INVProducto p ' +
@@ -538,19 +520,18 @@ apiRoutes.get('/sales/brand', function (req, res) {
         'Group by m.Descripcion ' +
         'Order by Sum(d.PrecioTotal) DESC ';
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().query(query, (err, result) => {
-            res.send(result);
-        });
 
-    })
+    connectionPools[poolKey].request().query(query, (err, result) => {
+        res.send(result);
+    });
+
+
 });
 
 /* Ventas por Vendedor del Mes Actual   */
 apiRoutes.get('/sales/salesman', function (req, res) {
+
+    let poolKey = req.headers['db-pool']
 
     var query = 'Select v.NombreCompleto as Vendedor, Round(Sum(f.Total),2) as Total  ' +
         'from FACDocumento f,  FACXVendedor v ' +
@@ -558,15 +539,12 @@ apiRoutes.get('/sales/salesman', function (req, res) {
         'v.EmpresaId=f.EmpresaId and v.UsuarioId=f.UsuarioPedido ' +
         'Group by v.NombreCompleto ';
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().query(query, (err, result) => {
-            res.send(result);
-        });
 
-    })
+    connectionPools[poolKey].request().query(query, (err, result) => {
+        res.send(result);
+    });
+
+
 });
 
 
@@ -574,21 +552,18 @@ apiRoutes.get('/sales/salesman', function (req, res) {
 /* ventas por vendedor y proyecciones */
 apiRoutes.get('/sales/salesman/proyections', function (req, res) {
 
-
+    let poolKey = req.headers['db-pool']
 
     var query = 'Select * From INVRepWEBVentasVendedor order by VendedorId ';
 
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().query(query, (err, result) => {
 
-            res.send(result);
-        });
+    connectionPools[poolKey].request().query(query, (err, result) => {
 
-    })
+        res.send(result);
+    });
+
+
 });
 
 
@@ -597,20 +572,18 @@ apiRoutes.get('/sales/salesman/proyections', function (req, res) {
 apiRoutes.get('/sales/salesman/proyections/:year', function (req, res) {
 
     var year = req.params.year;
+    let poolKey = req.headers['db-pool']
 
     var query = 'Select * From INVRepWEBVentasVendedor where Ano=@year order by VendedorId ';
 
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('year', sql.Int, year).query(query, (err, result) => {
 
-            res.send(result);
-        });
+    connectionPools[poolKey].request().input('year', sql.Int, year).query(query, (err, result) => {
 
-    })
+        res.send(result);
+    });
+
+
 });
 
 apiRoutes.get('/sales/brand/product/:marcaId/:year', function (req, res) {
@@ -618,18 +591,17 @@ apiRoutes.get('/sales/brand/product/:marcaId/:year', function (req, res) {
     var marcaId = req.params.marcaId;
     var year = req.params.year;
 
+    let poolKey = req.headers['db-pool']
+
     var query = 'Select * From INVRepWEBMarcaProducto where MarcaId=@marcaId and Ano>=@year order by Ano DESC';
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('marcaId', sql.Int, marcaId).input('year', sql.Int, year).query(query, (err, result) => {
 
-            res.send(result);
-        });
+    connectionPools[poolKey].request().input('marcaId', sql.Int, marcaId).input('year', sql.Int, year).query(query, (err, result) => {
 
-    })
+        res.send(result);
+    });
+
+
 });
 
 /* no enmpresa parameter */
@@ -638,19 +610,16 @@ apiRoutes.get('/sales/brand/:marcaId/:year', function (req, res) {
 
     var marcaId = req.params.marcaId;
     var year = req.params.year;
-
+    let poolKey = req.headers['db-pool']
 
     var query = 'Select * From INVRepWEBMarca where MarcaId=@marcaId and Ano>=@year  ';
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('marcaId', sql.Int, marcaId).input('year', sql.Int, year).query(query, (err, result) => {
-            res.send(result);
-        });
 
-    })
+    connectionPools[poolKey].request().input('marcaId', sql.Int, marcaId).input('year', sql.Int, year).query(query, (err, result) => {
+        res.send(result);
+    });
+
+
 });
 
 
@@ -660,7 +629,7 @@ apiRoutes.get('/sales/salesman/:salesmanId/topclients/:year/:month', function (r
     var salesmanId = req.params.salesmanId;
     var year = req.params.year;
     var month = req.params.month;
-
+    let poolKey = req.headers['db-pool']
 
 
     var query = 'SELECT  TOP 5 f.EmpresaId, f.ClienteId, f.Nombre, VendedorId = v.VendedorId, Nombre = v.NombreCompleto, Total = Sum(f.Total)\
@@ -671,15 +640,12 @@ apiRoutes.get('/sales/salesman/:salesmanId/topclients/:year/:month', function (r
                     ORDER BY Sum(f.Total) DESC\
                     ';
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('salesmanId', sql.Int, salesmanId).input('year', sql.Int, year).input('month', sql.Int, month).query(query, (err, result) => {
-            res.send(result);
-        });
 
-    })
+    connectionPools[poolKey].request().input('salesmanId', sql.Int, salesmanId).input('year', sql.Int, year).input('month', sql.Int, month).query(query, (err, result) => {
+        res.send(result);
+    });
+
+
 });
 
 
@@ -689,20 +655,18 @@ apiRoutes.get('/brand/:brandName', function (req, res) {
 
     var brandName = req.params.brandName;
     var brand_queryParam = '%' + brandName + '%'
+    let poolKey = req.headers['db-pool']
 
     var query = 'Select * from INVXMarca  ' +
         'Where Descripcion like @brandName AND EmpresaId=9';
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
-        pool.request().input('brandName', sql.NVarChar, brand_queryParam).query(query, (err, result) => {
 
-            res.send(result);
-        });
+    connectionPools[poolKey].request().input('brandName', sql.NVarChar, brand_queryParam).query(query, (err, result) => {
 
-    })
+        res.send(result);
+    });
+
+
 });
 
 
@@ -712,6 +676,7 @@ apiRoutes.get('/clients/salesperyear/:year/:cuser', function (req, res) {
     var empresaid = 9;
     var clientUser = req.params.cuser;
     var year = req.params.year;
+    let poolKey = req.headers['db-pool']
 
     var query = 'SELECT d.EmpresaId,d.Ano,d.Cliente,d.NombreCliente,d.Vendedor, ' +
         'Round(SUM(CASE WHEN Mes = 01 THEN Total ELSE 0 END),2) AS Enero, ' +
@@ -735,17 +700,14 @@ apiRoutes.get('/clients/salesperyear/:year/:cuser', function (req, res) {
 
 
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
 
-        pool.request().input('year', sql.Int, year).input('clientUser', sql.Int, clientUser).input('empresaid', sql.Int, empresaid).query(query, (err, result) => {
-            res.send(result);
-            console.log(err);
-        });
 
-    })
+    connectionPools[poolKey].request().input('year', sql.Int, year).input('clientUser', sql.Int, clientUser).input('empresaid', sql.Int, empresaid).query(query, (err, result) => {
+        res.send(result);
+        console.log(err);
+    });
+
+
 });
 
 
@@ -757,6 +719,7 @@ apiRoutes.get('/clients/top/salesperyear/:year', function (req, res) {
     var empresaid = 9;
     var clientUser = req.params.cuser;
     var year = req.params.year;
+    let poolKey = req.headers['db-pool']
 
     var query = 'SELECT top 10 d.EmpresaId,d.Ano,d.Cliente,d.NombreCliente,d.Vendedor, ' +
         'Round(SUM(CASE WHEN Mes = 01 THEN Total ELSE 0 END),2) AS Enero, ' +
@@ -780,17 +743,14 @@ apiRoutes.get('/clients/top/salesperyear/:year', function (req, res) {
 
 
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
 
-        pool.request().input('year', sql.Int, year).input('clientUser', sql.Int, clientUser).input('empresaid', sql.Int, empresaid).query(query, (err, result) => {
-            res.send(result);
-            console.log(err);
-        });
 
-    })
+    connectionPools[poolKey].request().input('year', sql.Int, year).input('clientUser', sql.Int, clientUser).input('empresaid', sql.Int, empresaid).query(query, (err, result) => {
+        res.send(result);
+        console.log(err);
+    });
+
+
 });
 
 
@@ -800,6 +760,7 @@ apiRoutes.get('/clients/:name', function (req, res) {
     var empresaid = 9;
     var name = req.params.name;
     name = "%" + name + "%";
+    let poolKey = req.headers['db-pool']
 
     var query = 'select C.ClienteId, C.NIT, C.Nombre, C.Apellido, C.NombreComercial from CXCCliente  as C ' +
         'where C.EmpresaId = @empresaid and C.NombreComercial like @name ' +
@@ -807,20 +768,18 @@ apiRoutes.get('/clients/:name', function (req, res) {
 
 
 
-    var pool = new sql.Connection(config, function (err) {
-        if (err) {
-            res.send(err);
-        }
 
-        pool.request().input('name', sql.NVarChar, name).input('empresaid', sql.Int, empresaid).query(query, (err, result) => {
-            res.send(result);
-            console.log(err);
-        });
 
-    })
+    connectionPools[poolKey].request().input('name', sql.NVarChar, name).input('empresaid', sql.Int, empresaid).query(query, (err, result) => {
+        res.send(result);
+        console.log(err);
+    });
+
+
 });
 
 apiRoutes.get('/date', function (req, res) {
+
     let server_date = new Date();
     let response = {
         "server_date": server_date.getTime()
@@ -846,17 +805,17 @@ app.use('/api', apiRoutes);
 
 
 
-if(environment=="prod"){
+if (environment == "prod") {
     var server = https.createServer(https_options, app).listen(PORT, HOST);
     onsole.log('HTTPS Server listening on %s:%s', HOST, PORT);
-}else{
+} else {
 
     var server = app.listen(PORT, function () {
-        console.log('Server is running.. port:'+PORT);
+        console.log('Server is running.. port:' + PORT);
     });
-    
+
 }
-var public_server = public_app.listen(PUBLIC_PORT,function(){
-    console.log('Public server is running.. port:'+PUBLIC_PORT)
+var public_server = public_app.listen(PUBLIC_PORT, function () {
+    console.log('Public server is running.. port:' + PUBLIC_PORT)
 })
 /*  */
