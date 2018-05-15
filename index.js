@@ -18,10 +18,11 @@ var servers = conf_file.servers;
 
 var connectionPools = {};
 
+
 /* create coonection pools for each environment */
 
 servers.forEach(element => {
-
+    
     if (element.enabled) {
         var config = {
             user: element["db-user"],
@@ -29,7 +30,7 @@ servers.forEach(element => {
             server: element["db-server"],
             database: element["db-name"]
         }
-        console.log('config:', config)
+        
         connectionPools[config.server + ":" + config.database] = new sql.Connection(config);
         connectionPools[config.server + ":" + config.database].on('error', err => {
             console.log("ERROR: Pool[" + "" + config.server + config.database + "]=> ", err);
@@ -108,49 +109,46 @@ apiRoutes.post('/authenticate', function (req, res) {
 
     let UsuarioId = req.body.username;
     let query = "Select Nombre,Password,UsuarioId,Corre1 from ERPUsuarios where UsuarioId=@usuarioid";
+    
+    pool = req.headers['db-pool'];
+    
+    connectionPools[pool].request().input('usuarioid', sql.VarChar, UsuarioId).query(query, (err, result) => {
 
-    var pool = new sql.Connection(config, function (err) {
+
         if (err) {
-            res.send(err);
+            console.log(err);
+            res.json({ 'err': err });
         }
-        pool.request().input('usuarioid', sql.VarChar, UsuarioId).query(query, (err, result) => {
 
+        if (typeof result[0] == 'undefined' || result[0] == null) {
+            res.json({ success: false, message: 'Authentication failed. User not found.' });
+        } else {
+            let pass = result[0].Password;
+            let userid = result[0].UsuarioId;
+            let name = result[0].Nombre;
+            let corre = result[0].Corre1;
+            if (pass === req.body.password) {
+                // if user is found and password is right
+                // create a token
+                var token = jwt.sign({ data: userid, exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24) }, app.get('superSecret'), {
 
-            if (err) {
-                console.log(err);
-                res.json({ 'err': err });
-            }
+                });
 
-            if (typeof result[0] == 'undefined' || result[0] == null) {
-                res.json({ success: false, message: 'Authentication failed. User not found.' });
+                // return the information including token as JSON
+                res.json({
+                    success: true,
+                    message: 'Enjoy your token!',
+                    token: token,
+                    name: name,
+                    corre: corre
+                });
             } else {
-                let pass = result[0].Password;
-                let userid = result[0].UsuarioId;
-                let name = result[0].Nombre;
-                let corre = result[0].Corre1;
-                if (pass === req.body.password) {
-                    // if user is found and password is right
-                    // create a token
-                    var token = jwt.sign({ data: userid, exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24) }, app.get('superSecret'), {
-
-                    });
-
-                    // return the information including token as JSON
-                    res.json({
-                        success: true,
-                        message: 'Enjoy your token!',
-                        token: token,
-                        name: name,
-                        corre: corre
-                    });
-                } else {
-                    res.json({ success: false, message: 'Authentication failed. Wrong password.' });
-                }
-
+                res.json({ success: false, message: 'Authentication failed. Wrong password.' });
             }
-        });
 
+        }
     });
+
 
 });
 
@@ -807,7 +805,7 @@ app.use('/api', apiRoutes);
 
 if (environment == "prod") {
     var server = https.createServer(https_options, app).listen(PORT, HOST);
-    onsole.log('HTTPS Server listening on %s:%s', HOST, PORT);
+    console.log('HTTPS Server listening on %s:%s', HOST, PORT);
 } else {
 
     var server = app.listen(PORT, function () {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from '../services/oauth/authentication.service';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { PublicServicesService } from '../services/public-services.service'
   styleUrls: ['./login.scss'],
   providers: [PublicServicesService]
 })
-export class Login {
+export class Login implements AfterViewInit {
 
   public form: FormGroup;
   public email: AbstractControl;
@@ -29,6 +29,7 @@ export class Login {
 
     publicServicesService.getServers().subscribe(data => {
       this.serverList = data;
+      
     })
 
   }
@@ -36,12 +37,20 @@ export class Login {
   ngOnInit() {
     // reset login status
     this.authenticationService.logout();
+
   }
+
+  ngAfterViewInit(){
+    
+  }
+
 
   public login(): void {
     this.submitted = true;
     // your code goes here
     // console.log(values);
+
+    
 
     this.authenticationService.login(this.model.username, this.model.password,this.model.server)
       .subscribe(result => {

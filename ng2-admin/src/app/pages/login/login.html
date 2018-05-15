@@ -10,7 +10,7 @@
     
             <div class="col-sm-10">
                 <select name="server" class="form-control" id="exampleFormControlSelect2" [(ngModel)]="model.server" #server="ngModel" required>
-                    <option *ngFor="let server of serverList; let i = index" [value]="server.index">{{server.name}}</option>
+                    <option *ngFor="let server of serverList; let i = index" [value]="server.index"  >{{server.name}}</option>
                 </select>
               
             </div>

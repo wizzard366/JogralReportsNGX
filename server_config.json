@@ -11,15 +11,6 @@
             "db-pass":"OEM02panorama",
             "db-name":"PCINVJes",
             "enabled":true
-        },
-        {
-            "db-server-name":"Villa Nueva 2",
-            "db-empresa-id":9,
-            "db-server":"10.10.1.4",
-            "db-user":"sa",
-            "db-pass":"OEM02panorama",
-            "db-name":"PCINVJes",
-            "enabled":true
         }
     ]
 }
