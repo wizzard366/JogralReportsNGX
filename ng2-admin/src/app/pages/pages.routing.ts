@@ -29,6 +29,7 @@ export const routes: Routes = [
       
       { path: 'vendedores', loadChildren: 'app/pages/sellers/sellers.module#SellersModule', canActivate: [AuthGuard]},
       { path: 'clientes', loadChildren: 'app/pages/clients/clients.module#ClientsModule', canActivate: [AuthGuard]},
+      { path: 'ventas', loadChildren: 'app/pages/sales/sales.module#SalesModule', canActivate: [AuthGuard]},
       /* 
       { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
       { path: 'editors', loadChildren: './editors/editors.module#EditorsModule' },

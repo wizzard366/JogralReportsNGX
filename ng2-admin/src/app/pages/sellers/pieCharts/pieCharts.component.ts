@@ -30,6 +30,12 @@ export class PieCharts implements AfterViewInit{
   @Input() show: boolean;
   @Output() onYearSelected = new EventEmitter();
 
+  private current_sum:any;
+  private proyection_sum:any;
+  public total_percentage:any;
+  public total_percentage_locale:any;
+  public show_total:boolean=false;
+
   private selectedYear:any;
   private selectedMonth:any;
 
@@ -111,6 +117,10 @@ export class PieCharts implements AfterViewInit{
   }
 
   private processChartData(data,month){
+
+    this.current_sum=0;
+    this.proyection_sum=0;
+    this.show_total=false;
     
     let salesMans={};
     
@@ -136,6 +146,7 @@ export class PieCharts implements AfterViewInit{
             temp.setName(element.Nombre);
             //temp.setCurrent(element.Total);
             temp.setCurrent(element[this.key]);
+            this.current_sum+=element[this.key];
             salesMans[element.VendedorId]=temp;
             
           }else if(element.Fuente==='Proyeccion'){
@@ -144,17 +155,20 @@ export class PieCharts implements AfterViewInit{
             temp.setName(element.Nombre);
             //temp.setProyection(element.Total);
             temp.setProyection(element[this.key]);
+            this.proyection_sum+=element[this.key];
             salesMans[element.VendedorId]=temp;
             
           }
         }else{
           if(element.Fuente==='Ventas'){
             salesMans[element.VendedorId].setCurrent(element[this.key]);
+            this.current_sum+=element[this.key];
             if(typeof salesMans[element.VendedorId].proyection !== 'undefined'){
               salesMans[element.VendedorId].setPercentageOfProyection();
             }
           }else if(element.Fuente==='Proyeccion'){
             salesMans[element.VendedorId].setProyection(element[this.key]);
+            this.proyection_sum+=element[this.key];
             if(typeof salesMans[element.VendedorId].current !== 'undefined'){
               salesMans[element.VendedorId].setPercentageOfProyection();
             }
@@ -163,6 +177,15 @@ export class PieCharts implements AfterViewInit{
       });
       let arr = [];
       let keys = Object.keys(salesMans);
+      this.total_percentage=(this.current_sum/this.proyection_sum)*100;
+      this.total_percentage_locale = this.current_sum.toLocaleString('en-US');
+      let total={
+        name:"Total",
+        percentageOfProyection:this.total_percentage,
+        currentLocale:this.total_percentage_locale
+        
+      }
+      arr.push(total);
       keys.forEach(key=>{
         let slmnTmp=salesMans[key];
         if(!(typeof slmnTmp.current === 'undefined' || slmnTmp.current === null) && !(typeof slmnTmp.proyection === 'undefined' || slmnTmp.proyection === null)){
@@ -171,14 +194,17 @@ export class PieCharts implements AfterViewInit{
            
       });
       this.charts = arr;
-      this.ready=true;
+      
 
+      
+      this.show_total=true;
+      
   }
 
   public selectMonth(element){
     this.selectedMonth=element;
     this.processChartData(this.raw_data,element);
-    this._loadPieCharts(1000);
+    this._loadPieCharts(3000);
     this.onYearSelected.emit([this.selectedYear,this.selectedMonth]);
   }
 
@@ -192,7 +218,7 @@ export class PieCharts implements AfterViewInit{
       this.raw_data=data;
       
       this.processChartData(data,this.selectedMonth);
-      this._loadPieCharts(2000);
+      this._loadPieCharts(3000);
     });
     this.onYearSelected.emit([this.selectedYear,this.selectedMonth]);
   }

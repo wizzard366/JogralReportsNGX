@@ -95,7 +95,7 @@ app.use('/node_modules', express.static(path.join(__dirname, 'ng2-admin/node_mod
 public_app.use(express.static(path.join(__dirname, './public_root/'), { dotfiles: 'allow' }));
 
 public_app.get('/', function (req, res) {
-    res.redirect('http://' + req.header('Host') + req.url + ':3000');
+    res.redirect('http://' + req.header('Host') + req.url);
 });
 
 
@@ -776,6 +776,47 @@ apiRoutes.get('/clients/:name', function (req, res) {
 
 });
 
+/* ventas por producto y vendedor */
+apiRoutes.get('/sales/byproductandseller/:productId/:vendedorId/', function (req, res) {
+
+    var empresaid = 9;
+    let poolKey = req.headers['db-pool'];
+
+    //var desde = decodeURIComponent(req.query['startDate']);
+    //var hasta = decodeURIComponent(req.query['endDate']) + ' 23:59';
+    let productoId = req.params.productId;
+    let vendedorId = req.params.vendedorId;
+
+    var desde=decodeURIComponent(req.query['startDate']);
+    var hasta=decodeURIComponent(req.query['endDate']) + ' 23:59';
+
+    
+    
+    var query = 'Select p.EmpresaId, v.VendedorId,v.Nombre As Vendedor, p.ProductoId, P.Descripcion, f.Fecha, Sum(d.Cantidad) \
+    From INVProducto p, FACDocumento f, FACDocumentoDet d, FACXVendedor v \
+    Where f.EmpresaId=9 And p.ProductoId=@productoId And v.VendedorId=@vendedorId And \
+        f.AplicadoInvent=1 And f.Anulado=0 and f.Fecha Between @Desde And @Hasta And \
+        d.EmpresaId=f.EmpresaId and d.TurnoId=f.TurnoId And d.TipoDocId=f.TipoDocId And d.NumeroDoc=f.NumeroDoc And \
+        v.EmpresaId=f.EmpresaId And v.VendedorId=f.VendedorId and \
+        p.EmpresaId=d.EmpresaId And p.ProductoId=d.ProductoId   \
+        And p.ProductoId=@productoId and v.VendedorId=@vendedorId \
+    Group by p.EmpresaId, v.VendedorId,v.Nombre, p.ProductoId, P.Descripcion, f.Fecha';
+
+
+
+
+
+    connectionPools[poolKey].request().input('Hasta', sql.NVarChar, hasta).input('Desde', sql.NVarChar, desde).input('productoId', sql.Int, productoId).input('vendedorId', sql.Int, vendedorId).query(query, (err, result) => {
+        res.send(result);
+        console.log(err);
+    });
+
+});
+
+
+
+
+
 apiRoutes.get('/date', function (req, res) {
 
     let server_date = new Date();
@@ -786,6 +827,7 @@ apiRoutes.get('/date', function (req, res) {
     res.send(response);
 
 })
+
 
 
 // apply the routes to our application with the prefix /api

@@ -141,6 +141,17 @@ export class ProductService {
             .map(res => res.json()).catch(this.handleError);
         
     }
+
+    getSalesByProductIdAndVendedorIdByDateInterval(pid,vid, startDate, endDate){
+        
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
+        let params = new URLSearchParams();
+        params.append('desde',encodeURIComponent(startDate));
+        params.append('hasta',encodeURIComponent(endDate));
+        let options = new RequestOptions({headers:headers,search:params});
+        return this.http.get('/api/sales/byproductandseller/'+pid+'/'+vid,options)
+            .map(res => res.json()).catch(this.handleError);
+    }
 //****************************************************************************************************************************************** */
    
 }
