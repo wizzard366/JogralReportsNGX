@@ -142,16 +142,22 @@ export class ProductService {
         
     }
 
-    getSalesByProductIdAndVendedorIdByDateInterval(pid,vid, startDate, endDate){
-        
+    getSalesByProductIdAndVendedorIdByDateInterval(pid, startDate, endDate){
+        console.log("start:"+startDate+"hasta:"+endDate);
         let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
         let params = new URLSearchParams();
-        params.append('desde',encodeURIComponent(startDate));
-        params.append('hasta',encodeURIComponent(endDate));
+        params.append('startDate',encodeURIComponent(startDate));
+        params.append('endDate',encodeURIComponent(endDate));
         let options = new RequestOptions({headers:headers,search:params});
-        return this.http.get('/api/sales/byproductandseller/'+pid+'/'+vid,options)
+        return this.http.get('/api/sales/byproductandseller/'+pid+'/',options)
             .map(res => res.json()).catch(this.handleError);
     }
 //****************************************************************************************************************************************** */
-   
+    getSellers(){
+        let headers = new Headers({'x-access-token':this.authenticationService.token,'db-pool':this.authenticationService.server});
+        let options = new RequestOptions({headers:headers});
+        return this.http.get('/api/sellers/',options)
+            .map(res => res.json()).catch(this.handleError);
+        
+    }
 }

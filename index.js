@@ -777,7 +777,7 @@ apiRoutes.get('/clients/:name', function (req, res) {
 });
 
 /* ventas por producto y vendedor */
-apiRoutes.get('/sales/byproductandseller/:productId/:vendedorId/', function (req, res) {
+apiRoutes.get('/sales/byproductandseller/:productId/', function (req, res) {
 
     var empresaid = 9;
     let poolKey = req.headers['db-pool'];
@@ -792,15 +792,15 @@ apiRoutes.get('/sales/byproductandseller/:productId/:vendedorId/', function (req
 
     
     
-    var query = 'Select p.EmpresaId, v.VendedorId,v.Nombre As Vendedor, p.ProductoId, P.Descripcion, f.Fecha, Sum(d.Cantidad) \
+    var query = 'Select p.EmpresaId, v.VendedorId,v.Nombre As Vendedor, v.NombreCompleto as NombreCompleto, p.ProductoId, P.Descripcion, f.Fecha, Sum(d.Cantidad) as Cantidad \
     From INVProducto p, FACDocumento f, FACDocumentoDet d, FACXVendedor v \
-    Where f.EmpresaId=9 And p.ProductoId=@productoId And v.VendedorId=@vendedorId And \
+    Where f.EmpresaId=9 And p.ProductoId=@productoId  And \
         f.AplicadoInvent=1 And f.Anulado=0 and f.Fecha Between @Desde And @Hasta And \
         d.EmpresaId=f.EmpresaId and d.TurnoId=f.TurnoId And d.TipoDocId=f.TipoDocId And d.NumeroDoc=f.NumeroDoc And \
         v.EmpresaId=f.EmpresaId And v.VendedorId=f.VendedorId and \
         p.EmpresaId=d.EmpresaId And p.ProductoId=d.ProductoId   \
-        And p.ProductoId=@productoId and v.VendedorId=@vendedorId \
-    Group by p.EmpresaId, v.VendedorId,v.Nombre, p.ProductoId, P.Descripcion, f.Fecha';
+        And p.ProductoId=@productoId  \
+    Group by p.EmpresaId, v.VendedorId,v.Nombre, p.ProductoId, P.Descripcion, f.Fecha, v.NombreCompleto order by v.VendedorId, f.Fecha';
 
 
 
@@ -814,7 +814,20 @@ apiRoutes.get('/sales/byproductandseller/:productId/:vendedorId/', function (req
 });
 
 
+apiRoutes.get('/sellers', function (req, res) {
 
+    
+    let poolKey = req.headers['db-pool']
+
+    var query = 'Select * from FACXVendedor  ' +
+        'Where Activo=1 AND EmpresaId=9';
+
+
+    connectionPools[poolKey].request().query(query, (err, result) => {
+
+        res.send(result);
+    });
+});
 
 
 apiRoutes.get('/date', function (req, res) {
