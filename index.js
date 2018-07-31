@@ -792,7 +792,7 @@ apiRoutes.get('/sales/byproductandseller/:productId/', function (req, res) {
 
     
     
-    var query = 'Select p.EmpresaId, v.VendedorId,v.Nombre As Vendedor, v.NombreCompleto as NombreCompleto, p.ProductoId, P.Descripcion, f.Fecha, Sum(d.Cantidad) as Cantidad \
+    var query2 = 'Select p.EmpresaId, v.VendedorId,v.Nombre As Vendedor, v.NombreCompleto as NombreCompleto, p.ProductoId, P.Descripcion, f.Fecha, Sum(d.Cantidad) as Cantidad \
     From INVProducto p, FACDocumento f, FACDocumentoDet d, FACXVendedor v \
     Where f.EmpresaId=9 And p.ProductoId=@productoId  And \
         f.AplicadoInvent=1 And f.Anulado=0 and f.Fecha Between @Desde And @Hasta And \
@@ -803,7 +803,12 @@ apiRoutes.get('/sales/byproductandseller/:productId/', function (req, res) {
     Group by p.EmpresaId, v.VendedorId,v.Nombre, p.ProductoId, P.Descripcion, f.Fecha, v.NombreCompleto order by v.VendedorId, f.Fecha';
 
 
-
+    var query = 'Select x.EmpresaId, v.VendedorId, v.Nombre, v.NombreCompleto, x.ProductoId, x.Descripcion, x.Fecha, \
+    Sum(x.CantidadUMVenta) as Cantidad from viewProductoUMVenta x, FACXVendedor v \
+    Where v.EmpresaId=x.EmpresaId and v.UsuarioId=x.UsuarioPedido And \
+            x.Fecha BETWEEN @Desde And @Hasta and x.ProductoId=@productoId \
+    group by x.EmpresaId, v.VendedorId, v.Nombre, v.NombreCompleto, x.ProductoId, x.Descripcion, x.Fecha \
+    order by v.VendedorId, x.ProductoId, x.Fecha'
 
 
     connectionPools[poolKey].request().input('Hasta', sql.NVarChar, hasta).input('Desde', sql.NVarChar, desde).input('productoId', sql.Int, productoId).input('vendedorId', sql.Int, vendedorId).query(query, (err, result) => {

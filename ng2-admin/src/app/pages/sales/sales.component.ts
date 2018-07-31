@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ProductService } from '../services/product.service';
 import { DateService } from '../services/date.service';
-
+import { chartistColorClasses } from '../../theme/chartist-color-classes';
 import 'style-loader!../../theme/chartistJs.scss';
 
 import { ChartistJsService } from '../charts/components/chartistJs/chartistJs.service';
@@ -11,7 +11,7 @@ import { ChartistJsService } from '../charts/components/chartistJs/chartistJs.se
   selector: 'sales-component',
   templateUrl: 'sales.component.html',
   providers: [ProductService, DateService, ChartistJsService],
-  styleUrls: ['../../theme/sass/user-defined/media-querys.scss']
+  styleUrls: ['../../theme/sass/user-defined/media-querys.scss','./custom.scss']
 })
 export class SalesComponent {
   public product_id: any;
@@ -27,6 +27,7 @@ export class SalesComponent {
   public table_data: any = [];
   public graph_data: any;
   public total_sales: any = 0;
+  public show:any=false;
 
   constructor(private productSerive: ProductService,
     private dateService: DateService,
@@ -36,19 +37,21 @@ export class SalesComponent {
     this.productSuggestionList = [];
 
     this.productSerive.getSellers().subscribe(data => {
-      console.log("sellers", data);
+     
       this.sellers_list = data;
     })
 
   }
   public simplepie = {
     simplePieData: {
-      series: [5, 3, 4]
+      series: [5, 3, 4],
+      labels: ['1','2','3']
     },
     simplePieOptions: {
       fullWidth: true,
       height: '300px',
       weight: '300px',
+      labelDirection: 'explode',
       labelInterpolationFnc: function (value) {
         return value
       }
@@ -57,26 +60,9 @@ export class SalesComponent {
 
 
 
-  public options = {
-    labelInterpolationFnc: function (value) {
-      return ((value * 100) / this.total_sales) + '%';
-    }
-  };
+  
 
-  public responsiveOptions = [
-    ['screen and (min-width: 640px)', {
-      chartPadding: 30,
-      labelOffset: 100,
-      labelDirection: 'explode',
-      labelInterpolationFnc: function (value) {
-        return value;
-      }
-    }],
-    ['screen and (min-width: 1024px)', {
-      labelOffset: 80,
-      chartPadding: 20
-    }]
-  ];
+  
 
   selectClick() {
     this.showSelect = false;
@@ -86,7 +72,7 @@ export class SalesComponent {
 
     if (this.product_description.length > 2) {
       this.showSelect = true;
-      console.log(this.product_description);
+      
       this.productSerive.getProductByDescription(this.product_description).subscribe(data => {
 
         this.productSuggestionList = data;
@@ -112,7 +98,7 @@ export class SalesComponent {
     let sellers = [];
     let series = [];
     
-    console.log(sales_by_seller)
+    
     let total_sales = 0;
     start = '' + startDate.year.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + '-'
       + startDate.month.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + '-'
@@ -145,20 +131,33 @@ export class SalesComponent {
           tmp_element['cant'] = tmp_element['cant'] + element.Cantidad
         }
       })
-
       
-      sales_by_seller.forEach(element => {
-        series.push(element['cant']);
-        console.log(element['cant'])
-      });
+      sales_by_seller.sort((a,b)=>{
+        return b['cant']-a['cant'];
+      })
+      let labels=[];
 
+      sales_by_seller.forEach((element,index) => {
+        series.push(element['cant']);
+        element['class']=chartistColorClasses[index]
+        element['percentage']=Math.round((element['cant']*100/total_sales))+"%";
+        labels.push(element['percentage'])
+      });
+      
+      
+
+      //series.sort((a,b)=>{return a-b});
+      
 
       this.table_data = sales_by_seller;
       this.graph_data = {
+        labels:labels,
         series:series
+        
       }
-      this.total_sales = total_sales;
       
+      this.total_sales = total_sales;
+      this.show=true;
 
 
 
