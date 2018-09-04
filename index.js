@@ -12,7 +12,7 @@ var public_app = express();
 
 
 var PUBLIC_PORT = 80;
-var conf_file = JSON.parse(fs.readFileSync('./server_config.json', 'utf8'));
+var conf_file = JSON.parse(fs.readFileSync('server_config.json', 'utf8'));
 var environment = conf_file.conf.environment;
 var servers = conf_file.servers;
 
@@ -95,7 +95,7 @@ app.use('/node_modules', express.static(path.join(__dirname, 'ng2-admin/node_mod
 public_app.use(express.static(path.join(__dirname, './public_root/'), { dotfiles: 'allow' }));
 
 public_app.get('/', function (req, res) {
-    res.redirect('http://' + req.header('Host') + req.url);
+    res.redirect('https://' + req.header('Host') + req.url);
 });
 
 
@@ -111,6 +111,8 @@ apiRoutes.post('/authenticate', function (req, res) {
     let query = "Select Nombre,Password,UsuarioId,Corre1 from ERPUsuarios where UsuarioId=@usuarioid";
     
     pool = req.headers['db-pool'];
+
+    console.log("headers",req.headers);
     
     connectionPools[pool].request().input('usuarioid', sql.VarChar, UsuarioId).query(query, (err, result) => {
 
@@ -474,7 +476,7 @@ apiRoutes.get('/sales/year/:year', function (req, res) {
     var year = req.params.year;
     let poolKey = req.headers['db-pool']
 
-    var query = 'Select Datepart(yyyy,f.fecha) as Year, ' +
+    /* var query = 'Select Datepart(yyyy,f.fecha) as Year, ' +
         '(Select Sum(x.Total) From FACDocumento x Where x.EmpresaId=f.EmpresaId And Year(x.Fecha)=Year(f.fecha) And Month(x.Fecha)=1 And x.AplicadoInvent=1 And x.Anulado=0 ) as Enero, ' +
         '(Select Sum(x.Total) From FACDocumento x Where x.EmpresaId=f.EmpresaId And Year(x.Fecha)=Year(f.fecha) And Month(x.Fecha)=2 And x.AplicadoInvent=1 And x.Anulado=0 ) as Febrero, ' +
         '(Select Sum(x.Total) From FACDocumento x Where x.EmpresaId=f.EmpresaId And Year(x.Fecha)=Year(f.fecha) And Month(x.Fecha)=3 And x.AplicadoInvent=1 And x.Anulado=0 ) as Marzo, ' +
@@ -490,7 +492,13 @@ apiRoutes.get('/sales/year/:year', function (req, res) {
         'From FACDocumento as f ' +
         'Where EmpresaId=9 And Datepart(yyyy,f.fecha) >= @Year ' +
         'Group by Datepart(yyyy,f.fecha),f.EmpresaId ' +
-        'Order by Datepart(yyyy,f.fecha) ';
+        'Order by Datepart(yyyy,f.fecha) '; */
+
+    var query = 'Select Ano as Year, Sum(Enero) AS Enero, Sum(Febrero) AS Febrero, Sum(Marzo) As Marzo, Sum(Abril) As Abril, \
+    Sum(Mayo) As Mayo, Sum(Junio) As Junio, Sum(Julio) As Julio, Sum(Agosto) As Agosto, Sum(Septiembre) As Septiembre, \
+    Sum(Octubre) As Octubre, Sum(Noviembre) As Noviembre, Sum(Diciembre) As Diciembre   \
+                From INVRepWEBVentasVendedor where Ano>=@Year And Fuente=\'Ventas\' \
+                Group By Ano';
 
 
     connectionPools[poolKey].request().input('Year', sql.Int, year).query(query, (err, result) => {
