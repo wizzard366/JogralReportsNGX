@@ -1,0 +1,79 @@
+<div *ngIf="display">
+        <form class="form-horizontal">
+                <div class="form-group row">
+                        <label class="col-sm-4 form-control-label">Mostrar Cantidades:</label>
+                        <div class="col-sm-2">
+                            <input type="checkbox" [(ngModel)]="show_quantites" name="show_quantites" class="form-control" id="show_quantites">
+                        </div>
+                    </div>
+        </form>
+    <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="show_quantites ? quantities_graph_data : money_graph_data"
+                            [baChartistChartOptions]="chart_options">
+    </ba-chartist-chart>
+    <div class="table-responsive">
+        <table class="table table-bordered table-condensed">
+            <thead>
+                <tr class="black-muted-bg">
+                    <th class="align-center"></th>
+                    <th class="align-center">Ano</th>
+
+                    <th class="align-center">Enero</th>
+                    <th class="align-center">Febrero</th>
+                    <th class="align-center">Marzo</th>
+                    <th class="align-center">Abril</th>
+                    <th class="align-center">Mayo</th>
+                    <th class="align-center">Junio</th>
+                    <th class="align-center">Julio</th>
+                    <th class="align-center">Agosto</th>
+                    <th class="align-center">Septiembre</th>
+                    <th class="align-center">Octubre</th>
+                    <th class="align-center">Noviembre</th>
+                    <th class="align-center">Diciembre</th>
+                    <th class="align-center">Total</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="show_quantites">
+                <tr *ngFor="let item of quantities_table_data" class="no-top-border">
+                    <td class="align-right">
+                        <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
+                    </td>
+                    <td class="align-right">{{item.Ano}}</td>
+                    <td class="align-right">{{item.Enero}}</td>
+                    <td class="align-right">{{item.Febrero}}</td>
+                    <td class="align-right">{{item.Marzo}}</td>
+                    <td class="align-right">{{item.Abril}}</td>
+                    <td class="align-right">{{item.Mayo}}</td>
+                    <td class="align-right">{{item.Junio}}</td>
+                    <td class="align-right">{{item.Julio}}</td>
+                    <td class="align-right">{{item.Agosto}}</td>
+                    <td class="align-right">{{item.Septiembre}}</td>
+                    <td class="align-right">{{item.Octubre}}</td>
+                    <td class="align-right">{{item.Noviembre}}</td>
+                    <td class="align-right">{{item.Diciembre}}</td>
+                    <td class="align-right">{{item.Total}}</td>
+                </tr>
+            </tbody>
+            <tbody  *ngIf="!show_quantites">
+                <tr *ngFor="let item of money_table_data" class="no-top-border">
+                        <td class="align-right">
+                            <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
+                        </td>
+                        <td class="align-right">{{item.Ano}}</td>
+                        <td class="align-right">Q.{{item.Enero}}</td>
+                        <td class="align-right">Q.{{item.Febrero}}</td>
+                        <td class="align-right">Q.{{item.Marzo}}</td>
+                        <td class="align-right">Q.{{item.Abril}}</td>
+                        <td class="align-right">Q.{{item.Mayo}}</td>
+                        <td class="align-right">Q.{{item.Junio}}</td>
+                        <td class="align-right">Q.{{item.Julio}}</td>
+                        <td class="align-right">Q.{{item.Agosto}}</td>
+                        <td class="align-right">Q.{{item.Septiembre}}</td>
+                        <td class="align-right">Q.{{item.Octubre}}</td>
+                        <td class="align-right">Q.{{item.Noviembre}}</td>
+                        <td class="align-right">Q.{{item.Diciembre}}</td>
+                        <td class="align-right">Q.{{item.Total}}</td>
+                    </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

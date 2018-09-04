@@ -25,9 +25,11 @@ export const routes: Routes = [
       { path: '', redirectTo: 'reportes', pathMatch: 'full' },
       { path: 'precios', loadChildren: 'app/pages/precios/precios.module#PreciosModule',canActivate: [AuthGuard]},
       { path: 'reportes', loadChildren: 'app/pages/reports/reports.module#ReportsModule', canActivate: [AuthGuard]},
-      { path: 'laboratorios', loadChildren: 'app/pages/laboratories/laboratories.module#LaboratoriesModule', canActivate: [AuthGuard]},
+      { path: 'labs', loadChildren: 'app/pages/laboratories/labs.module#LabsModule', canActivate: [AuthGuard]},
+      
       { path: 'vendedores', loadChildren: 'app/pages/sellers/sellers.module#SellersModule', canActivate: [AuthGuard]},
       { path: 'clientes', loadChildren: 'app/pages/clients/clients.module#ClientsModule', canActivate: [AuthGuard]},
+      { path: 'ventas', loadChildren: 'app/pages/sales/sales.module#SalesModule', canActivate: [AuthGuard]},
       /* 
       { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
       { path: 'editors', loadChildren: './editors/editors.module#EditorsModule' },

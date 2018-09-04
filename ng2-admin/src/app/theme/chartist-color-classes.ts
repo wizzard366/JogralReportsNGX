@@ -12,5 +12,16 @@ export const chartistColorClasses = [
     "series-l",
     "series-m",
     "series-n",
-    "series-o"
+    "series-o",
+    "series-p",
+    "series-q",
+    "series-r",
+    "series-s",
+    "series-t",
+    "series-u",
+    "series-v",
+    "series-w",
+    "series-x",
+    "series-y",
+    "series-y"
 ]

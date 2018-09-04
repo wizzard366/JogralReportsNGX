@@ -148,8 +148,8 @@ export class LaboratoriesComponent {
     }
     parseProductName(cell,row){
 
-        return cell;
-        //return "<a href='/pages/laboratorios/productInfo/"+row.ProductoId+"'>"+cell+"</a>";
+        //return cell;
+        return "<a href='/#/pages/laboratorios/productinfo/"+row.ProductoId+"'>"+cell+"</a>";
     }
 
     

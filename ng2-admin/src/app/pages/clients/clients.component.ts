@@ -7,6 +7,7 @@ import { chartistColorClasses } from '../../theme/chartist-color-classes';
 import { DateService } from '../services/date.service';
 import 'style-loader!../../theme/chartistJs.scss';
 
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'clients',
@@ -193,6 +194,20 @@ export class ClientsComponent {
 
     }
 
+    download(){
+        
+
+        /* generate worksheet */
+		const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.clients_data);
+
+		/* generate workbook and add the worksheet */
+		const wb: XLSX.WorkBook = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+		/* save to file */
+		XLSX.writeFile(wb, "top-10-clientes-"+this.date.getFullYear()+""+(this.date.getMonth()+1)+""+this.date.getDate()+".xlsx");
+
+    }
     selectKeyPress($event){
 
 

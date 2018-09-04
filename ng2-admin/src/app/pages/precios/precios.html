@@ -1,24 +1,28 @@
 <div class="row">
     <div class="col-md-6">
-        <ba-card title="Búsqueda de productos" baCardClass="with-scroll">
+        <ba-card cardTitle="Búsqueda de productos" baCardClass="with-scroll">
             <product-search-forms #psearchForm 
             (initRenderPrices)="pricesTable.getPrices($event)" 
             (initRenderStock)="stockTable.getStock($event)" 
             (initRenderMeasures)="measuresTable.getMeasures($event);"
+            (initRenderGraphs)="salesGraph.render($event);"
             (clearAll)="pricesTable.clear();measuresTable.clear();stockTable.clear();"></product-search-forms>
         </ba-card>
-        <ba-card title="Precios Actuales" baCardClass="with-scroll">
+        <ba-card cardTitle="Precios Actuales" baCardClass="with-scroll">
                 <prices-table #pricesTable></prices-table>
         </ba-card>
         
     </div>
 
     <div class="col-md-6">
-        <ba-card title="Unidades de Medida" baCardClass="with-scroll">
+        <ba-card cardTitle="Unidades de Medida" baCardClass="with-scroll">
                 <measures-table #measuresTable (selectUMedida)="psearchForm.selectUMedida($event)" (renderStock)="psearchForm._initRenderStock($event)"></measures-table>
         </ba-card>
-        <ba-card title="Existencias" baCardClass="with-scroll">
+        <ba-card cardTitle="Existencias" baCardClass="with-scroll">
             <stock-table #stockTable></stock-table>
         </ba-card>
+        <ba-card cardTitle="Ventas Últimos 3 años" baCardClass="with-scroll">
+            <sales-graph #salesGraph ></sales-graph>
+    </ba-card>
     </div>
 </div>

@@ -7,7 +7,7 @@
 <form (submit)="getProductbyDescription($event)">
     <div class="form-group">
         <label for="descripcion">Descripción:</label>
-        <input type="text" [(ngModel)]="descripcion" name="descripcion" class="form-control" id="descripcion" (input)="input(focusable)" (keypress)="descriptionInputKeyPress($event,focusable)">
+        <input type="text" [(ngModel)]="descripcion" name="descripcion" class="form-control" id="descripcion" (input)="input()" >
         <select #focusable multiple class="form-control tablet-landscape-and-below" id="selectedProductId" name="selectedProductId" *ngIf="showSelect" (keypress)="selectKeyPress($event)" (click)="selectClick($event)" [(ngModel)]="productoId">
             <option *ngFor="let product of productSuggestionList" [value]="product.productoId">{{product.descripcion}}</option>
         </select>

@@ -1,10 +1,10 @@
 import { Routes, RouterModule }  from '@angular/router';
-import { LaboratoriesComponent } from './laboratories.component';
+import { SalesComponent } from './sales.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: LaboratoriesComponent
+    component: SalesComponent
   }
 ];
 

@@ -30,7 +30,7 @@ export const PAGES_MENU = [
         }
       },
       {
-        path: 'laboratorios',  // path for our page
+        path: 'labs',  // path for our page
         data: { // custom menu declaration
           menu: {
             title: 'Laboratorios', // menu title
@@ -61,6 +61,19 @@ export const PAGES_MENU = [
           menu: {
             title: 'Clientes', // menu title
             icon: 'fa fa-address-book', // menu icon
+            pathMatch: 'prefix', // use it if item children not displayed in menu
+            selected: false,
+            expanded: false,
+            order: 0
+          }
+        }
+      },
+      {
+        path: 'ventas',  // path for our page
+        data: { // custom menu declaration
+          menu: {
+            title: 'Ventas', // menu title
+            icon: 'fa fa-credit-card', // menu icon
             pathMatch: 'prefix', // use it if item children not displayed in menu
             selected: false,
             expanded: false,
