@@ -854,6 +854,20 @@ apiRoutes.get('/date', function (req, res) {
 
 })
 
+apiRoutes.get('/purchases', function (req, res) {
+
+    let poolKey = req.headers['db-pool']
+
+    var query = 'Select * from COMDashGlobal order by MarcaId, ProductoId ';
+
+
+    connectionPools[poolKey].request().query(query, (err, result) => {
+
+        res.send(result);
+    });
+
+})
+
 
 
 // apply the routes to our application with the prefix /api
