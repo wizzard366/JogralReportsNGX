@@ -28,16 +28,17 @@ servers.forEach(element => {
             user: element["db-user"],
             password: element["db-pass"],
             server: element["db-server"],
-            database: element["db-name"]
+            database: element["db-name"],
+            id:element["db-id"]
         }
         
-        connectionPools[config.server + ":" + config.database] = new sql.Connection(config);
-        connectionPools[config.server + ":" + config.database].on('error', err => {
-            console.log("ERROR: Pool[" + "" + config.server + config.database + "]=> ", err);
+        connectionPools[config.id] = new sql.Connection(config);
+        connectionPools[config.id].on('error', err => {
+            console.log("ERROR: Pool[" + "" + config.id + "]=> ", err);
         });
-        connectionPools[config.server + ":" + config.database].connect(err => {
+        connectionPools[config.id].connect(err => {
             if (err)
-                console.log("ERROR: Testing Pool[" + "" + config.server + config.database + "]=> ", err);
+                console.log("ERROR: Testing Pool[" + "" + config.id + "]=> ", err);
         })
     }
 })
@@ -103,16 +104,16 @@ public_app.get('/', function (req, res) {
 var apiRoutes = express.Router();
 
 // TODO: route to authenticate a user (POST http://localhost:8080/api/authenticate)
-apiRoutes.post('/authenticate', function (req, res) {
+apiRoutes.post('/:serverid/authenticate', function (req, res) {
 
     // find the user
 
     let UsuarioId = req.body.username;
     let query = "Select Nombre,Password,UsuarioId,Corre1 from ERPUsuarios where UsuarioId=@usuarioid";
     
-    pool = req.headers['db-pool'];
+    pool = req.params.serverid;
 
-    console.log("headers",req.headers);
+    
     
     connectionPools[pool].request().input('usuarioid', sql.VarChar, UsuarioId).query(query, (err, result) => {
 
@@ -162,7 +163,7 @@ apiRoutes.get('/servers', function (req, res) {
 
         response.push({
             name: element["db-server-name"],
-            index: element["db-server"] + ":" + element["db-name"],
+            index: element["db-id"],
         })
     });
 
@@ -171,18 +172,20 @@ apiRoutes.get('/servers', function (req, res) {
 
 
 
-apiRoutes.get('/test', function (req, res) {
+apiRoutes.get('/:serverid/test/', function (req, res) {
 
-    pool = req.headers['db-pool'];
-    console.log(pool);
+    pool = req.params.serverid;
+    console.log("serverid",req.params.serverid);
     if (pool) {
 
         //request = new sql.Request(connectionPools[pool]);
 
-        connectionPools[pool].request().query("select 1 as number", (err, result) => {
+        /* connectionPools[pool].request().query("select 1 as number", (err, result) => {
             if (err) { res.send(err) }
             res.send(result);
-        });
+        }); */
+
+        res.send(req.params.serverid)
     }
 
 });
@@ -226,11 +229,11 @@ apiRoutes.use(function (req, res, next) {
 
 
 //get product sales info last 3 years
-apiRoutes.get('/producto/:pid/yearsales/', function (req, res) {
+apiRoutes.get('/:serverid/producto/:pid/yearsales/', function (req, res) {
 
     let ProductoId = req.params.pid;
 
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     let query = "Select  fd.EmpresaId, fd.ProductoId, Ano=Datepart(yyyy,f.Fecha), \
     Mes=Datepart(MM,f.Fecha),  Cantidad=Sum(fd.Cantidad*um.Factor), Monto=Round(Sum(fd.PrecioTotal),2) \
@@ -270,12 +273,12 @@ apiRoutes.get('/producto/:pid/yearsales/', function (req, res) {
 });
 
 //get product sales info date interval
-apiRoutes.get('/producto/:id/ventas', function (req, res) {
+apiRoutes.get('/:serverid/producto/:id/ventas', function (req, res) {
 
     var ProductoId = req.params.id;
     var startDate = decodeURIComponent(req.query['startDate']);
     var endDate = decodeURIComponent(req.query['endDate']) + ' 23:59';
-    let poolKey = req.headers['db-pool'];
+    let poolKey = req.params.serverid;
 
 
     var query = "Select  fd.EmpresaId, fd.ProductoId, f.Fecha,  Cantidad=Sum(fd.Cantidad*um.Factor), Monto=Sum(fd.PrecioTotal)\
@@ -307,12 +310,12 @@ apiRoutes.get('/producto/:id/ventas', function (req, res) {
 
 
 // Get product by id
-apiRoutes.get('/producto/:id', function (req, res) {
+apiRoutes.get('/:serverid/producto/:id', function (req, res) {
 
 
     var id_parameter = req.params.id;
 
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select p.EmpresaId as empresaId,p.ProductoId as productoId,p.Descripcion as descripcion, a.Descripcion as area, s.Descripcion as subArea, m.Descripcion as marca, p.Costo as costo, p.AfectoIVA as afectoIva ' +
         'from INVProducto p, INVXArea a, INVXAreaSubArea s, INVXMarca m ' +
@@ -338,12 +341,12 @@ apiRoutes.get('/producto/:id', function (req, res) {
 });
 
 // Get product by description
-apiRoutes.get('/producto/description/:desc', function (req, res) {
+apiRoutes.get('/:serverid/producto/description/:desc', function (req, res) {
 
 
     var desc_parameter = req.params.desc;
     var desc_queryParam = '%' + desc_parameter + '%'
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select p.EmpresaId as empresaId,p.ProductoId as productoId,p.Descripcion as descripcion, a.Descripcion as area, s.Descripcion as subArea, m.Descripcion as marca, p.Costo as costo, p.AfectoIVA as afectoIva ' +
         'from INVProducto p, INVXArea a, INVXAreaSubArea s, INVXMarca m ' +
@@ -365,9 +368,9 @@ apiRoutes.get('/producto/description/:desc', function (req, res) {
 });
 
 // get measurements by product id
-apiRoutes.get('/producto/:id/umedida', function (req, res) {
+apiRoutes.get('/:serverid/producto/:id/umedida', function (req, res) {
     var id_parameter = req.params.id;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
 
     var query = 'Select EmpresaId,ProductoId,UMedidaId,Descripcion,Base,Factor  ' +
@@ -388,11 +391,11 @@ apiRoutes.get('/producto/:id/umedida', function (req, res) {
 
 
 //get prices by product id and measurement
-apiRoutes.get('/precios/producto/:id/umedida/:umid/:umdesc', function (req, res) {
+apiRoutes.get('/:serverid/precios/producto/:id/umedida/:umid/:umdesc', function (req, res) {
     var id_parameter = req.params.id;
     var id_umedida = req.params.umid;
     var desc_umedida = req.params.umdesc;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
 
     var query = 'Select pr.EmpresaId,pr.ProductoId,pr.UMedidaId,pr.DescUMedida, pr.TipoPrecioId ,tp.Descripcion as TipoPrecio, pr.PrecioVenta, Round(pr.MargenSobreCosto,4) as MargenSobreCosto ' +
@@ -416,12 +419,12 @@ apiRoutes.get('/precios/producto/:id/umedida/:umid/:umdesc', function (req, res)
 
 
 // get price range
-apiRoutes.get('/precios/rangos/producto/:id/umedida/:umid/:umdesc/pricetype/:ptypeid', function (req, res) {
+apiRoutes.get('/:serverid/precios/rangos/producto/:id/umedida/:umid/:umdesc/pricetype/:ptypeid', function (req, res) {
     var id_parameter = req.params.id;
     var id_umedida = req.params.umid;
     var desc_umedida = req.params.umdesc;
     var id_ptype = req.params.ptypeid;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
 
 
@@ -443,11 +446,11 @@ apiRoutes.get('/precios/rangos/producto/:id/umedida/:umid/:umdesc/pricetype/:pty
 });
 
 /* get stock */
-apiRoutes.get('/producto/:id/existencias/umedida/factor/:factor', function (req, res) {
+apiRoutes.get('/:serverid/producto/:id/existencias/umedida/factor/:factor', function (req, res) {
 
     var id_parameter = req.params.id;
     var factor_umedida = req.params.factor;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
 
     var query = 'Select pb.EmpresaId,pb.ProductoId,b.Descripcion as Bodega, pb.UMedidaId, pb.DescUMedidaId, (pb.SaldoActual / @Factor) as SaldoActual  ' +
@@ -471,10 +474,10 @@ apiRoutes.get('/producto/:id/existencias/umedida/factor/:factor', function (req,
 // Graficas
 
 /* ventas totales por mes y year */
-apiRoutes.get('/sales/year/:year', function (req, res) {
+apiRoutes.get('/:serverid/sales/year/:year', function (req, res) {
 
     var year = req.params.year;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     /* var query = 'Select Datepart(yyyy,f.fecha) as Year, ' +
         '(Select Sum(x.Total) From FACDocumento x Where x.EmpresaId=f.EmpresaId And Year(x.Fecha)=Year(f.fecha) And Month(x.Fecha)=1 And x.AplicadoInvent=1 And x.Anulado=0 ) as Enero, ' +
@@ -512,10 +515,10 @@ apiRoutes.get('/sales/year/:year', function (req, res) {
 });
 
 /* Ventas por Marca del Mes Actual  este es de PIE */
-apiRoutes.get('/sales/brand', function (req, res) {
+apiRoutes.get('/:serverid/sales/brand', function (req, res) {
 
     var year = req.params.year;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select top 5 m.Descripcion as Marca, Round(Sum(d.PrecioTotal),2) as Total ' +
         'from FACDocumento f, FACDocumentoDet d, INVXMarca m, INVProducto p ' +
@@ -535,9 +538,9 @@ apiRoutes.get('/sales/brand', function (req, res) {
 });
 
 /* Ventas por Vendedor del Mes Actual   */
-apiRoutes.get('/sales/salesman', function (req, res) {
+apiRoutes.get('/:serverid/sales/salesman', function (req, res) {
 
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select v.NombreCompleto as Vendedor, Round(Sum(f.Total),2) as Total  ' +
         'from FACDocumento f,  FACXVendedor v ' +
@@ -556,9 +559,9 @@ apiRoutes.get('/sales/salesman', function (req, res) {
 
 /* no enmpresa parameter */
 /* ventas por vendedor y proyecciones */
-apiRoutes.get('/sales/salesman/proyections', function (req, res) {
+apiRoutes.get('/:serverid/sales/salesman/proyections', function (req, res) {
 
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select * From INVRepWEBVentasVendedor order by VendedorId ';
 
@@ -575,10 +578,10 @@ apiRoutes.get('/sales/salesman/proyections', function (req, res) {
 
 /* no enmpresa parameter */
 /* ventas por vendedor y proyecciones por año */
-apiRoutes.get('/sales/salesman/proyections/:year', function (req, res) {
+apiRoutes.get('/:serverid/sales/salesman/proyections/:year', function (req, res) {
 
     var year = req.params.year;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select * From INVRepWEBVentasVendedor where Ano=@year order by VendedorId ';
 
@@ -592,12 +595,12 @@ apiRoutes.get('/sales/salesman/proyections/:year', function (req, res) {
 
 });
 
-apiRoutes.get('/sales/brand/product/:marcaId/:year', function (req, res) {
+apiRoutes.get('/:serverid/sales/brand/product/:marcaId/:year', function (req, res) {
 
     var marcaId = req.params.marcaId;
     var year = req.params.year;
 
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select * From INVRepWEBMarcaProducto where MarcaId=@marcaId and Ano>=@year order by Ano DESC';
 
@@ -612,11 +615,11 @@ apiRoutes.get('/sales/brand/product/:marcaId/:year', function (req, res) {
 
 /* no enmpresa parameter */
 /* Ventas por Laboratorio ultimos 3 años */
-apiRoutes.get('/sales/brand/:marcaId/:year', function (req, res) {
+apiRoutes.get('/:serverid/sales/brand/:marcaId/:year', function (req, res) {
 
     var marcaId = req.params.marcaId;
     var year = req.params.year;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select * From INVRepWEBMarca where MarcaId=@marcaId and Ano>=@year  ';
 
@@ -630,12 +633,12 @@ apiRoutes.get('/sales/brand/:marcaId/:year', function (req, res) {
 
 
 /**  top 10 clientes por vendedor */
-apiRoutes.get('/sales/salesman/:salesmanId/topclients/:year/:month', function (req, res) {
+apiRoutes.get('/:serverid/sales/salesman/:salesmanId/topclients/:year/:month', function (req, res) {
 
     var salesmanId = req.params.salesmanId;
     var year = req.params.year;
     var month = req.params.month;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
 
     var query = 'SELECT  TOP 5 f.EmpresaId, f.ClienteId, f.Nombre, VendedorId = v.VendedorId, Nombre = v.NombreCompleto, Total = Sum(f.Total)\
@@ -657,11 +660,11 @@ apiRoutes.get('/sales/salesman/:salesmanId/topclients/:year/:month', function (r
 
 
 /* búsqueda por marca/laboratorio */
-apiRoutes.get('/brand/:brandName', function (req, res) {
+apiRoutes.get('/:serverid/brand/:brandName', function (req, res) {
 
     var brandName = req.params.brandName;
     var brand_queryParam = '%' + brandName + '%'
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select * from INVXMarca  ' +
         'Where Descripcion like @brandName AND EmpresaId=9';
@@ -677,12 +680,12 @@ apiRoutes.get('/brand/:brandName', function (req, res) {
 
 
 /* Ventas por Cliente por Año*/
-apiRoutes.get('/clients/salesperyear/:year/:cuser', function (req, res) {
+apiRoutes.get('/:serverid/clients/salesperyear/:year/:cuser', function (req, res) {
 
     var empresaid = 9;
     var clientUser = req.params.cuser;
     var year = req.params.year;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'SELECT d.EmpresaId,d.Ano,d.Cliente,d.NombreCliente,d.Vendedor, ' +
         'Round(SUM(CASE WHEN Mes = 01 THEN Total ELSE 0 END),2) AS Enero, ' +
@@ -720,12 +723,12 @@ apiRoutes.get('/clients/salesperyear/:year/:cuser', function (req, res) {
 
 /******** */
 /* Ventas por Cliente por Año Top 10*/
-apiRoutes.get('/clients/top/salesperyear/:year', function (req, res) {
+apiRoutes.get('/:serverid/clients/top/salesperyear/:year', function (req, res) {
 
     var empresaid = 9;
     var clientUser = req.params.cuser;
     var year = req.params.year;
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'SELECT top 10 d.EmpresaId,d.Ano,d.Cliente,d.NombreCliente,d.Vendedor, ' +
         'Round(SUM(CASE WHEN Mes = 01 THEN Total ELSE 0 END),2) AS Enero, ' +
@@ -761,12 +764,12 @@ apiRoutes.get('/clients/top/salesperyear/:year', function (req, res) {
 
 
 /* clientes */
-apiRoutes.get('/clients/:name', function (req, res) {
+apiRoutes.get('/:serverid/clients/:name', function (req, res) {
 
     var empresaid = 9;
     var name = req.params.name;
     name = "%" + name + "%";
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'select C.ClienteId, C.NIT, C.Nombre, C.Apellido, C.NombreComercial from CXCCliente  as C ' +
         'where C.EmpresaId = @empresaid and C.NombreComercial like @name ' +
@@ -785,10 +788,10 @@ apiRoutes.get('/clients/:name', function (req, res) {
 });
 
 /* ventas por producto y vendedor */
-apiRoutes.get('/sales/byproductandseller/:productId/', function (req, res) {
+apiRoutes.get('/:serverid/sales/byproductandseller/:productId/', function (req, res) {
 
     var empresaid = 9;
-    let poolKey = req.headers['db-pool'];
+    let poolKey = req.params.serverid;
 
     //var desde = decodeURIComponent(req.query['startDate']);
     //var hasta = decodeURIComponent(req.query['endDate']) + ' 23:59';
@@ -827,10 +830,10 @@ apiRoutes.get('/sales/byproductandseller/:productId/', function (req, res) {
 });
 
 
-apiRoutes.get('/sellers', function (req, res) {
+apiRoutes.get('/:serverid/sellers', function (req, res) {
 
     
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select * from FACXVendedor  ' +
         'Where Activo=1 AND EmpresaId=9';
@@ -854,9 +857,9 @@ apiRoutes.get('/date', function (req, res) {
 
 })
 
-apiRoutes.get('/purchases', function (req, res) {
+apiRoutes.get('/:serverid/purchases', function (req, res) {
 
-    let poolKey = req.headers['db-pool']
+    let poolKey = req.params.serverid;
 
     var query = 'Select * from COMDashGlobal order by MarcaId, ProductoId ';
 

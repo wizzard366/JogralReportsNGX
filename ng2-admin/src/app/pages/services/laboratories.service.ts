@@ -40,16 +40,16 @@ export class LaboratoriesService {
     getLaboratorySales(id, year) {
         let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
         let options = new RequestOptions({ headers: headers });
-        console.log("call:", '/api/sales/brand/' + id + '/' + year);
-        console.log("id:", id);
-        return this.http.get('/api/sales/brand/' + id + '/' + year, options)
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/sales/brand/' + id + '/' + year, options)
             .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
     }
 
     getLaboratoryProductSales(id, year) {
         let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
         let options = new RequestOptions({ headers: headers });
-        return this.http.get('/api/sales/brand/product/' + id + '/' + year, options)
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/sales/brand/product/' + id + '/' + year, options)
             .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
     }
 
@@ -57,7 +57,8 @@ export class LaboratoriesService {
     getLaboratoryByDescription(description) {
         let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
         let options = new RequestOptions({ headers: headers });
-        return this.http.get('/api/brand/' + description, options)
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/brand/' + description, options)
             .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
     }
 
