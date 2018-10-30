@@ -53,6 +53,7 @@ export class Login implements AfterViewInit {
     
 
     this.authenticationService.login(this.model.username, this.model.password,this.model.server)
+    
       .subscribe(result => {
         if (result === true) {
           // login successful

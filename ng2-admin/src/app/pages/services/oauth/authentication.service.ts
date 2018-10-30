@@ -20,6 +20,7 @@ export class AuthenticationService {
     }
  
     login(username: string, password: string, server:string): Observable<boolean> {
+        console.log("server",server);
         let body = `username=${username}&password=${password}`;
         let headers = new Headers({'Content-Type': 'application/x-www-form-urlencoded'});
         return this.http.post('/api/'+server+'/authenticate/', body, { headers: headers })
