@@ -43,7 +43,8 @@ export class PurchasesService {
     getPurchases() {
         let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
         let options = new RequestOptions({ headers: headers });
-        return this.http.get('/api/purchases', options)
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/purchases', options)
             .map(res => res.json()).catch((err: Response, obj) => {
                 return this.handleError(err, obj, this.router);
             });
