@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { PurchasesService } from '../services/purchases.service'
 import { LocalDataSource } from 'ng2-smart-table';
+import {ShowCellComponent} from './show.cel.component';
+import {MovComponent} from './mov.component';
 
 
 @Component({
@@ -32,8 +34,9 @@ export class PurchasesComponent {
       },
       Descripcion: {
         title: 'Descripcion',
-        type: 'text',
+        type: 'html',
         class: 'Descripcion-class',
+        valuePrepareFunction:this.styleName
       },
       UMedidaId: {
         title: 'UMedidaId',
@@ -133,8 +136,10 @@ export class PurchasesComponent {
       },
       FlagId: {
         title: 'FlagId',
-        type: 'text',
+        type: 'custom',
         class: 'FlagId-class',
+        valuePrepareFunction:(cell,row)=>{return {cell:cell,row:row}},
+        renderComponent:ShowCellComponent
       },
       Factor: {
         title: 'Factor',
@@ -198,18 +203,25 @@ export class PurchasesComponent {
       },
       MovActual: {
         title: 'MovActual',
-        type: 'text',
+        type: 'custom',
         class: 'MovActual-class',
+        valuePrepareFunction:(cell,row)=>{return {cell:cell,row:row}},
+        renderComponent:MovComponent
+
       },
       Mov3mes: {
         title: 'Mov3mes',
-        type: 'text',
+        type: 'custom',
         class: 'Mov3mes-class',
+        valuePrepareFunction:(cell,row)=>{return {cell:cell,row:row}},
+        renderComponent:MovComponent
       },
       Mov6: {
         title: 'Mov6',
-        type: 'text',
+        type: 'custom',
         class: 'Mov6-class',
+        valuePrepareFunction:(cell,row)=>{return {cell:cell,row:row}},
+        renderComponent:MovComponent
       },
       
     }
@@ -230,7 +242,9 @@ export class PurchasesComponent {
 
   }
 
-
+  styleName(cell){
+    return '<p>'+cell+'</p>'
+  }
 
   formatDate(cell,row){
     let delimiter = '/'

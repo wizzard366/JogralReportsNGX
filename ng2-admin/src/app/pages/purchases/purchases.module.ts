@@ -7,9 +7,8 @@ import { NgaModule } from '../../theme/nga.module';
 import { PurchasesComponent } from './purchases.component';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-
-
-
+import {ShowCellComponent} from './show.cel.component';
+import {MovComponent} from './mov.component';
 
 @NgModule({
   imports: [
@@ -17,10 +16,17 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
     routing,
     AngularFormsModule,
     NgaModule,
-    Ng2SmartTableModule
+    Ng2SmartTableModule,
+    
+  ],
+  entryComponents:[
+    ShowCellComponent,
+    MovComponent
   ],
   declarations: [
     PurchasesComponent,
+    ShowCellComponent,
+    MovComponent
   ]
 })
 export class PurchasesModule {}
