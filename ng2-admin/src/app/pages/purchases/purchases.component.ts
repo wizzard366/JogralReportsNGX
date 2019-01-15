@@ -3,6 +3,7 @@ import { PurchasesService } from '../services/purchases.service'
 import { LocalDataSource } from 'ng2-smart-table';
 import {ShowCellComponent} from './show.cel.component';
 import {MovComponent} from './mov.component';
+import {DisplayDescriptionComponent} from './displaydescription.component'
 
 
 @Component({
@@ -22,7 +23,7 @@ export class PurchasesComponent {
       delete: false
     },
     pager:{
-      perPage:5 
+      perPage:15
     },
     hideSubHeader: false,
     noDataMessage: 'No se encontraron datos',
@@ -34,29 +35,22 @@ export class PurchasesComponent {
       },
       Descripcion: {
         title: 'Descripcion',
-        type: 'html',
+        type: 'custom',
         class: 'Descripcion-class',
-        valuePrepareFunction:this.styleName
-      },
-      UMedidaId: {
-        title: 'UMedidaId',
-        type: 'text',
-        class: 'UMedidaId-class',
+        //valuePrepareFunction:this.styleName
+        renderComponent:DisplayDescriptionComponent
       },
       DescUMedida: {
         title: 'DescUMedida',
-        type: 'text',
+        type: 'custom',
         class: 'DescUMedida-class',
-      },
-      MarcaId: {
-        title: 'MarcaId',
-        type: 'text',
-        class: 'MarcaId-class',
+        renderComponent:DisplayDescriptionComponent
       },
       NombreMarca: {
         title: 'NombreMarca',
-        type: 'text',
+        type: 'custom',
         class: 'NombreMarca-class',
+        renderComponent:DisplayDescriptionComponent
       },
       FechaUCompra: {
         title: 'FechaUCompra',
@@ -78,6 +72,7 @@ export class PurchasesComponent {
         title: 'FechaUVenta',
         type: 'text',
         class: 'FechaUVenta-class',
+        valuePrepareFunction:this.formatDate
       },
       CantidadUVenta: {
         title: 'CantidadUVenta',
@@ -141,65 +136,10 @@ export class PurchasesComponent {
         valuePrepareFunction:(cell,row)=>{return {cell:cell,row:row}},
         renderComponent:ShowCellComponent
       },
-      Factor: {
-        title: 'Factor',
-        type: 'text',
-        class: 'Factor-class',
-      },
-      SaldoVencidos: {
-        title: 'SaldoVencidos',
-        type: 'text',
-        class: 'SaldoVencidos-class',
-      },
-      VencidosActual: {
-        title: 'VencidosActual',
-        type: 'text',
-        class: 'VencidosActual-class',
-      },
-      VentasInternas: {
-        title: 'VentasInternas',
-        type: 'text',
-        class: 'VentasInternas-class',
-      },
-      StatusId: {
-        title: 'StatusId',
-        type: 'text',
-        class: 'StatusId-class',
-      },
-      NIT: {
-        title: 'NIT',
-        type: 'text',
-        class: 'NIT-class',
-      },
       NomProveedor: {
         title: 'NomProveedor',
         type: 'text',
         class: 'NomProveedor-class',
-      },
-      FechaSol: {
-        title: 'FechaSol',
-        type: 'text',
-        class: 'FechaSol-class',
-      },
-      CantidadSol: {
-        title: 'CantidadSol',
-        type: 'text',
-        class: 'CantidadSol-class',
-      },
-      ObservaSol: {
-        title: 'ObservaSol',
-        type: 'text',
-        class: 'ObservaSol-class',
-      },
-      FechaEntrega: {
-        title: 'FechaEntrega',
-        type: 'text',
-        class: 'FechaEntrega-class',
-      },
-      Bonificacion: {
-        title: 'Bonificacion',
-        type: 'text',
-        class: 'Bonificacion-class',
       },
       MovActual: {
         title: 'MovActual',
@@ -230,8 +170,6 @@ export class PurchasesComponent {
   }
 
   
-
-
   constructor(private purchasesService: PurchasesService) {
 
     purchasesService.getPurchases().subscribe(data => {
@@ -243,7 +181,7 @@ export class PurchasesComponent {
   }
 
   styleName(cell){
-    return '<p>'+cell+'</p>'
+    return '<div style="white-space:nowrap">'+cell+'</div>'
   }
 
   formatDate(cell,row){

@@ -9,6 +9,7 @@ import { PurchasesComponent } from './purchases.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import {ShowCellComponent} from './show.cel.component';
 import {MovComponent} from './mov.component';
+import {DisplayDescriptionComponent} from './displaydescription.component';
 
 @NgModule({
   imports: [
@@ -21,12 +22,14 @@ import {MovComponent} from './mov.component';
   ],
   entryComponents:[
     ShowCellComponent,
-    MovComponent
+    MovComponent,
+    DisplayDescriptionComponent
   ],
   declarations: [
     PurchasesComponent,
     ShowCellComponent,
-    MovComponent
+    MovComponent,
+    DisplayDescriptionComponent
   ]
 })
 export class PurchasesModule {}
