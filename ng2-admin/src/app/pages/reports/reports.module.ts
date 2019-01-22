@@ -8,6 +8,7 @@ import { ReportsComponent } from './reports.component';
 
 import { PieCharts } from './pieCharts';
 import { PieChartsService } from './pieCharts/pieCharts.service';
+import {LabsProyectionsComponent} from './labsProyections'
 
 
 
@@ -20,7 +21,8 @@ import { PieChartsService } from './pieCharts/pieCharts.service';
   ],
   declarations: [
     ReportsComponent,
-    PieCharts
+    PieCharts,
+    LabsProyectionsComponent
   ],
   providers:[
     PieChartsService

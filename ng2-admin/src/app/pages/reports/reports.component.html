@@ -1,13 +1,19 @@
 <section class="chartist">
     <div class="row">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <label>Ventas por Vendedor Año Corriente</label>
+            <label>Ventas por Vendedor Mes Corriente</label>
             <pie-charts ></pie-charts>
         </div>
     </div>
     <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <label>Ventas por Laboratorio Año Corriente</label>
+                <labs-proyections></labs-proyections>
+        </div>
+    </div>
+    
+    <div class="row">
         
-
         <div class="col-md-12 ">
             <ba-card cardTitle="Ventas por Año (x10,000)" baCardClass="with-scroll">
                 <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="SalesPerYearData" [baChartistChartOptions]="SalesPerYearOptions">

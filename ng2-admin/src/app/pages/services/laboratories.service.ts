@@ -62,5 +62,15 @@ export class LaboratoriesService {
             .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
     }
 
+    getSalesAndProyectionsByLaboratory() {
+        let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
+        let options = new RequestOptions({ headers: headers });
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/sales/labs', options)
+            .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
+    }
+
+
+    
 
 }

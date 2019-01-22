@@ -787,6 +787,66 @@ apiRoutes.get('/:serverid/clients/:name', function (req, res) {
 
 });
 
+
+/* ventas por laboratorio y proyección */
+apiRoutes.get('/:serverid/sales/labs', function (req, res) {
+
+    var empresaid = 9;
+    let poolKey = req.params.serverid;
+
+    var query = "Select 'Proyeccion' as Fuente, MarcaId, Descripcion, Ano, \
+                    Sum(Case When DATEPART(MM,Mes)=1  Then Proyeccion Else 0 END) AS Enero, \
+                    Sum(Case When DATEPART(MM,Mes)=2  Then Proyeccion Else 0 END) AS Febrero, \
+                    Sum(Case When DATEPART(MM,Mes)=3  Then Proyeccion Else 0 END) AS Marzo, \
+                    Sum(Case When DATEPART(MM,Mes)=4  Then Proyeccion Else 0 END) AS Abril,  \
+                    Sum(Case When DATEPART(MM,Mes)=5  Then Proyeccion Else 0 END) AS Mayo, \
+                    Sum(Case When DATEPART(MM,Mes)=6  Then Proyeccion Else 0 END) AS Junio, \
+                    Sum(Case When DATEPART(MM,Mes)=7  Then Proyeccion Else 0 END) AS Julio, \
+                    Sum(Case When DATEPART(MM,Mes)=8  Then Proyeccion Else 0 END) AS Agosto, \
+                Sum(Case When DATEPART(MM,Mes)=9  Then Proyeccion Else 0 END) AS Septiembre, \
+                Sum(Case When DATEPART(MM,Mes)=10 Then Proyeccion Else 0 END) AS Octubre, \
+                    Sum(Case When DATEPART(MM,Mes)=11 Then Proyeccion Else 0 END) AS Novimebre, \
+                    Sum(Case When DATEPART(MM,Mes)=12 Then Proyeccion Else 0 END) AS Diciembre, \
+                    Sum(Total) as Total \
+                From (Select m.MarcaId, m.Descripcion, Year(mp.Desde) as Ano, Month(mp.Desde) as Mes, Proyeccion as Proyeccion, Sum(Proyeccion) as Total \
+                    from INVXMarcaPro mp, INVXMarca m \
+                    Where m.EmpresaId=9 And \
+                            mp.EmpresaId=m.EmpresaId And mp.MarcaId=m.MarcaId \
+                    Group By m.MarcaId, m.Descripcion, Year(mp.Desde), Month(mp.Desde),Proyeccion \
+                ) as D \
+                Group By  MarcaId, Descripcion, Ano \
+                Union \
+                Select 'Ventas' as Fuente, MarcaId, Descripcion, Ano, \
+                    Sum(Case When DATEPART(MM,Mes)=1  Then Proyeccion Else 0 END) AS Enero, \
+                    Sum(Case When DATEPART(MM,Mes)=2  Then Proyeccion Else 0 END) AS Febrero, \
+                    Sum(Case When DATEPART(MM,Mes)=3  Then Proyeccion Else 0 END) AS Marzo, \
+                    Sum(Case When DATEPART(MM,Mes)=4  Then Proyeccion Else 0 END) AS Abril, \
+                Sum(Case When DATEPART(MM,Mes)=5  Then Proyeccion Else 0 END) AS Mayo, \
+                    Sum(Case When DATEPART(MM,Mes)=6  Then Proyeccion Else 0 END) AS Junio, \
+                    Sum(Case When DATEPART(MM,Mes)=7  Then Proyeccion Else 0 END) AS Julio, \
+                    Sum(Case When DATEPART(MM,Mes)=8  Then Proyeccion Else 0 END) AS Agosto, \
+                    Sum(Case When DATEPART(MM,Mes)=9  Then Proyeccion Else 0 END) AS Septiembre, \
+                    Sum(Case When DATEPART(MM,Mes)=10 Then Proyeccion Else 0 END) AS Octubre, \
+                    Sum(Case When DATEPART(MM,Mes)=11 Then Proyeccion Else 0 END) AS Novimebre, \
+                    Sum(Case When DATEPART(MM,Mes)=12 Then Proyeccion Else 0 END) AS Diciembre, \
+                    Sum(Total) as Total \
+                From (Select m.MarcaId, m.Descripcion, Year(mp.Desde) as Ano, Month(mp.Desde) as Mes, Ejecutado as Proyeccion, Sum(Ejecutado) as Total \
+                    from INVXMarcaPro mp, INVXMarca m \
+                    Where m.EmpresaId=9 And \
+                            mp.EmpresaId=m.EmpresaId And mp.MarcaId=m.MarcaId \
+                    Group By m.MarcaId, m.Descripcion, Year(mp.Desde), Month(mp.Desde),Ejecutado \
+                ) as D \
+                Group By  MarcaId, Descripcion, Ano";
+
+    connectionPools[poolKey].request().query(query, (err, result) => {
+        res.send(result);
+        console.log(err);   
+    });
+
+
+});
+
+
 /* ventas por producto y vendedor */
 apiRoutes.get('/:serverid/sales/byproductandseller/:productId/', function (req, res) {
 
