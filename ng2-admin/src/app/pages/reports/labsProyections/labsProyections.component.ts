@@ -25,31 +25,79 @@ export class LabsProyectionsComponent implements AfterViewChecked{
   private proyection_sum:any=0;
   public total_percentage:any;
   public total_percentage_locale:any;
+  public show_monthSelector:boolean=false;
+  private raw_data:any;
+  public selectedMonth:any;
+  public selectedYear:any;
+  public years:any=new Array();
+  
 
   @Input() mode: string; 
-  @Input() mode2: string;
+  @Input() monthSelector:string;
   keys=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-  key:any;
-  date:any;
+  key:any='Total';
+  public date:any=new Date;
   constructor(private labsService: LaboratoriesService,private dateSerive:DateService) {
 
-
-    this.labsService.getSalesAndProyectionsByLaboratory().subscribe(data=>{
+    this.dateSerive.getServerDate().subscribe(date=>{
+      this.date=new Date(date.server_date);
+      this.selectedMonth=this.date.getMonth();
+      this.selectedYear=this.date.getFullYear();
+      this.years=[this.selectedYear,this.selectedYear-1,this.selectedYear-2];
+      this.labsService.getSalesAndProyectionsByLaboratory(this.selectedYear).subscribe(data=>{
+        this.raw_data=data;
         this.parselabsdata(data);
+      })
+      if(this.monthSelector=='true'){
+        this.show_monthSelector=true;
+      }
     })
+  }
+  isCurrentMonth(month){
     
+    if(month===this.date.getMonth()){
+      //this.selectedMonth=month;
+      return true
+    }
+    return false;
+  }
+  public selectMonth(element){ 
+    this.key=this.keys[element];
+    this.parselabsdata(this.raw_data);  
   }
 
+  public selectYear(element){
+    this.total_percentage=0 
+    this.total_percentage_locale = 0;
+    this.selectedYear=element;
+    this.labsService.getSalesAndProyectionsByLaboratory(this.selectedYear).subscribe(data=>{
+      this.raw_data=data;
+      this.parselabsdata(data);
+    })
+  }
 
   parselabsdata(data:any){
     
+    if(this.mode=='monthly'){    
+      if(!this.show_monthSelector){
+        this.key=this.keys[this.date.getMonth()];
+      }
+    }
+    this.chartArray=[];
+    this.charts={};
     data.forEach(element => {
         this.addElement(element);
-        
     });
+    
 
     for(let item in this.charts){
-        this.charts[item].percentageOfProyection=(this.charts[item].Ventas/this.charts[item].Proyeccion)*100;
+        let check_percentage = (this.charts[item].Ventas/this.charts[item].Proyeccion)*100;
+        if(!isNaN(check_percentage)){
+          this.charts[item].percentageOfProyection=check_percentage;
+        }else{
+          this.charts[item].percentageOfProyection=0;
+        }
+        
         this.charts[item].localizedSales = this.charts[item].Ventas.toLocaleString('en-US');
         this.charts[item].localizedProyection = this.charts[item].Proyeccion.toLocaleString('en-US');
         this.chartArray.push(this.charts[item]);
@@ -58,6 +106,9 @@ export class LabsProyectionsComponent implements AfterViewChecked{
     }
     this.total_percentage=(this.current_sum/this.proyection_sum)*100; 
     this.total_percentage_locale = this.current_sum.toLocaleString('en-US');
+
+    this._loadPieCharts();
+    console.log('chart array',this.chartArray)
   }
 
   addElement(element:any){
@@ -65,7 +116,7 @@ export class LabsProyectionsComponent implements AfterViewChecked{
     if (typeof this.charts[id] === 'undefined'){
         this.charts[id]={};
     }
-    this.charts[id][element.Fuente]=element.Total;
+    this.charts[id][element.Fuente]=element[this.key];
     this.charts[id]['Description']=element.Descripcion;
     this.charts[id]['Ano']=element.Ano;
   }
@@ -103,7 +154,6 @@ export class LabsProyectionsComponent implements AfterViewChecked{
               }
               
             },
-            trackColor: '#e6ffff',
             size: 84,
             scaleLength: 0,
             animation: 2000,

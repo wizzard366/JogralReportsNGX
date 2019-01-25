@@ -1,14 +1,14 @@
 <section class="chartist">
     <div class="row">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <label>Ventas por Vendedor Mes Corriente</label>
+            <label>Ventas por Vendedor Año Corriente</label>
             <pie-charts ></pie-charts>
         </div>
     </div>
     <div class="row">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <label>Ventas por Laboratorio Año Corriente</label>
-                <labs-proyections></labs-proyections>
+                <labs-proyections [mode]="'monthly'" [monthSelector]="'true'" ></labs-proyections>
         </div>
     </div>
     

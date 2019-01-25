@@ -789,10 +789,11 @@ apiRoutes.get('/:serverid/clients/:name', function (req, res) {
 
 
 /* ventas por laboratorio y proyección */
-apiRoutes.get('/:serverid/sales/labs', function (req, res) {
+apiRoutes.get('/:serverid/sales/labs/:year', function (req, res) {
 
     var empresaid = 9;
     let poolKey = req.params.serverid;
+    let year = req.params.year;
 
     var query = "Select 'Proyeccion' as Fuente, MarcaId, Descripcion, Ano, \
                     Sum(Case When DATEPART(MM,Mes)=1  Then Proyeccion Else 0 END) AS Enero, \
@@ -814,6 +815,7 @@ apiRoutes.get('/:serverid/sales/labs', function (req, res) {
                             mp.EmpresaId=m.EmpresaId And mp.MarcaId=m.MarcaId \
                     Group By m.MarcaId, m.Descripcion, Year(mp.Desde), Month(mp.Desde),Proyeccion \
                 ) as D \
+                Where Ano = @year \
                 Group By  MarcaId, Descripcion, Ano \
                 Union \
                 Select 'Ventas' as Fuente, MarcaId, Descripcion, Ano, \
@@ -836,9 +838,10 @@ apiRoutes.get('/:serverid/sales/labs', function (req, res) {
                             mp.EmpresaId=m.EmpresaId And mp.MarcaId=m.MarcaId \
                     Group By m.MarcaId, m.Descripcion, Year(mp.Desde), Month(mp.Desde),Ejecutado \
                 ) as D \
+                Where Ano = @year \
                 Group By  MarcaId, Descripcion, Ano";
 
-    connectionPools[poolKey].request().query(query, (err, result) => {
+    connectionPools[poolKey].request().input('year', sql.Int, year).query(query, (err, result) => {
         res.send(result);
         console.log(err);   
     });
