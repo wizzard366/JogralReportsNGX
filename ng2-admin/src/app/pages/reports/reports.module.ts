@@ -8,7 +8,7 @@ import { ReportsComponent } from './reports.component';
 
 import { PieCharts } from './pieCharts';
 import { PieChartsService } from './pieCharts/pieCharts.service';
-import {LabsProyectionsComponent} from './labsProyections'
+import {SellersSharedModule} from '../productSalesInfo/product.sales.info.sharedModule';
 
 
 
@@ -18,14 +18,18 @@ import {LabsProyectionsComponent} from './labsProyections'
     routing,
     AngularFormsModule,
     NgaModule,
+    SellersSharedModule
   ],
   declarations: [
     ReportsComponent,
     PieCharts,
-    LabsProyectionsComponent
+    
   ],
   providers:[
     PieChartsService
+  ],
+  exports:[
+    
   ]
 })
 export class ReportsModule {}

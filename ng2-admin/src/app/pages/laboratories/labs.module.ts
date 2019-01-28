@@ -11,10 +11,7 @@ import {LabsComponent} from './labs.component';
 import { LaboratoriesComponent } from './components/laboratories/laboratories.component';
 import { routing }       from './labs.routing';
 import {ProductInfoComponent} from  './components/produtInfo/productInfo.component';
-
-
-
-
+import {SellersSharedModule} from '../productSalesInfo/product.sales.info.sharedModule';
 
 
 
@@ -26,13 +23,13 @@ import {ProductInfoComponent} from  './components/produtInfo/productInfo.compone
     NgaModule,
     routing,
     Ng2SmartTableModule,
-    NgbModule
-    
+    NgbModule,
+    SellersSharedModule
   ],
   declarations: [
     LabsComponent,
     LaboratoriesComponent,
-    ProductInfoComponent,
+    ProductInfoComponent
 
   ],
  

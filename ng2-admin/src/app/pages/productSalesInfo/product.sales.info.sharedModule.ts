@@ -4,6 +4,7 @@ import { NgaModule } from '../../theme/nga.module';
 import { FormsModule } from '@angular/forms';
 
 import {ProductSalesInfoComponent} from './product.sales.info.component';
+import {LabsProyectionsComponent} from '../reports/labsProyections'
 
 
 @NgModule({
@@ -13,10 +14,12 @@ import {ProductSalesInfoComponent} from './product.sales.info.component';
     FormsModule
   ],
   declarations: [
-    ProductSalesInfoComponent
+    ProductSalesInfoComponent,
+    LabsProyectionsComponent
   ],
   exports:[
-    ProductSalesInfoComponent
+    ProductSalesInfoComponent,
+    LabsProyectionsComponent
   ],
   providers:[
     

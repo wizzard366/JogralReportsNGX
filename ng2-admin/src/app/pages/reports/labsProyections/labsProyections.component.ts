@@ -108,7 +108,7 @@ export class LabsProyectionsComponent implements AfterViewChecked{
     this.total_percentage_locale = this.current_sum.toLocaleString('en-US');
 
     this._loadPieCharts();
-    console.log('chart array',this.chartArray)
+    
   }
 
   addElement(element:any){
