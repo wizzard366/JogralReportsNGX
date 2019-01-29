@@ -15,7 +15,7 @@
     
       </ba-card>
   
-  <ba-card *ngFor="let chart of charts" class="pie-chart-item-container col-xlg- col-lg-4 col-md-6 col-sm-12 col-xs-12">
+  <ba-card *ngFor="let chart of charts" class="pie-chart-item-container col-xlg-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
 
     <div class="pie-chart-item">
       <div class="chart" [attr.data-percent]="chart.percentageOfProyection">
@@ -23,7 +23,8 @@
       </div>
       <div class="description">
         <p>{{ chart.name }}</p>
-        <div class="sales">Q.{{ chart.currentLocale }}</div>
+        <div class="sales"><strong>Ven:</strong>Q.{{ chart.currentLocale }}</div>
+        <div class="proyection"><strong>Pro:</strong> Q.{{chart.proyectionLocale}}</div>
       </div>
       
     </div>

@@ -67,7 +67,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6 ">
+        <div class="col-md-8">
             <ba-card cardTitle="Ventas por Marca del Mes Actual" baCardClass="with-scroll">
                 <ba-chartist-chart baChartistChartClass="ct-chart stacked-bar" baChartistChartType="Pie" [baChartistChartData]="SalesByBrandData"
                     [baChartistChartOptions]="SalesByBrandOptions" [baChartistChartResponsive]="pieResponsiveOptions">
@@ -94,32 +94,7 @@
                 </div>
             </ba-card>
         </div>
-        <div class="col-md-6 ">
-            <ba-card cardTitle="Ventas por Vendedor (x1000)" baCardClass="with-scroll">
-                <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Bar" [baChartistChartData]="SalesBySalesManData"
-                    [baChartistChartOptions]="SalesBySalesManOptions">
-                </ba-chartist-chart>
-                <div class="table-responsive">
-                <table class="table table-bordered  table-striped table-condensed">
-                        <thead>
-                            <tr class="black-muted-bg">
-                                <th class="align-right">Vendedor</th>
-                                <th class="align-right">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of _sales_by_sales_man_data" class="no-top-border">
-                                <td class="align-right">
-                                    {{item.Vendedor}}
-                                </td>
-                                <td class="align-right">Q.{{item.Total}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </ba-card>
-            
-        </div>
+        
     </div>
     
 </section>
