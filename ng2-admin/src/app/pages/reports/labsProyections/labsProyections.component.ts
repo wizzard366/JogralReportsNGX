@@ -30,6 +30,7 @@ export class LabsProyectionsComponent implements AfterViewChecked{
   public selectedMonth:any;
   public selectedYear:any;
   public years:any=new Array();
+  private total_proyection_locale:any;
   
 
   @Input() mode: string; 
@@ -44,13 +45,20 @@ export class LabsProyectionsComponent implements AfterViewChecked{
       this.selectedMonth=this.date.getMonth();
       this.selectedYear=this.date.getFullYear();
       this.years=[this.selectedYear,this.selectedYear-1,this.selectedYear-2];
-      this.labsService.getSalesAndProyectionsByLaboratory(this.selectedYear).subscribe(data=>{
-        this.raw_data=data;
-        this.parselabsdata(data);
-      })
       if(this.monthSelector=='true'){
         this.show_monthSelector=true;
       }
+      if(this.mode=='monthly'){    
+        if(this.show_monthSelector){
+          this.key=this.keys[this.date.getMonth()];
+        }
+      }
+      this.labsService.getSalesAndProyectionsByLaboratory(this.selectedYear).subscribe(data=>{
+        this.raw_data=data;
+        
+        this.parselabsdata(data);
+      })
+      
     })
   }
   isCurrentMonth(month){
@@ -77,19 +85,17 @@ export class LabsProyectionsComponent implements AfterViewChecked{
   }
 
   parselabsdata(data:any){
+    this.current_sum=0;
+    this.proyection_sum=0;
+    this.total_percentage=0;
     
-    if(this.mode=='monthly'){    
-      if(!this.show_monthSelector){
-        this.key=this.keys[this.date.getMonth()];
-      }
-    }
     this.chartArray=[];
     this.charts={};
     data.forEach(element => {
         this.addElement(element);
     });
     
-
+    console.log('month',this.key)
     for(let item in this.charts){
         let check_percentage = (this.charts[item].Ventas/this.charts[item].Proyeccion)*100;
         if(!isNaN(check_percentage)){
@@ -106,6 +112,7 @@ export class LabsProyectionsComponent implements AfterViewChecked{
     }
     this.total_percentage=(this.current_sum/this.proyection_sum)*100; 
     this.total_percentage_locale = this.current_sum.toLocaleString('en-US');
+    this.total_proyection_locale = this.proyection_sum.toLocaleString('en-US');
 
     this._loadPieCharts();
     

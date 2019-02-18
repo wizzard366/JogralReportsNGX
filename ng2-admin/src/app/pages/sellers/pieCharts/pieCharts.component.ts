@@ -182,7 +182,8 @@ export class PieCharts implements AfterViewInit{
       let total={
         name:"Total",
         percentageOfProyection:this.total_percentage,
-        currentLocale:this.total_percentage_locale
+        currentLocale:this.total_percentage_locale,
+        proyectionLocale:this.proyection_sum.toLocaleString('en-US')
         
       }
       arr.push(total);

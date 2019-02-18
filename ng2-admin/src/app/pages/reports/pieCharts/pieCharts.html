@@ -1,6 +1,6 @@
 <div class="row pie-charts">
 
-  <ba-card  class="pie-chart-item-container total-card col-xlg-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+  <ba-card *ngIf="total_percentage"  class="pie-chart-item-container total-card col-xlg-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
 
         <div class="pie-chart-item">
           <div class="chart" [attr.data-percent]="total_percentage">
@@ -8,7 +8,8 @@
           </div>
           <div class="description">
             <p class="total-text">Total</p>
-            <div class="sales total-text">Q.{{ total_percentage_locale }}</div>
+            <div class="sales total-text"><strong>Ven:</strong>Q.{{ total_percentage_locale }}</div>
+            <div class="proyection"><strong>Pro:</strong> Q.{{total_proyection_locale}}</div>
           </div>
           
         </div>

@@ -24,6 +24,7 @@ export class PieCharts implements AfterViewChecked{
   private proyection_sum:any;
   public total_percentage:any;
   public total_percentage_locale:any;
+  public total_proyection_locale:any;
 
   @Input() mode: string; 
   @Input() mode2: string;
@@ -48,6 +49,7 @@ export class PieCharts implements AfterViewChecked{
   processChartData(data){
     this.current_sum=0;
     this.proyection_sum=0;
+    this.total_percentage=0;
     let salesMans={};
       let date= new Date;
       let temSalesMan:SalesMan;
@@ -110,6 +112,7 @@ export class PieCharts implements AfterViewChecked{
       this.ready=true;
       this.total_percentage=(this.current_sum/this.proyection_sum)*100;
       this.total_percentage_locale = this.current_sum.toLocaleString('en-US');
+      this.total_proyection_locale = this.proyection_sum.toLocaleString('en-US');
       console.log('chart_processed_data:',this.charts);
       console.log('total_percentage:',this.total_percentage);
 

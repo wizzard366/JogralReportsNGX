@@ -324,8 +324,8 @@ export class LaboratoriesComponent {
 
     getFilterElements() {
 
-        console.log("get all elements:")
-        console.log(this.lab_sales_by_lab_and_product_source.getElements());
+        /* console.log("get all elements:")
+        console.log(this.lab_sales_by_lab_and_product_source.getElements()); */
     }
 
     
