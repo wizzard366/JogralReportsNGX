@@ -18,7 +18,8 @@ import {DateService} from '../../services/date.service';
 @Component({
   selector: 'pie-charts',
   templateUrl: './pieCharts.html',
-  providers: [ProductService,DateService,PieChartsService]
+  providers: [ProductService,DateService,PieChartsService],
+
 })
 // TODO: move easypiechart to component
 export class PieCharts implements AfterViewInit{

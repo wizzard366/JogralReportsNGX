@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ProductService } from '../services/product.service';
@@ -9,6 +9,8 @@ import { ChartistJsService } from '../charts/components/chartistJs/chartistJs.se
 import { AuthenticationService } from '../services/oauth/authentication.service';
 import { chartistColorClasses } from '../../theme/chartist-color-classes';
 import 'style-loader!../../theme/chartistJs.scss';
+import { EventEmitter } from 'events';
+
 
 
 @Component({
@@ -37,6 +39,10 @@ export class SellersComponent {
     top_clients_graph_data: any;
     top_clients_table_data: any;
     graph_total:any;
+
+    
+
+    @Output() selectSellerMonth = new EventEmitter()
 
     constructor(private productSerive: ProductService,
         private authenticationService: AuthenticationService,
@@ -76,9 +82,9 @@ export class SellersComponent {
 
     }
 
-
+    
     returnlabel(value){
-        console.log(value);
+        
         //return Math.round(value / this.graph_total * 100) + '%';
         return '';
     }
@@ -143,6 +149,7 @@ export class SellersComponent {
     @id = the id of the seller to be displayed.*/
 
     displaySeller(seller_id) {
+        
         this.sellers_table_data = [];
         this.sellers_graph_data = [];
         if (typeof this.salesMans[seller_id] !== 'undefined' && this.salesMans[seller_id] !== null) {
@@ -205,7 +212,7 @@ export class SellersComponent {
 
 
         this.displayPieChart(year, month);
-
+        
 
 
     }
@@ -236,14 +243,12 @@ export class SellersComponent {
                     })
                 });
                 this.graph_total=total;
-                console.log('total',this.graph_total);
                 this.top_clients_graph_data = {
                     labels: tempLabels,
                     series: tempSeries
                 }
                 this.top_clients_table_data = tempTableData;
                 this.display_pieChart = true;
-                //console.log('chart data:', [tempLabels, tempSeries, tempTableData, year, month]);
 
             }else{
                 this.display_pieChart = false;

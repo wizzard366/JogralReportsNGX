@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { PieCharts } from './pieCharts';
 import { PieChartsService } from './pieCharts/pieCharts.service';
+import { LabsBySellercomponent} from './labsBySeller/labs.by.seller.component';
 
 
 @NgModule({
@@ -14,10 +15,12 @@ import { PieChartsService } from './pieCharts/pieCharts.service';
     FormsModule
   ],
   declarations: [
-    PieCharts
+    PieCharts,
+    LabsBySellercomponent
   ],
   exports:[
-    PieCharts
+    PieCharts,
+    LabsBySellercomponent
   ],
   providers:[
     PieChartsService,

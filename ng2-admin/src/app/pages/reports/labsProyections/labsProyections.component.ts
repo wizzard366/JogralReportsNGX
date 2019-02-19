@@ -95,7 +95,6 @@ export class LabsProyectionsComponent implements AfterViewChecked{
         this.addElement(element);
     });
     
-    console.log('month',this.key)
     for(let item in this.charts){
         let check_percentage = (this.charts[item].Ventas/this.charts[item].Proyeccion)*100;
         if(!isNaN(check_percentage)){

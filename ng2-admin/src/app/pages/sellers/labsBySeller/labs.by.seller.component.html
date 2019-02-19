@@ -1,0 +1,26 @@
+<div class="row">
+    <div class=" col-xlg-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+          <label for="descripcion">Mes</label>
+          <select  class="form-control" id="selectedMonth" name="selectedMonth" (change)="selectMonth($event.target.value)" [(ngModel)]="selectedMonth">
+                  <option *ngFor="let key of keys; let i = index" [value]="i" >{{key}}</option>
+          </select>
+        </div>
+      </div>
+</div>
+<div class="row pie-charts">
+    <div *ngFor="let chart of chartsData" class="pie-chart-item-container labs-pie col-xlg-12 col-lg-12 col-md-12 col-sm-12 col-xs-12"> 
+      <div class="pie-chart-item">
+        <div class="chart" [attr.data-percent]="chart.percentage">
+          <span class="percent"></span>
+        </div>
+        <div class="description">
+          <p>{{ chart.name }}</p>
+          <div class="sales"><strong>Ven:</strong>Q.{{ chart.sales }}</div>
+          <div class="proyection"><strong>Pro:</strong> Q.{{chart.proyection}}</div>
+        </div>
+        
+      </div>
+  
+    </div>
+</div>

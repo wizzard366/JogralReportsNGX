@@ -795,19 +795,20 @@ apiRoutes.get('/:serverid/sales/labs/:year', function (req, res) {
     let poolKey = req.params.serverid;
     let year = req.params.year;
 
-    var query = "Select 'Proyeccion' as Fuente, MarcaId, Descripcion, Ano, \
-                    Sum(Case When DATEPART(MM,Mes)=1  Then Proyeccion Else 0 END) AS Enero, \
-                    Sum(Case When DATEPART(MM,Mes)=2  Then Proyeccion Else 0 END) AS Febrero, \
-                    Sum(Case When DATEPART(MM,Mes)=3  Then Proyeccion Else 0 END) AS Marzo, \
-                    Sum(Case When DATEPART(MM,Mes)=4  Then Proyeccion Else 0 END) AS Abril,  \
-                    Sum(Case When DATEPART(MM,Mes)=5  Then Proyeccion Else 0 END) AS Mayo, \
-                    Sum(Case When DATEPART(MM,Mes)=6  Then Proyeccion Else 0 END) AS Junio, \
-                    Sum(Case When DATEPART(MM,Mes)=7  Then Proyeccion Else 0 END) AS Julio, \
-                    Sum(Case When DATEPART(MM,Mes)=8  Then Proyeccion Else 0 END) AS Agosto, \
-                Sum(Case When DATEPART(MM,Mes)=9  Then Proyeccion Else 0 END) AS Septiembre, \
-                Sum(Case When DATEPART(MM,Mes)=10 Then Proyeccion Else 0 END) AS Octubre, \
-                    Sum(Case When DATEPART(MM,Mes)=11 Then Proyeccion Else 0 END) AS Novimebre, \
-                    Sum(Case When DATEPART(MM,Mes)=12 Then Proyeccion Else 0 END) AS Diciembre, \
+
+    var query2 = "Select 'Proyeccion' as Fuente, MarcaId, Descripcion, Ano, \
+                    Sum(Case When Mes=1  Then Proyeccion Else 0 END) AS Enero, \
+                    Sum(Case When Mes=2  Then Proyeccion Else 0 END) AS Febrero, \
+                    Sum(Case When Mes=3  Then Proyeccion Else 0 END) AS Marzo, \
+                    Sum(Case When Mes=4  Then Proyeccion Else 0 END) AS Abril, \
+                    Sum(Case When Mes=5  Then Proyeccion Else 0 END) AS Mayo, \
+                    Sum(Case When Mes=6  Then Proyeccion Else 0 END) AS Junio, \
+                    Sum(Case When Mes=7  Then Proyeccion Else 0 END) AS Julio, \
+                    Sum(Case When Mes=8  Then Proyeccion Else 0 END) AS Agosto, \
+                    Sum(Case When Mes=9  Then Proyeccion Else 0 END) AS Septiembre, \
+                    Sum(Case When Mes=10 Then Proyeccion Else 0 END) AS Octubre, \
+                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Novimebre, \
+                    Sum(Case When Mes=12 Then Proyeccion Else 0 END) AS Diciembre, \
                     Sum(Total) as Total \
                 From (Select m.MarcaId, m.Descripcion, Year(mp.Desde) as Ano, Month(mp.Desde) as Mes, Proyeccion as Proyeccion, Sum(Proyeccion) as Total \
                     from INVXMarcaPro mp, INVXMarca m \
@@ -819,18 +820,18 @@ apiRoutes.get('/:serverid/sales/labs/:year', function (req, res) {
                 Group By  MarcaId, Descripcion, Ano \
                 Union \
                 Select 'Ventas' as Fuente, MarcaId, Descripcion, Ano, \
-                    Sum(Case When DATEPART(MM,Mes)=1  Then Proyeccion Else 0 END) AS Enero, \
-                    Sum(Case When DATEPART(MM,Mes)=2  Then Proyeccion Else 0 END) AS Febrero, \
-                    Sum(Case When DATEPART(MM,Mes)=3  Then Proyeccion Else 0 END) AS Marzo, \
-                    Sum(Case When DATEPART(MM,Mes)=4  Then Proyeccion Else 0 END) AS Abril, \
-                Sum(Case When DATEPART(MM,Mes)=5  Then Proyeccion Else 0 END) AS Mayo, \
-                    Sum(Case When DATEPART(MM,Mes)=6  Then Proyeccion Else 0 END) AS Junio, \
-                    Sum(Case When DATEPART(MM,Mes)=7  Then Proyeccion Else 0 END) AS Julio, \
-                    Sum(Case When DATEPART(MM,Mes)=8  Then Proyeccion Else 0 END) AS Agosto, \
-                    Sum(Case When DATEPART(MM,Mes)=9  Then Proyeccion Else 0 END) AS Septiembre, \
-                    Sum(Case When DATEPART(MM,Mes)=10 Then Proyeccion Else 0 END) AS Octubre, \
-                    Sum(Case When DATEPART(MM,Mes)=11 Then Proyeccion Else 0 END) AS Novimebre, \
-                    Sum(Case When DATEPART(MM,Mes)=12 Then Proyeccion Else 0 END) AS Diciembre, \
+                    Sum(Case When Mes=1  Then Proyeccion Else 0 END) AS Enero, \
+                    Sum(Case When Mes=2  Then Proyeccion Else 0 END) AS Febrero,  \
+                    Sum(Case When Mes=3  Then Proyeccion Else 0 END) AS Marzo,  \
+                    Sum(Case When Mes=4  Then Proyeccion Else 0 END) AS Abril,  \
+                    Sum(Case When Mes=5  Then Proyeccion Else 0 END) AS Mayo, \
+                    Sum(Case When Mes=6  Then Proyeccion Else 0 END) AS Junio, \
+                    Sum(Case When Mes=7  Then Proyeccion Else 0 END) AS Julio, \
+                    Sum(Case When Mes=8  Then Proyeccion Else 0 END) AS Agosto, \
+                    Sum(Case When Mes=9  Then Proyeccion Else 0 END) AS Septiembre, \
+                    Sum(Case When Mes=10 Then Proyeccion Else 0 END) AS Octubre, \
+                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Novimebre, \
+                    Sum(Case When Mes=12 Then Proyeccion Else 0 END) AS Diciembre, \
                     Sum(Total) as Total \
                 From (Select m.MarcaId, m.Descripcion, Year(mp.Desde) as Ano, Month(mp.Desde) as Mes, Ejecutado as Proyeccion, Sum(Ejecutado) as Total \
                     from INVXMarcaPro mp, INVXMarca m \
@@ -841,9 +842,70 @@ apiRoutes.get('/:serverid/sales/labs/:year', function (req, res) {
                 Where Ano = @year \
                 Group By  MarcaId, Descripcion, Ano";
 
-    connectionPools[poolKey].request().input('year', sql.Int, year).query(query, (err, result) => {
+    
+
+    connectionPools[poolKey].request().input('year', sql.Int, year).query(query2, (err, result) => {
         res.send(result);
         console.log(err);   
+    });
+
+
+});
+
+apiRoutes.get('/:serverid/sales/labsbyseller/', function (req, res) {
+
+    var empresaid = 9;
+    let poolKey = req.params.serverid;
+
+    var query = "Select 'Proyeccion' as Fuente, VendedorId, NombreCompleto,MarcaId, Descripcion, Ano, \
+                    Sum(Case When Mes=1  Then Proyeccion Else 0 END) AS Enero, \
+                    Sum(Case When Mes=2  Then Proyeccion Else 0 END) AS Febrero, \
+                    Sum(Case When Mes=3  Then Proyeccion Else 0 END) AS Marzo, \
+                    Sum(Case When Mes=4  Then Proyeccion Else 0 END) AS Abril, \
+                    Sum(Case When Mes=5  Then Proyeccion Else 0 END) AS Mayo, \
+                    Sum(Case When Mes=6  Then Proyeccion Else 0 END) AS Junio, \
+                    Sum(Case When Mes=7  Then Proyeccion Else 0 END) AS Julio, \
+                    Sum(Case When Mes=8  Then Proyeccion Else 0 END) AS Agosto, \
+                    Sum(Case When Mes=9  Then Proyeccion Else 0 END) AS Septiembre, \
+                    Sum(Case When Mes=10 Then Proyeccion Else 0 END) AS Octubre, \
+                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Novimebre, \
+                    Sum(Case When Mes=12 Then Proyeccion Else 0 END) AS Diciembre, \
+                    Sum(Total) as Total \
+                From (Select mp.VendedorId, v.NombreCompleto, m.MarcaId, m.Descripcion, Year(mp.Desde) as Ano, Month(mp.Desde) as Mes, Proyeccion as Proyeccion, Sum(Proyeccion) as Total \
+                    from FACXVenProMarca mp, INVXMarca m, FACXVendedor v \
+                    Where m.EmpresaId=9 And \
+                            mp.EmpresaId=m.EmpresaId And mp.MarcaId=m.MarcaId And \
+                            v.EmpresaId=mp.EmpresaId And v.VendedorId=mp.VendedorId \
+                    Group By mp.VendedorId,v.NombreCompleto,m.MarcaId, m.Descripcion, Year(mp.Desde), Month(mp.Desde),Proyeccion \
+                ) as D \
+                Group By  VendedorId, NombreCompleto,MarcaId, Descripcion, Ano \
+                Union \
+                Select 'Ventas' as Fuente, VendedorId, NombreCompleto,MarcaId, Descripcion, Ano, \
+                    Sum(Case When Mes=1  Then Proyeccion Else 0 END) AS Enero, \
+                    Sum(Case When Mes=2  Then Proyeccion Else 0 END) AS Febrero, \
+                    Sum(Case When Mes=3  Then Proyeccion Else 0 END) AS Marzo, \
+                    Sum(Case When Mes=4  Then Proyeccion Else 0 END) AS Abril, \
+                    Sum(Case When Mes=5  Then Proyeccion Else 0 END) AS Mayo, \
+                    Sum(Case When Mes=6  Then Proyeccion Else 0 END) AS Junio, \
+                    Sum(Case When Mes=7  Then Proyeccion Else 0 END) AS Julio, \
+                    Sum(Case When Mes=8  Then Proyeccion Else 0 END) AS Agosto, \
+                    Sum(Case When Mes=9  Then Proyeccion Else 0 END) AS Septiembre, \
+                    Sum(Case When Mes=10 Then Proyeccion Else 0 END) AS Octubre, \
+                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Novimebre, \
+                    Sum(Case When Mes=12 Then Proyeccion Else 0 END) AS Diciembre, \
+                    Sum(Total) as Total \
+                From (Select  mp.VendedorId,v.NombreCompleto,m.MarcaId, m.Descripcion, Year(mp.Desde) as Ano, Month(mp.Desde) as Mes, Ejecutado as Proyeccion, Sum(Ejecutado) as Total \
+                    from FACXVenProMarca mp, INVXMarca m, FACXVendedor v \
+                    Where m.EmpresaId=9 And \
+                            mp.EmpresaId=m.EmpresaId And mp.MarcaId=m.MarcaId And \
+                            v.EmpresaId=mp.EmpresaId And v.VendedorId=mp.VendedorId \
+                    Group By  mp.VendedorId,v.NombreCompleto,m.MarcaId, m.Descripcion, Year(mp.Desde), Month(mp.Desde),Ejecutado \
+                ) as D \
+                Group By  VendedorId, NombreCompleto,MarcaId, Descripcion, Ano ";
+
+    connectionPools[poolKey].request().input('empresaid', sql.Int, empresaid).query(query, (err, result) => {
+        res.send(result);
+        console.log(err);
     });
 
 
