@@ -1,14 +1,18 @@
-@import "../../../theme/sass/conf/conf";
+ @import "../../../theme/sass/conf/conf";
 
 .pie-chart-item{
-
+  background-color: aquamarine;
   .sales{
     color:rebeccapurple;
   }
   
 }
+
+
 .pie-charts {
   color: $content-text;
+
+  
 
   .pie-chart-item-container {
     position: relative;
@@ -100,9 +104,6 @@
     }
   }
 
-  /* .description p {
-    font-size: 18px;
-  } */
   .angular {
     margin-top: 100px;
   }
@@ -110,3 +111,4 @@
     margin-top: 0;
   }
 }
+ 

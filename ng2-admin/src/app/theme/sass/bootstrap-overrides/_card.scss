@@ -12,6 +12,8 @@ $card-header-font-size: 16px;
   }
 }
 
+
+
 .card {
   @include scrollbars(.4em, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.7));
   color: $content-text;
@@ -43,13 +45,26 @@ $card-header-font-size: 16px;
     height: calc(100vh - 218px);
   }
 
+
   &.with-scroll {
     .card-body {
       height: calc(100% - #{$card-title-height});
+      //height: calc(100% - 0);
       overflow-y: auto;
       flex: 0 1 auto;
     }
   }
+}
+
+.seller-cards .card{
+  
+  .card-body {
+    height: calc(100% - 0px);
+    overflow-y: auto;
+    flex: 0 1 auto;
+  }
+
+
 }
 
 .card {

@@ -3,13 +3,13 @@ import { DateService } from '../../services/date.service';
 import { LaboratoriesService } from '../../services/laboratories.service';
 
 import 'easy-pie-chart/dist/jquery.easypiechart.js';
-import 'style-loader!./labs.by.seller.component.scss';
+import 'style-loader!./labs.by.seller.scss';
 
 @Component({
     selector: 'labs-by-seller',
     templateUrl: './labs.by.seller.component.html',
-    providers: [DateService,LaboratoriesService],
-
+    providers: [DateService,LaboratoriesService]/* ,
+    styleUrls:['./labs.by.seller.component.scss'] */
 })
 
 export class LabsBySellercomponent {
@@ -77,6 +77,9 @@ export class LabsBySellercomponent {
             sales = selectedData[lab].Ventas[this.keys[month]]
             percentage = (sales/proyection)*100
             
+            if(proyection===0||isNaN(percentage)){
+                percentage=0;
+            }
 
             charts.push({
                 name:name,

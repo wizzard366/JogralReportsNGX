@@ -9,7 +9,8 @@
       </div>
 </div>
 <div class="row pie-charts">
-    <div *ngFor="let chart of chartsData" class="pie-chart-item-container labs-pie col-xlg-12 col-lg-12 col-md-12 col-sm-12 col-xs-12"> 
+    <!-- <div class="col-xlg-3 col-lg-4 col-md-6 col-sm-12 col-xs-12" style="background:green;">this is test</div> -->
+    <ba-card *ngFor="let chart of chartsData" class="pie-chart-item-container seller-cards labs-pie col-xlg-3 col-lg-12 col-md-6 col-sm-12 col-xs-12"> 
       <div class="pie-chart-item">
         <div class="chart" [attr.data-percent]="chart.percentage">
           <span class="percent"></span>
@@ -22,5 +23,5 @@
         
       </div>
   
-    </div>
+    </ba-card>
 </div>
