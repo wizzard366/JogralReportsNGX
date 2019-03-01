@@ -35,6 +35,7 @@ servers.forEach(element => {
         }
         storeCodes[element["db-id"]]=element["db-empresa-id"];      
         connectionPools[config.id] = new sql.Connection(config);
+
         connectionPools[config.id].on('error', err => {
             console.log("ERROR: Pool[" + "" + config.id + "]=> ", err);
         });
@@ -42,11 +43,14 @@ servers.forEach(element => {
             if (err)
                 console.log("ERROR: Testing Pool[" + "" + config.id + "]=> ", err);
         })
+
     }
 })
 
 
-
+function removeFailServer(poolKey){
+    this.connectionPools[poolKey]
+}
 
 
 if (environment == "prod") {
@@ -162,11 +166,12 @@ apiRoutes.get('/servers', function (req, res) {
     var response = [];
 
     servers.forEach((element, i) => {
-
-        response.push({
-            name: element["db-server-name"],
-            index: element["db-id"],
-        })
+        if(element['enabled']===true){
+            response.push({
+                name: element["db-server-name"],
+                index: element["db-id"],
+            })
+        }
     });
 
     res.json(response);
@@ -252,8 +257,8 @@ apiRoutes.get('/:serverid/producto/:pid/yearsales/', function (req, res) {
 
 
     connectionPools[poolKey].request()
-        .input('ProductoId', sql.Int, ProductoId)
-        .input('EmpresaId',sql.Int,empresaId)
+        .input('ProductoId', sql.NVarChar, ProductoId)
+        .input('EmpresaId',sql.NVarChar,empresaId)
         .query(query, (err, result) => {
             res.send(result);
             console.log(err);
@@ -283,7 +288,7 @@ apiRoutes.get('/:serverid/producto/:id/ventas', function (req, res) {
 
 
     connectionPools[poolKey].request()
-        .input('ProductoId', sql.Int, ProductoId)
+        .input('ProductoId', sql.NVarChar, ProductoId)
         .input('EmpresaId',sql.Int,empresaId)
         .input('Desde', sql.NVarChar, startDate)
         .input('Hasta', sql.NVarChar, endDate).query(query, (err, result) => {
@@ -612,7 +617,7 @@ apiRoutes.get('/:serverid/sales/brand/product/:marcaId/:year', function (req, re
 
 
     connectionPools[poolKey].request()
-        .input('marcaId', sql.Int, marcaId)
+        .input('marcaId', sql.NVarChar, marcaId)
         .input('year', sql.Int, year)
         .input('EmpresaId',sql.Int,empresaId)
         .query(query, (err, result) => {
@@ -635,7 +640,7 @@ apiRoutes.get('/:serverid/sales/brand/:marcaId/:year', function (req, res) {
 
 
     connectionPools[poolKey].request()
-        .input('marcaId', sql.Int, marcaId)
+        .input('marcaId', sql.NVarChar, marcaId)
         .input('year', sql.Int, year)
         .input('EmpresaId',sql.Int,empresaId)
         .query(query, (err, result) => {
@@ -666,7 +671,7 @@ apiRoutes.get('/:serverid/sales/salesman/:salesmanId/topclients/:year/:month', f
 
 
     connectionPools[poolKey].request()
-        .input('salesmanId', sql.Int, salesmanId)
+        .input('salesmanId', sql.NVarChar, salesmanId)
         .input('year', sql.Int, year)
         .input('month', sql.Int, month)
         .input('EmpresaId',sql.Int,empresaId)
@@ -981,8 +986,8 @@ apiRoutes.get('/:serverid/sales/byproductandseller/:productId/', function (req, 
     connectionPools[poolKey].request()
         .input('Hasta', sql.NVarChar, hasta)
         .input('Desde', sql.NVarChar, desde)
-        .input('productoId', sql.Int, productoId)
-        .input('vendedorId', sql.Int, vendedorId)
+        .input('productoId', sql.NVarChar, productoId)
+        .input('vendedorId', sql.NVarChar, vendedorId)
         .input('EmpresaId',sql.Int,empresaId)
         .query(query, (err, result) => {
             res.send(result);
