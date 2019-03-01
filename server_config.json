@@ -12,6 +12,16 @@
             "db-name":"PCINVJes",
             "enabled":true,
             "db-id":"villanueva"
+        },
+        {
+            "db-server-name":"Trebol",
+            "db-empresa-id":1,
+            "db-server":"10.10.1.5",
+            "db-user":"sa",
+            "db-pass":"OEM02panorama",
+            "db-name":"PCINVJes",
+            "enabled":true,
+            "db-id":"trebol"
         }
     ]
 }
