@@ -21,7 +21,8 @@ import { AuthGuard } from './pages/services/oauth/auth.guard.component';
 import { AuthenticationService } from './pages/services/oauth/authentication.service';
 import { ProductService }  from './pages/services/product.service';
 import { LaboratoriesService } from './pages/services/laboratories.service';
-import { ClientsService } from './pages/services/clients.service'
+import { ClientsService } from './pages/services/clients.service';
+import { MoneyflowService } from './pages/services/money.flow.service';
 
 
 // Application wide providers
@@ -32,7 +33,8 @@ const APP_PROVIDERS = [
   AuthGuard,
   ProductService,
   LaboratoriesService,
-  ClientsService
+  ClientsService,
+  MoneyflowService
 ];
 
 export type StoreType = {

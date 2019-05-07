@@ -97,6 +97,10 @@
     p{
       font-size: 13px;
       font-weight: bold;
+      &.live-dash{
+        font-size: 25px;
+        line-height: 1;
+      }
     }
   }
 

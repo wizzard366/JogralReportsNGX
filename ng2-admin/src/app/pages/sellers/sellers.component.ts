@@ -10,6 +10,7 @@ import { AuthenticationService } from '../services/oauth/authentication.service'
 import { chartistColorClasses } from '../../theme/chartist-color-classes';
 import 'style-loader!../../theme/chartistJs.scss';
 import { EventEmitter } from 'events';
+import { MoneyflowService } from '../services/money.flow.service';
 
 
 
@@ -48,6 +49,7 @@ export class SellersComponent {
         private authenticationService: AuthenticationService,
         private _chartistJsService: ChartistJsService,
         private dateService: DateService) {
+
 
         this.dateService.getServerDate().subscribe(date => {
 

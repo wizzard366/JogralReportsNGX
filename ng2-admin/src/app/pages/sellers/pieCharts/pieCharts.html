@@ -38,9 +38,10 @@
         <span class="percent"></span>
       </div>
       <div class="description">
-        <p>{{ chart.name }}</p>
-        <div class="sales"><strong>Ven:</strong>Q.{{ chart.currentLocale }}</div>
-        <div class="proyection"><strong>Pro:</strong> Q.{{chart.proyectionLocale}}</div>
+        <p [ngClass]="{'live-dash':!show_monthSelector}">{{ chart.name }}</p>
+        
+        <div *ngIf="show_monthSelector" class="sales"><strong>Ven:</strong>Q.{{ chart.currentLocale }}</div>
+        <div *ngIf="show_monthSelector" class="proyection"><strong>Pro:</strong> Q.{{chart.proyectionLocale}}</div>
       </div>
       
     </div>
