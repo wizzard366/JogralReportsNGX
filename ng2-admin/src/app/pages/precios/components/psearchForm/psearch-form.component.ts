@@ -1,16 +1,19 @@
-import { Component,  Output, EventEmitter} from '@angular/core';
+import { Component,  Output, EventEmitter, OnDestroy, OnInit }  from '@angular/core';
 import { Product } from './objects/product';
 import { ProductService } from '../../../services/product.service';
 import { UMeasueres } from './objects/umeasures';
+import { Router } from '@angular/router';
 
 
 
 @Component({
   selector: 'product-search-forms',
   templateUrl: './psearch-form.component.html',
-  styleUrls: ['../../../forms/components/inputs/components/selectInputs/selectInput.scss', '../../../../theme/sass/user-defined/media-querys.scss']
+  styleUrls: ['../../../forms/components/inputs/components/selectInputs/selectInput.scss', 
+  '../../../../theme/sass/user-defined/media-querys.scss',
+  './psearch-form.component.scss']
 })
-export class PsearchComponent {
+export class PsearchComponent implements OnInit,OnDestroy {
   @Output() initRenderPrices = new EventEmitter();
   @Output() initRenderStock = new EventEmitter();
   @Output() initRenderMeasures = new EventEmitter();
@@ -36,7 +39,8 @@ export class PsearchComponent {
 
   
 
-  constructor(private productSerive: ProductService) {
+  constructor(private productSerive: ProductService,
+    private router: Router) {
     //this.descripcion = 'Ingrese una descripcion';
     this.showTable=false;
     this.showNotFoundAlert=false;
@@ -46,11 +50,27 @@ export class PsearchComponent {
   ];
   }
 
-  
+  ngOnDestroy(){
+
+  }
+  ngOnInit(){
+
+  }
+
+  openNew(){
+    if(this.productoId !== ''){
+      let url = '#/pages/precios/' + this.productoId
+      window.open(url, "_blank");
+    }
+    
+  }
 
   // gets a product description and umedida from the product code entered on the "codigo" form input.
   getProductbyID(event) {
-    event.preventDefault();
+    if(event !== null){
+      event.preventDefault();
+    }
+    
     this.productSerive.getProduct(this.productoId).subscribe(product => {
       if (typeof product[0] !== 'undefined' && product[0] !== null) {
         this.descripcion = product[0].descripcion;

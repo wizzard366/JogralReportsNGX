@@ -1,7 +1,11 @@
 <form (submit)="getProductbyID($event)">
     <div class="form-group">
         <label for="productoId">Código:</label>
-        <input type="Text" [(ngModel)]="productoId" name="productoId" class="form-control" id="productoId" >
+        <div class="search-button-input">
+            <input type="Text" [(ngModel)]="productoId" name="productoId" class="form-control" id="productoId" >
+            <button type="button" class="btn btn-info new-tab" (click)="openNew()" >Abrir en nueva tab</button>
+        </div>
+        
     </div>
 </form>
 <form (submit)="getProductbyDescription($event)">

@@ -1,0 +1,79 @@
+<div class="row">
+    <div class="col-md-12">
+        <ba-card cardTitle="Créditos / Cuenta Corriente" baCardClass="with-scroll">
+
+            <div class="row">
+                <div class="col-md-6 col-lg-6">
+
+                    <ba-chartist-chart baChartistChartClass="ct-chart stacked-bar" baChartistChartType="Pie"
+                        [baChartistChartData]="cretids_chart_data" [baChartistChartOptions]="chart_options">
+                    </ba-chartist-chart>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <thead>
+                                <tr class="black-muted-bg">
+                                    <th></th>
+                                    <th class="align-center">Dias de Crédito</th>
+                                    <th class="align-center">Monto</th>
+                                    <th class="align-center">Ver</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of table_data; let i = index" class="no-top-border">
+                                    <td class="align-right">
+                                        <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
+                                    </td>
+                                    <td class="align-right">{{item.label}}</td>
+                                    <td class="align-right">Q.{{item.number}}</td>
+                                    <td class="align-right show-detail" (click)="showDetailInterval(i)">
+                                        <span>
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="no-top-border">
+                                    <td class="align-right">
+                                    </td>
+                                    <td class="align-right"><strong>Saldo</strong> </td>
+                                    <td class="align-right"><strong>Q.{{total_amount}}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </ba-card>
+    </div>
+</div>
+<div class="row" *ngIf="show_detail">
+    <div class="col-md-12">
+        <ba-card cardTitle="Detalle: {{detail_title}}" baCardClass="with-scroll">
+            <div class="row">
+                <div class="col-md-12 col-lg-10 col-xl-12">
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-condensed">
+                                    <thead>
+                                        <tr class="black-muted-bg">
+                                            <th class="align-center">Cliente ID</th>
+                                            <th class="align-center">Nombre</th>
+                                            <th class="align-center">Saldo</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of table_data_detail; let i = index" class="no-top-border">
+                                            <td class="align-right">{{item.clienteId}}</td>
+                                            <td class="align-center">{{item.Nombre}}</td>
+                                            <td class="align-left">Q.{{getValue(item.Saldo)}}</td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </div>
+            </div>
+        </ba-card>
+    </div>
+</div>
