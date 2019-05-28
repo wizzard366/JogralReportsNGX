@@ -1071,6 +1071,82 @@ apiRoutes.get('/:serverid/moneyflow', function (req, res) {
 })
 
 
+
+apiRoutes.get('/:serverid/moneyflow/:interval', function (req, res) {
+
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+    let interval = req.params.interval;
+    var current = 'Corriente';
+    var interval1 = 'QuinceTreinta'
+    var interval2 = 'TreintaSesenta'
+    var interval3 = 'SesentaNoventa'
+    var interval4 = 'NoventaCiento20'
+    var interval5 = 'Ciento20Mas'
+    let query_interval = current;
+
+    switch(interval){
+        case current: 
+            query_interval = current;
+            break;
+        case interval1:
+            query_interval = interval1;
+            break;
+        case interval2:
+            query_interval = interval2;
+            break;
+        case interval3:
+            query_interval = interval3;
+            break;
+        case interval4:
+            query_interval = interval4;
+            break;
+        case interval5:
+            query_interval = interval5;
+            break;
+    }
+
+    var query = `Select a.clienteId,a.Nombre, Sum(a.Saldo) as Saldo,Sum(A.${query_interval}) as ${query_interval} \
+                From \
+                (SELECT C.EmpresaId, C.TipoDocId, C.NumeroDoc, C.Fecha, CP.FechaProgra, C.Nombre, C.Observaciones, CP.Saldo, C.ClienteId, DATEDIFF(dd, CP.FechaProgra, GETDATE()) AS Dias, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) <= 15 THEN CP.Saldo ELSE 0 END AS Corriente, \
+                        CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 15 AND DateDiff(dd, CP.FechaProgra, getdate()) <= 30 THEN CP.Saldo ELSE 0 END AS QuinceTreinta, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 30 AND DateDiff(dd, CP.FechaProgra, getdate()) \
+                        <= 60 THEN CP.Saldo ELSE 0 END AS TreintaSesenta, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 60 AND DateDiff(dd, CP.FechaProgra, getdate()) <= 90 THEN CP.Saldo ELSE 0 END AS SesentaNoventa, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 90 AND \
+                        DateDiff(dd, CP.FechaProgra, getdate()) <= 120 THEN CP.Saldo ELSE 0 END AS NoventaCiento20, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 120 THEN CP.Saldo ELSE 0 END AS Ciento20Mas \
+                FROM   CXCCargoProgra AS CP INNER JOIN \
+                        CXCCargo AS C ON CP.EmpresaId = C.EmpresaId AND CP.TipoDocId = C.TipoDocId AND CP.NumeroDoc = C.NumeroDoc AND CP.ClienteId = C.ClienteId \
+                WHERE (C.Aplicado = 1) AND (C.Anulado = 0) AND (C.EmpresaId = @EmpresaId) AND (CP.Saldo > 0)) as A \
+                WHERE ${query_interval}  > 0 \
+                Group by a.clienteId,a.Nombre
+                `;
+
+
+    connectionPools[poolKey].request()
+        .input('EmpresaId',sql.Int,empresaId)
+        .input('Interval',sql.NVarChar,interval)
+        .query(query, (err, result) => {
+
+        res.send(result);
+    });
+
+})
+
+/*
+Select a.clienteId,a.Nombre ,Sum(a.Saldo) as Saldo,Sum(A.Corriente) as Corriente, Sum(a.QuinceTreinta) as QuinceTreinta, Sum(a.TreintaSesenta) as TreintaSesenta, 
+    Sum(a.SesentaNoventa) as SesentaNoventa, Sum(a.NoventaCiento20) as NoventaCiento20, Sum(a.Ciento20Mas) as Ciento20Mas 
+From 
+(SELECT C.EmpresaId, C.TipoDocId, C.NumeroDoc, C.Fecha, CP.FechaProgra, C.Nombre, C.Observaciones, CP.Saldo, C.ClienteId, DATEDIFF(dd, CP.FechaProgra, GETDATE()) AS Dias, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) <= 15 THEN CP.Saldo ELSE 0 END AS Corriente, 
+        CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 15 AND DateDiff(dd, CP.FechaProgra, getdate()) <= 30 THEN CP.Saldo ELSE 0 END AS QuinceTreinta, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 30 AND DateDiff(dd, CP.FechaProgra, getdate()) 
+        <= 60 THEN CP.Saldo ELSE 0 END AS TreintaSesenta, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 60 AND DateDiff(dd, CP.FechaProgra, getdate()) <= 90 THEN CP.Saldo ELSE 0 END AS SesentaNoventa, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 90 AND 
+        DateDiff(dd, CP.FechaProgra, getdate()) <= 120 THEN CP.Saldo ELSE 0 END AS NoventaCiento20, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 120 THEN CP.Saldo ELSE 0 END AS Ciento20Mas 
+FROM   CXCCargoProgra AS CP INNER JOIN 
+        CXCCargo AS C ON CP.EmpresaId = C.EmpresaId AND CP.TipoDocId = C.TipoDocId AND CP.NumeroDoc = C.NumeroDoc AND CP.ClienteId = C.ClienteId 
+WHERE (C.Aplicado = 1) AND (C.Anulado = 0) AND (C.EmpresaId = 9) AND (CP.Saldo > 0)) as A
+WHERE TreintaSesenta > 0
+Group by a.clienteId,a.Nombre
+
+*/
+
+
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
 
