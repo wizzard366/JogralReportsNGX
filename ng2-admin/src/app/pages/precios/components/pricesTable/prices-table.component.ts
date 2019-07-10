@@ -5,7 +5,8 @@ import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'prices-table',
-  templateUrl: './prices-table.component.html'
+  templateUrl: './prices-table.component.html',
+  styleUrls:['./prices-table.scss']
 })
 export class PricesTable {
 

@@ -28,9 +28,12 @@
 
 <div class="page-top clearfix" baScrollPosition maxHeight="50" (scrollChange)="scrolledChanged($event)"
      [ngClass]="{scrolled: isScrolled}">
-  <a routerLink="/pages/dashboard" class="al-logo clearfix"><span>JOGRAL-</span>admin</a>
   <a href (click)="toggleMenu()" class="collapse-menu-link ion-navicon"></a>
-
+  <a class="al-logo clearfix" id="server-dd" data-toggle="dropdown" aria-expanded="false"><span>JOGRAL  </span>{{currentStore}}</a>
+  <ul class="dropdown-menu top-dropdown-menu profile-dropdown server-dropdown" aria-labelledby="server-dd">
+      
+    <li class="dropdown-item" *ngFor="let server of serverList; let i = index" (click)="changeServer(server.index)"><i class="dropdown-arr"></i>{{server.name}}</li>
+  </ul>
   <div class="user-profile clearfix">
     <div class="dropdown al-user-profile">
       

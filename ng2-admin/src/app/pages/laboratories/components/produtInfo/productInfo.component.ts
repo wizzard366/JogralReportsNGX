@@ -146,6 +146,7 @@ export class ProductInfoComponent {
 
 
         });
+        
     }
 
     ngOnInit() {

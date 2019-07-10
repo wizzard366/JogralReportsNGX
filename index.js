@@ -448,10 +448,11 @@ apiRoutes.get('/:serverid/precios/rangos/producto/:id/umedida/:umid/:umdesc/pric
     connectionPools[poolKey].request()
         .input('id_ptype', sql.Int, id_ptype)
         .input('id_umedida', sql.NVarChar, id_umedida)
-        .input('desc_umedida', sql.Int, desc_umedida)
+        .input('desc_umedida', sql.NChar, desc_umedida)
         .input('id_parameter', sql.Int, id_parameter)
         .input('EmpresaId',sql.Int,empresaId)
         .query(query, (err, result) => {
+            console.log({'err':err,'result':result})
             res.send(result);
     });
 

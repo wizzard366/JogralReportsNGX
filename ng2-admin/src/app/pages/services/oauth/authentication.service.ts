@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response,RequestOptions  } from '@angular/http';
 import { Observable } from 'rxjs';
+import { Router, CanActivate } from '@angular/router';
 import 'rxjs/add/operator/map'
  
 @Injectable()
@@ -10,7 +11,7 @@ export class AuthenticationService {
     public corre: string;
     public server: string;
  
-    constructor(private http: Http) {
+    constructor(private http: Http,private router: Router) {
         // set token if saved in local storage
         var currentUser = JSON.parse(localStorage.getItem('currentUser'));
         
@@ -54,5 +55,15 @@ export class AuthenticationService {
         this.token = null;
         localStorage.removeItem('currentUser');
         
+    }
+
+    public changeServer(server){
+        this.server = server;
+        console.log('change server to:',server)
+
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'))
+        currentUser.server = server
+        localStorage.setItem('currentUser', JSON.stringify(currentUser))
+        this.router.navigate(['/']);
     }
 }

@@ -1,6 +1,6 @@
 <div class="table-responsive" *ngIf="!isPricesEmpty()">
     <h3> Tipo de Precios </h3>
-<table class="table table-hover table-bordered"  >
+<table class="table table-hover table-bordered table-condensed compact-table"  >
     <thead>
         <tr class="black-muted-bg">
             <th class="align-left">Tipo precio</th>
@@ -24,12 +24,12 @@
 </div>
 <div class="table-responsive" *ngIf="!isRangesEmpty()">
     <h3> Rango de Precios </h3>
-<table class="table table-hover table-bordered" >
+<table class="table table-hover table-bordered table-condensed compact-table" >
     <thead>
         <tr class="black-muted-bg">
             <th class="align-right">Desde</th>
             <th class="align-right">Hasta</th>
-            <th class="align-right">Precio de venta</th>
+            <th class="align-right">Precio</th>
             <th class="align-right">Margen</th>
         </tr>
     </thead>

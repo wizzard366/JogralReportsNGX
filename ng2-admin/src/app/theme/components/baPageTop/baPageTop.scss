@@ -6,7 +6,7 @@
   .page-top {
     background-color: $sidebar;
     position: fixed;
-    z-index: 904;
+    z-index: 1002;
     box-shadow: 2px 0 3px rgba(0, 0, 0, 0.5);
     height: 66px;
     width: 100%;
@@ -122,7 +122,7 @@
     color: $sidebar-text;
     padding: 0;
     float: left;
-    margin: 11px 0 0 25px;
+    margin: 11px 25px 0 0px;
 
     &:hover {
       text-decoration: none;
@@ -194,6 +194,10 @@
     .search {
       display: none;
     }
+    .server-dropdown{
+      right: unset;
+      left:80px !important;
+    }
   }
 
   @media screen and (max-width: $resXS) {
@@ -221,4 +225,9 @@
   .profile-toggle-link {
     cursor: pointer;
   }
+}
+
+.server-dropdown{
+  right: unset;
+  left:180px
 }
