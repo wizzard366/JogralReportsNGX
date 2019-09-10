@@ -56,8 +56,10 @@ export class SalesGraphComponent {
   }
 
   transformData(data){
-
+    console.log('data from server',data);
     let currentYear=0;
+    let temp_money_total=0;
+    let temp_qty_total=0;
 
     let graphDataMoney=[];
     let graphDataQuantity=[]
@@ -81,15 +83,20 @@ export class SalesGraphComponent {
         tempTableQuantityDataRow["class"]=chartistColorClasses[class_index];
         tempTableQuantityDataRow["Tipo"]="Cantidad Unidades";
         tempTableQuantityDataRow[this.keys[element.Mes-1]]=element.Cantidad.toLocaleString('en-US');
+        temp_qty_total = temp_qty_total + element.Cantidad;
+        tempTableQuantityDataRow['Total'] = temp_qty_total.toLocaleString('en-US');
         tempTableMoneyDataRow["Ano"]=currentYear;
         tempTableMoneyDataRow["class"]=chartistColorClasses[class_index];
         tempTableMoneyDataRow["Tipo"]="Monto Quetzalez";
         tempTableMoneyDataRow[this.keys[element.Mes-1]]=element.Monto.toLocaleString('en-US');
+        temp_money_total = temp_money_total + element.Monto;
+        tempTableMoneyDataRow['Total'] = temp_money_total.toLocaleString('en-US');
         tempGraphDataMoneyRow.push(element.Monto);
         tempGraphDataQuantityRow.push(element.Cantidad);
         class_index++;
       }else if(element.Ano!==currentYear){
         currentYear=element.Ano;
+
         tableDataMoney.push(tempTableMoneyDataRow);
         tableDataQuantity.push(tempTableQuantityDataRow);
         graphDataMoney.push(tempGraphDataMoneyRow);
@@ -99,23 +106,33 @@ export class SalesGraphComponent {
         tempGraphDataMoneyRow=[];
         tempTableQuantityDataRow={};
         tempTableMoneyDataRow={};
+        temp_money_total = 0;
+        temp_qty_total = 0;
 
         tempTableQuantityDataRow["Ano"]=currentYear;
         tempTableQuantityDataRow["class"]=chartistColorClasses[class_index];
         tempTableQuantityDataRow[this.keys[element.Mes-1]]=element.Cantidad;
         tempTableQuantityDataRow["Tipo"]="Cantidad Unidades";
         tempTableQuantityDataRow[this.keys[element.Mes-1]]=element.Cantidad.toLocaleString('en-US');
+        temp_qty_total = temp_qty_total + element.Cantidad;
+        tempTableQuantityDataRow['Total'] = temp_qty_total.toLocaleString('en-US');
         tempTableMoneyDataRow["Ano"]=currentYear;
         tempTableMoneyDataRow["class"]=chartistColorClasses[class_index];
         tempTableMoneyDataRow["Tipo"]="Monto Quetzalez";
         tempTableMoneyDataRow[this.keys[element.Mes-1]]=element.Monto.toLocaleString('en-US');
+        temp_money_total = temp_money_total + element.Monto;
+        tempTableMoneyDataRow['Total'] = temp_money_total.toLocaleString('en-US');
         tempGraphDataMoneyRow.push(element.Monto);
         tempGraphDataQuantityRow.push(element.Cantidad);
         class_index++;
 
       }else{
         tempTableQuantityDataRow[this.keys[element.Mes-1]]=element.Cantidad.toLocaleString('en-US');
+        temp_qty_total = temp_qty_total + element.Cantidad;
+        tempTableQuantityDataRow['Total'] = temp_qty_total.toLocaleString('en-US');
         tempTableMoneyDataRow[this.keys[element.Mes-1]]=element.Monto.toLocaleString('en-US');
+        temp_money_total = temp_money_total + element.Monto;
+        tempTableMoneyDataRow['Total'] = temp_money_total.toLocaleString('en-US');
         tempGraphDataMoneyRow.push(element.Monto);
         tempGraphDataQuantityRow.push(element.Cantidad);
       }
