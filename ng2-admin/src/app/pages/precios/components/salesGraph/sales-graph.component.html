@@ -16,7 +16,8 @@
                 <tr class="black-muted-bg">
                     <th class="align-center"></th>
                     <th class="align-center">Ano</th>
-
+                    <th class="align-center">Total</th>
+                    <th class="align-center">Promedio Mensual</th>
                     <th class="align-center">Enero</th>
                     <th class="align-center">Febrero</th>
                     <th class="align-center">Marzo</th>
@@ -29,7 +30,6 @@
                     <th class="align-center">Octubre</th>
                     <th class="align-center">Noviembre</th>
                     <th class="align-center">Diciembre</th>
-                    <th class="align-center">Total</th>
                 </tr>
             </thead>
             <tbody *ngIf="show_quantites">
@@ -38,6 +38,8 @@
                         <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
                     </td>
                     <td class="align-right">{{item.Ano}}</td>
+                    <td class="align-right">{{item.Total}}</td>
+                    <td class="align-right">{{item.MAverage}}</td>
                     <td class="align-right">{{item.Enero}}</td>
                     <td class="align-right">{{item.Febrero}}</td>
                     <td class="align-right">{{item.Marzo}}</td>
@@ -50,7 +52,6 @@
                     <td class="align-right">{{item.Octubre}}</td>
                     <td class="align-right">{{item.Noviembre}}</td>
                     <td class="align-right">{{item.Diciembre}}</td>
-                    <td class="align-right">{{item.Total}}</td>
                 </tr>
             </tbody>
             <tbody  *ngIf="!show_quantites">
@@ -59,6 +60,8 @@
                             <i class="ion-ios-circle-filled {{item.class}} ct-point"></i>
                         </td>
                         <td class="align-right">{{item.Ano}}</td>
+                        <td class="align-right">Q.{{item.Total}}</td>
+                        <td class="align-right">Q.{{item.MAverage}}</td>
                         <td class="align-right">Q.{{item.Enero}}</td>
                         <td class="align-right">Q.{{item.Febrero}}</td>
                         <td class="align-right">Q.{{item.Marzo}}</td>
@@ -71,7 +74,6 @@
                         <td class="align-right">Q.{{item.Octubre}}</td>
                         <td class="align-right">Q.{{item.Noviembre}}</td>
                         <td class="align-right">Q.{{item.Diciembre}}</td>
-                        <td class="align-right">Q.{{item.Total}}</td>
                     </tr>
             </tbody>
         </table>
