@@ -106,6 +106,19 @@ export const PAGES_MENU = [
             order: 0
           }
         }
+      },
+      {
+        path: 'documentos',  // path for our page
+        data: { // custom menu declaration
+          menu: {
+            title: 'Documentos', // menu title
+            icon: 'fa fa-balance-scale', // menu icon
+            pathMatch: 'prefix', // use it if item children not displayed in menu
+            selected: false,
+            expanded: false,
+            order: 0
+          }
+        }
       }
 
     ]

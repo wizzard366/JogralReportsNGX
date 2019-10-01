@@ -12,7 +12,7 @@ import 'style-loader!../../../../theme/chartistJs.scss';
   selector: 'sales-graph',
   templateUrl: './sales-graph.component.html',
   providers: [ChartistJsService],
-  
+  styleUrls: ['sales-graph.component.scss']
   
 })
 export class SalesGraphComponent {
