@@ -358,10 +358,6 @@ apiRoutes.get('/:serverid/producto/description/:desc', function (req, res) {
             res.send(result);
     });
 
-
-
-
-
 });
 
 // get measurements by product id
@@ -1131,21 +1127,127 @@ apiRoutes.get('/:serverid/moneyflow/:interval', function (req, res) {
 
 })
 
-/*
-Select a.clienteId,a.Nombre ,Sum(a.Saldo) as Saldo,Sum(A.Corriente) as Corriente, Sum(a.QuinceTreinta) as QuinceTreinta, Sum(a.TreintaSesenta) as TreintaSesenta, 
-    Sum(a.SesentaNoventa) as SesentaNoventa, Sum(a.NoventaCiento20) as NoventaCiento20, Sum(a.Ciento20Mas) as Ciento20Mas 
-From 
-(SELECT C.EmpresaId, C.TipoDocId, C.NumeroDoc, C.Fecha, CP.FechaProgra, C.Nombre, C.Observaciones, CP.Saldo, C.ClienteId, DATEDIFF(dd, CP.FechaProgra, GETDATE()) AS Dias, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) <= 15 THEN CP.Saldo ELSE 0 END AS Corriente, 
-        CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 15 AND DateDiff(dd, CP.FechaProgra, getdate()) <= 30 THEN CP.Saldo ELSE 0 END AS QuinceTreinta, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 30 AND DateDiff(dd, CP.FechaProgra, getdate()) 
-        <= 60 THEN CP.Saldo ELSE 0 END AS TreintaSesenta, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 60 AND DateDiff(dd, CP.FechaProgra, getdate()) <= 90 THEN CP.Saldo ELSE 0 END AS SesentaNoventa, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 90 AND 
-        DateDiff(dd, CP.FechaProgra, getdate()) <= 120 THEN CP.Saldo ELSE 0 END AS NoventaCiento20, CASE WHEN DateDiff(dd, CP.FechaProgra, getdate()) > 120 THEN CP.Saldo ELSE 0 END AS Ciento20Mas 
-FROM   CXCCargoProgra AS CP INNER JOIN 
-        CXCCargo AS C ON CP.EmpresaId = C.EmpresaId AND CP.TipoDocId = C.TipoDocId AND CP.NumeroDoc = C.NumeroDoc AND CP.ClienteId = C.ClienteId 
-WHERE (C.Aplicado = 1) AND (C.Anulado = 0) AND (C.EmpresaId = 9) AND (CP.Saldo > 0)) as A
-WHERE TreintaSesenta > 0
-Group by a.clienteId,a.Nombre
+apiRoutes.get('/:serverid/documents', function (req, res) {
 
-*/
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+    let clienteid = req.query.clienteid;
+    let productoid = req.query.productoid;
+    let areaid = req.query.areaid;
+    let subareaid = req.query.subareaid;
+    let vendedorid = req.query.vendedorid;
+    let deptoid = req.query.deptoid;
+    let muniid = req.query.muniid;
+    let startDate = req.query.startdate;
+    let endDate = req.query.enddate;
+
+    var query1 = "SELECT distinct docu.NumeroDoc, docu.ClienteId,docu.Direccion,docu.NIT,docu.VendedorId, docu.Total, cliente.Nombre, docu.Fecha, departamento.Nombre,municipio.Nombre,vendedor.Nombre \
+    FROM [PCINVJes].[dbo].FACDocumentoDet as detalle, \
+      (Select * from PCINVJes.dbo.FACDocumento where fecha between @desde and @hasta) as docu, \
+      PCINVJes.dbo.INVProducto as producto, \
+      PCINVJes.dbo.CXCCliente as cliente, \
+      PCINVJes.dbo.PLADepartamentos as departamento, \
+      PCINVJes.dbo.PLAMunicipios as municipio, \
+      PCINVJes.dbo.FACXVendedor as vendedor \
+    where docu.NumeroDoc = detalle.NumeroDoc \
+      and docu.ClienteId = cliente.ClienteId \
+      and cliente.DeptoId = departamento.DeptoId \
+      and cliente.MunicipioId = municipio.MunicipoId \
+      and docu.VendedorId = vendedor.VendedorId "
+
+    if(clienteid){
+        query1 = query1 + " and cliente.ClienteId = @clienteid "
+    }
+    if(productoid){
+        query1 = query1 + " and producto.ProductoId = @productoid "
+    }
+    if(areaid){
+        query1 = query1 + " and producto.AreaID = @areaid "
+    }
+    if(subareaid){
+        query1 = query1 + " and producto.SubAreaID = @subareaid "
+    }
+    if(vendedorid){
+        query1 = query1 + " and docu.VendedorId = @vendedorid "
+    }
+    if(deptoid){
+        query1 = query1 + " and cliente.DeptoId = @deptoid "
+    }
+    if(muniid){
+        query1 = query1 + " and cliente.MunicipioId = @muniid "
+    }
+
+    var queryEnd="order by docu.NumeroDoc";
+    var query = query1 + queryEnd;
+    
+    connectionPools[poolKey].request()
+        .input('EmpresaId',sql.Int,empresaId)
+        .input('clienteid',sql.Int,clienteid)
+        .input('productoid',sql.Int,productoid)
+        .input('areaid',sql.Int,areaid)
+        .input('subareaid',sql.Int,subareaid)
+        .input('vendedorid',sql.Int,vendedorid)
+        .input('deptoid',sql.Int,deptoid)
+        .input('muniid',sql.Int,muniid)
+        .input()
+        .query(query, (err, result) => {
+            res.send(result);
+    });
+})
+
+apiRoutes.get('/:serverid/area/description/:desc', function (req, res) {
+
+    var desc_parameter = req.params.desc;
+    var desc_queryParam = '%' + desc_parameter + '%'
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+
+    var query = 'select AreaId,Descripcion from PCINVJes.dbo.INVXArea where EmpresaId = @EmpresaId and (Descripcion like @descParam or AreaId like @descParam) ';
+
+    connectionPools[poolKey].request()
+        .input('descParam', sql.NVarChar, desc_queryParam)
+        .input('EmpresaId',sql.Int,empresaId)
+        .query(query, (err, result) => {
+            res.send(result);
+    });
+
+});
+
+apiRoutes.get('/:serverid/subarea/description/:areaid', function (req, res) {
+
+    var areaid = req.params.areaid;
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+
+    var query = 'select SubAreaId,Descripcion from PCINVJes.dbo.INVXAreaSubArea where EmpresaId = @EmpresaId and AreaId = @areaid ';
+
+    connectionPools[poolKey].request()
+        .input('areaid', sql.NVarChar, areaid)
+        .input('EmpresaId',sql.Int,empresaId)
+        .query(query, (err, result) => {
+            res.send(result);
+    });
+
+});
+
+apiRoutes.get('/:serverid/marca/description/:desc', function (req, res) {
+
+    var desc_parameter = req.params.desc;
+    var desc_queryParam = '%' + desc_parameter + '%'
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+
+    var query = 'select MarcaId,Descripcion from PCINVJes.dbo.INVXMarca where EmpresaId = @EmpresaId and Descripcion like @descParam ';
+
+    connectionPools[poolKey].request()
+        .input('descParam', sql.NVarChar, desc_queryParam)
+        .input('EmpresaId',sql.Int,empresaId)
+        .query(query, (err, result) => {
+            res.send(result);
+    });
+
+});
+
 
 
 // apply the routes to our application with the prefix /api

@@ -178,4 +178,31 @@ export class ProductService {
             .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
 
     }
+
+
+    getAreaByDescription(description) {
+        let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
+        let options = new RequestOptions({ headers: headers });
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/area/description/' + description, options)
+            .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
+    }
+
+    getSubAreaById(areaid) {
+        let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
+        let options = new RequestOptions({ headers: headers });
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/subarea/description/' + areaid, options)
+            .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
+    }
+
+    getMarcaByDescription(description) {
+        let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
+        let options = new RequestOptions({ headers: headers });
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/marca/description/' + description, options)
+            .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
+    }
+
+    
 }
