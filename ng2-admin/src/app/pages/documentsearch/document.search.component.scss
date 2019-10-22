@@ -1,0 +1,17 @@
+
+table {
+    position: relative;
+
+}
+
+th {
+    position: sticky;
+    top:0;
+    background-color: #dbdbdb;
+    border: 1px solid #842a2a;
+}
+
+.fix-height{
+    height: 500px;
+    overflow: scroll;
+}

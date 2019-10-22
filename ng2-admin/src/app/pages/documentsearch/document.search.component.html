@@ -4,102 +4,208 @@
 
                 <div class="row">
 
-                        <div class="col-md-6">
-                            <form class="form-horizontal">
-                                <div class="row">
-                                    <label class="col-md-2 form-control-label" for="descripcion">Fecha:</label>
-                                    <div class="col-md-5">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input class="form-control" placeholder="fecha inicio" name="dp1" [(ngModel)]="startDate" ngbDatepicker #d1="ngbDatepicker">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
-                                                        <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input class="form-control" placeholder="fecha Final" name="dp" [(ngModel)]="endDate" ngbDatepicker #d="ngbDatepicker">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
-                                                        <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-                                                    </button>
-                                                </div>
+                    <div class="col-md-6">
+                        <form class="form-horizontal">
+                            <div class="row">
+                                <label class="col-md-2 form-control-label" for="descripcion">Fecha:</label>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input class="form-control" placeholder="fecha inicio" name="dp1" [(ngModel)]="startDate" ngbDatepicker #d1="ngbDatepicker">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
+                                                    <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input class="form-control" placeholder="fecha Final" name="dp" [(ngModel)]="endDate" ngbDatepicker #d="ngbDatepicker">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                                                    <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label">ProductoId:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" [(ngModel)]="product_id" name="product_id" class="form-control" id="product_id">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label" for="descripcion">Descripción:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" [(ngModel)]="product_description" name="product_description" class="form-control" id="product_description"
+                                        (input)="input()">
+                                    <select multiple class="form-control tablet-landscape-and-below" id="selectedProductId" name="selectedProductId" *ngIf="showSelect"
+                                        (click)="selectClick()" [(ngModel)]="product_id">
+                                        <option *ngFor="let product of productSuggestionList" [value]="product.productoId">{{product.descripcion}}</option>
+                                    </select>
+                                    <div class="desktop-and-up form-control" *ngIf="showSelect">
+                                        <div tabindex="1" class="clickablediv" *ngFor="let product of productSuggestionList" style="overflow-x: hidden;" (click)="selectClickOption($event,product.productoId)">{{product.descripcion}}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label" for="descripcion">Area:</label>
+                                <div class="col-sm-10">
+                                    <input type="hidden" [(ngModel)]="area_id" name="area_id" class="form-control" id="area_id">
+                                    <input type="text" [(ngModel)]="area_description" name="area_description" class="form-control" id="area_description"
+                                        (input)="inputArea()" (blur)="areaBlur()">
+                                    <select multiple class="form-control tablet-landscape-and-below" id="areadesc" name="areadesc" *ngIf="showSelectArea"
+                                        (click)="selectClickArea()" [(ngModel)]="area_description">
+                                        <option *ngFor="let area of areaSuggestionList" [value]="area.Descripcion + ' - ' + area.AreaId" (click)="selectClickOptionArea($event,area.AreaId)">{{area.Descripcion}} - {{area.AreaId}}</option>
+                                    </select>
+                                    <div class="desktop-and-up form-control" *ngIf="showSelectArea">
+                                        <div tabindex="1" class="clickablediv" *ngFor="let area of areaSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionArea($event,area.AreaId)">{{area.Descripcion}} - {{area.AreaId}}</div>
+                                    </div>
+                                </div>
+                            </div>
                             
-                                <div class="form-group row">
-                                    <label class="col-sm-2 form-control-label">ProductoId:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" [(ngModel)]="product_id" name="product_id" class="form-control" id="product_id">
-                                    </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label" for="descripcion">Sub-Area:</label>
+                                <div class="col-sm-10">
+                                    <input type="hidden" [(ngModel)]="subarea_id" name="subarea_id" class="form-control" id="subarea_id">
+                                    <select class="form-control tablet-landscape-and-below" id="subareadesc" name="subareadesc" [(ngModel)]="subarea_id">
+                                        <option *ngFor="let subarea of subAreaSuggestionList" [value]="subarea.SubAreaId" (click)="selectClickOptionSubArea($event,subarea.SubAreaId)">{{subarea.Descripcion}} - {{subarea.SubAreaId}}</option>
+                                    </select>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 form-control-label" for="descripcion">Descripción:</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" [(ngModel)]="product_description" name="product_description" class="form-control" id="product_description"
-                                            (input)="input()">
-                                        <select multiple class="form-control tablet-landscape-and-below" id="selectedProductId" name="selectedProductId" *ngIf="showSelect"
-                                            (click)="selectClick()" [(ngModel)]="product_id">
-                                            <option *ngFor="let product of productSuggestionList" [value]="product.productoId">{{product.descripcion}}</option>
-                                        </select>
-                                        <div class="desktop-and-up form-control" *ngIf="showSelect">
-                                            <div tabindex="1" class="clickablediv" *ngFor="let product of productSuggestionList" style="overflow-x: hidden;" (click)="selectClickOption($event,product.productoId)">{{product.descripcion}}</div>
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
 
-                                <div class="form-group row">
-                                    <label class="col-sm-2 form-control-label" for="descripcion">Area:</label>
-                                    <div class="col-sm-10">
-                                        <input type="hidden" [(ngModel)]="area_id" name="area_id" class="form-control" id="area_id">
-                                        <input type="text" [(ngModel)]="area_description" name="area_description" class="form-control" id="area_description"
-                                            (input)="inputArea()" (blur)="areaBlur()">
-                                        <select multiple class="form-control tablet-landscape-and-below" id="selectedProductId" name="selectedProductId" *ngIf="showSelectArea"
-                                            (click)="selectClickArea()" [(ngModel)]="area_description">
-                                            <option *ngFor="let area of areaSuggestionList" [value]="area.Descripcion + ' - ' + area.AreaId" (click)="selectClickOptionArea($event,area.AreaId)">{{area.Descripcion}} - {{area.AreaId}}</option>
-                                        </select>
-                                        <div class="desktop-and-up form-control" *ngIf="showSelectArea">
-                                            <div tabindex="1" class="clickablediv" *ngFor="let area of areaSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionArea($event,area.AreaId)">{{area.Descripcion}} - {{area.AreaId}}</div>
-                                        </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label" for="descripcion">Marca:</label>
+                                <div class="col-sm-10">
+                                    <input type="hidden" [(ngModel)]="marca_id" name="marca_id" class="form-control" id="marca_id">
+                                    <input type="text" [(ngModel)]="marca_description" name="marca_description" class="form-control" id="marca_description"
+                                        (input)="inputMarca()">
+                                    <select multiple class="form-control tablet-landscape-and-below" id="marcadesc" name="marcadesc" *ngIf="showSelectMarca"
+                                        (click)="selectClickMarca()" [(ngModel)]="marca_description">
+                                        <option *ngFor="let marca of marcaSuggestionList" [value]="marca.Descripcion + ' - ' + marca.MarcaId" (click)="selectClickOptionMarca($event,marca.MarcaId)">{{marca.Descripcion}} - {{marca.MarcaId}}</option>
+                                    </select>
+                                    <div class="desktop-and-up form-control" *ngIf="showSelectArea">
+                                        <div tabindex="1" class="clickablediv" *ngFor="let marca of marcaSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionMarca($event,marca.MarcaId)">{{marca.Descripcion}} - {{marca.MarcaId}}</div>
                                     </div>
                                 </div>
-                                
-                                <div class="form-group row">
-                                    <label class="col-sm-2 form-control-label" for="descripcion">Sub-Area:</label>
-                                    <div class="col-sm-10">
-                                        <input type="hidden" [(ngModel)]="subarea_id" name="subarea_id" class="form-control" id="subarea_id">
-                                        <select class="form-control tablet-landscape-and-below" id="selectedProductId" name="selectedProductId" >
-                                            <option *ngFor="let subarea of subAreaSuggestionList" [value]="subarea.Descripcion" (click)="selectClickOptionSubArea($event,subarea.SubAreaId)">{{subarea.Descripcion}} - {{subarea.SubAreaId}}</option>
-                                        </select>
-                                    </div>
-                                </div>
+                            </div>
+                            
+                        </form>
+                    </div>
 
-                                <div class="form-group row">
-                                        <label class="col-sm-2 form-control-label" for="descripcion">Marca:</label>
-                                        <div class="col-sm-10">
-                                            <input type="hidden" [(ngModel)]="marca_id" name="marca_id" class="form-control" id="marca_id">
-                                            <input type="text" [(ngModel)]="marca_description" name="marca_description" class="form-control" id="marca_description"
-                                                (input)="inputMarca()">
-                                            <select multiple class="form-control tablet-landscape-and-below" id="selectedProductId" name="selectedProductId" *ngIf="showSelectMarca"
-                                                (click)="selectClickMarca()" [(ngModel)]="marca_description">
-                                                <option *ngFor="let marca of marcaSuggestionList" [value]="marca.Descripcion + ' - ' + marca.MarcaId" (click)="selectClickOptionMarca($event,marca.MarcaId)">{{marca.Descripcion}} - {{marca.MarcaId}}</option>
-                                            </select>
-                                            <div class="desktop-and-up form-control" *ngIf="showSelectArea">
-                                                <div tabindex="1" class="clickablediv" *ngFor="let marca of marcaSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionMarca($event,marca.MarcaId)">{{marca.Descripcion}} - {{marca.MarcaId}}</div>
-                                            </div>
-                                        </div>
+                    <div class="col-md-6">
+                        <form class="form-horizontal">
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label" for="descripcion">Cliente:</label>
+                                <div class="col-sm-10">
+                                    <input type="hidden" [(ngModel)]="cliente_id" name="cliente_id" class="form-control" id="cliente_id">
+                                    <input type="text" [(ngModel)]="cliente_name" name="cliente_name" class="form-control" id="cliente_name"
+                                        (input)="inputCliente()" >
+                                    <select multiple class="form-control tablet-landscape-and-below" id="clientename" name="clientename" *ngIf="showSelectCliente"
+                                        (click)="selectClickCliente()" [(ngModel)]="cliente_name">
+                                        <option *ngFor="let cliente of clienteSuggestionList" [value]="cliente.ClienteId + ' - ' + cliente.Nombre + ' ' + cliente.Apellido + ' : ' + cliente.NombreComercial" (click)="selectClickOptionCliente($event,cliente.ClienteId)">{{cliente.ClienteId}} - {{cliente.Nombre}} {{cliente.Apellido}} : {{cliente.NombreComercial}}</option>
+                                    </select>
+                                    <div class="desktop-and-up form-control" *ngIf="showSelectCliente">
+                                        <div tabindex="1" class="clickablediv" *ngFor="let cliente of clienteSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionCliente($event,cliente.ClienteId)">{{cliente.Descripcion}} - {{cliente.ClienteId}}</div>
+                                    </div>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label" for="descripcion">Departamento:</label>
+                                <div class="col-sm-10">
+                                    <input type="hidden" [(ngModel)]="departamento_id" name="departamento_id" class="form-control" id="departamento_id">
+                                    <input type="text" [(ngModel)]="departamento_description" name="departamento_description" class="form-control" id="departamento_description"
+                                        (input)="inputDepto()" >
+                                    <select multiple class="form-control tablet-landscape-and-below" id="deptoname" name="deptoname" *ngIf="showSelectDepto"
+                                        (click)="selectClickDepto()" [(ngModel)]="departamento_description">
+                                        <option *ngFor="let depto of deptoSuggestionList" [value]="depto.Nombre" (click)="selectClickOptionDepto($event,depto.DeptoId)">{{depto.Nombre}}</option>
+                                    </select>
+                                    <div class="desktop-and-up form-control" *ngIf="showSelectCliente">
+                                        <div tabindex="1" class="clickablediv" *ngFor="let depto of deptoSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionDepto($event,depto.DeptoId)">{{depto.Nombre}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label" for="descripcion">Municipio:</label>
+                                <div class="col-sm-10">
+                                    <input type="hidden" [(ngModel)]="municipio_id" name="municipio_id" class="form-control" id="municipio_id">
+                                    <input type="text" [(ngModel)]="municipio_description" name="municipio_description" class="form-control" id="municipio_description"
+                                        (input)="inputMuni()" >
+                                    <select multiple class="form-control tablet-landscape-and-below" id="deptoname" name="deptoname" *ngIf="showSelectMuni"
+                                        (click)="selectClickMuni()" [(ngModel)]="municipio_description">
+                                        <option *ngFor="let muni of muniSuggestionList" [value]="muni.Nombre" (click)="selectClickOptionMuni($event,muni.MunicipoId)">{{muni.Nombre}}</option>
+                                    </select>
+                                    <div class="desktop-and-up form-control" *ngIf="showSelectCliente">
+                                        <div tabindex="1" class="clickablediv" *ngFor="let muni of muniSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionMuni($event,muni.MunicipoId)">{{muni.Nombre}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label" for="descripcion">Vendedor:</label>
+                                <div class="col-sm-10">
+                                    <input type="hidden" [(ngModel)]="vendedor_id" name="vendedor_id" class="form-control" id="vendedor_id">
+                                    <input type="text" [(ngModel)]="vendedor_name" name="vendedor_name" class="form-control" id="vendedor_name"
+                                        (input)="inputVendedor()" >
+                                    <select multiple class="form-control tablet-landscape-and-below" id="deptoname" name="deptoname" *ngIf="showSelectVendedor"
+                                        (click)="selectClickVendedor()" [(ngModel)]="vendedor_name">
+                                        <option *ngFor="let vendedor of vendedorSuggestionList" [value]="vendedor.NombreCompleto + ' - ' + vendedor.VendedorId" (click)="selectClickOptionVendedor($event,vendedor.VendedorId)">{{vendedor.NombreCompleto}} - {{vendedor.VendedorId}}</option>
+                                    </select>
+                                    <div class="desktop-and-up form-control" *ngIf="showSelectVendedor">
+                                        <div tabindex="1" class="clickablediv" *ngFor="let vendedor of vendedorSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionVendedor($event,vendedor.VendedorId)">{{vendedor.NombreCompleto}} - {{vendedor.VendedorId}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label" for="descripcion">Marca:</label>
+                                <div class="col-sm-10">
+                                    <input type="submit" class="btn btn-primary" (click)="searchForDocuments()">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-
+                <!-- <ul>
+                    <li>producto id : {{product_id}}</li>
+                    <li>area id: {{area_id}}</li>
+                    <li>sub area id: {{subarea_id}}</li>
+                    <li>marca id: {{marca_id}}</li>
+                    <li>cliente id: {{cliente_id}}</li>
+                    <li>departamento id: {{departamento_id}}</li>
+                    <li>municipio id: {{municipio_id}}</li>
+                    <li>vendedor id: {{vendedor_id}}</li>
+                </ul> -->
+                
+                <div class="row" *ngIf="documents">
+                    <div class="col-md-12 fix-height">
+                        <table class="table table-bordered table-condensed fixed_header">
+                            <thead>
+                                <tr>
+                                    <th class="align-center black-muted-bg">NumeroDoc</th>
+                                    <th class="align-center black-muted-bg">Nombre</th>
+                                    <th class="align-center black-muted-bg">NIT</th>
+                                    <th class="align-center black-muted-bg">Fecha</th>
+                                    <th class="align-center black-muted-bg">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let document of documents; let i = index" class="no-top-border">
+                                    <td>{{document.NumeroDoc}}</td>
+                                    <td>{{document.Nombre}}</td>
+                                    <td>{{document.NIT}}</td>
+                                    <td>{{document.Fecha}}</td>
+                                    <td>{{document.Total}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
         </ba-card>
     </div>
 </div>

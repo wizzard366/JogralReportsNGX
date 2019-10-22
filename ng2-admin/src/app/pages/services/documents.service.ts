@@ -36,7 +36,7 @@ export class DocumentsService {
         return Observable.throw(errMsg);
     }
 
-    getdocuments(clienteid,productoid,area,subarea,vendedorid,deptoid,muniid) {
+    getdocuments(clienteid,productoid,area,subarea,vendedorid,deptoid,muniid,startDate,endDate) {
         let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server});
         let myParams = {}
         if(clienteid){
@@ -60,6 +60,8 @@ export class DocumentsService {
         if(muniid){
             myParams['muniid']=muniid
         }
+        myParams['startDate']= encodeURIComponent(startDate);
+        myParams['endDate']=encodeURIComponent(endDate);
         let options = new RequestOptions({ headers: headers,params: myParams });
         
         let server = this.authenticationService.server

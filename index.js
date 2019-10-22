@@ -1138,10 +1138,10 @@ apiRoutes.get('/:serverid/documents', function (req, res) {
     let vendedorid = req.query.vendedorid;
     let deptoid = req.query.deptoid;
     let muniid = req.query.muniid;
-    let startDate = req.query.startdate;
-    let endDate = req.query.enddate;
+    let startDate = req.query.startDate;
+    let endDate = req.query.endDate;
 
-    var query1 = "SELECT distinct docu.NumeroDoc, docu.ClienteId,docu.Direccion,docu.NIT,docu.VendedorId, docu.Total, cliente.Nombre, docu.Fecha, departamento.Nombre,municipio.Nombre,vendedor.Nombre \
+    var query1 = "SELECT distinct docu.NumeroDoc, docu.ClienteId,docu.Direccion,docu.NIT,docu.VendedorId, docu.Total, docu.Nombre, docu.Fecha, departamento.Nombre as dptoName,municipio.Nombre as numiName,vendedor.Nombre as vendedorName \
     FROM [PCINVJes].[dbo].FACDocumentoDet as detalle, \
       (Select * from PCINVJes.dbo.FACDocumento where fecha between @desde and @hasta) as docu, \
       PCINVJes.dbo.INVProducto as producto, \
@@ -1179,6 +1179,8 @@ apiRoutes.get('/:serverid/documents', function (req, res) {
 
     var queryEnd="order by docu.NumeroDoc";
     var query = query1 + queryEnd;
+
+    console.log('\n\n'+query+'\n\n')
     
     connectionPools[poolKey].request()
         .input('EmpresaId',sql.Int,empresaId)
@@ -1189,9 +1191,17 @@ apiRoutes.get('/:serverid/documents', function (req, res) {
         .input('vendedorid',sql.Int,vendedorid)
         .input('deptoid',sql.Int,deptoid)
         .input('muniid',sql.Int,muniid)
-        .input()
+        .input('desde',sql.NVarChar,startDate)
+        .input('hasta',sql.NVarChar,endDate)
         .query(query, (err, result) => {
-            res.send(result);
+            if(err){
+                res.send(err)
+            }else{
+
+                res.send(result);
+            }
+            
+            
     });
 })
 
@@ -1248,6 +1258,78 @@ apiRoutes.get('/:serverid/marca/description/:desc', function (req, res) {
 
 });
 
+apiRoutes.get('/:serverid/cliente/description/:desc', function (req, res) {
+
+    var desc_parameter = req.params.desc;
+    var desc_queryParam = '%' + desc_parameter + '%'
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+
+    var query = "Select Nombre,Apellido,NombreComercial,ClienteId from PCINVJes.dbo.CXCCliente where EmpresaId = @EmpresaId \
+    and (Nombre like @descParam or Apellido like @descParam or ClienteId like @descParam or NombreComercial like @descParam)";
+
+    connectionPools[poolKey].request()
+        .input('descParam', sql.NVarChar, desc_queryParam)
+        .input('EmpresaId',sql.Int,empresaId)
+        .query(query, (err, result) => {
+            res.send(result);
+    });
+
+});
+
+apiRoutes.get('/:serverid/depto/description/:desc', function (req, res) {
+
+    var desc_parameter = req.params.desc;
+    var desc_queryParam = '%' + desc_parameter + '%'
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+
+    var query = "Select DeptoId, Nombre from PCINVJes.dbo.PLADepartamentos where EmpresaId = @EmpresaId and Nombre like @descParam";
+
+    connectionPools[poolKey].request()
+        .input('descParam', sql.NVarChar, desc_queryParam)
+        .input('EmpresaId',sql.Int,empresaId)
+        .query(query, (err, result) => {
+            res.send(result);
+    });
+
+});
+
+apiRoutes.get('/:serverid/muni/description/:desc', function (req, res) {
+
+    var desc_parameter = req.params.desc;
+    var desc_queryParam = '%' + desc_parameter + '%'
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+
+    var query = "Select DeptoId,Nombre,MunicipoId from PCINVJes.dbo.PLAMunicipios where EmpresaId = 9 and Nombre like @descParam ";
+
+    connectionPools[poolKey].request()
+        .input('descParam', sql.NVarChar, desc_queryParam)
+        .input('EmpresaId',sql.Int,empresaId)
+        .query(query, (err, result) => {
+            res.send(result);
+    });
+
+});
+
+apiRoutes.get('/:serverid/vendedor/description/:desc', function (req, res) {
+
+    var desc_parameter = req.params.desc;
+    var desc_queryParam = '%' + desc_parameter + '%'
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+
+    var query = "select VendedorId, NombreCompleto from PCINVJes.dbo.FACXVendedor where EmpresaId = 9 and Nombre like @descParam ";
+
+    connectionPools[poolKey].request()
+        .input('descParam', sql.NVarChar, desc_queryParam)
+        .input('EmpresaId',sql.Int,empresaId)
+        .query(query, (err, result) => {
+            res.send(result);
+    });
+
+});
 
 
 // apply the routes to our application with the prefix /api
