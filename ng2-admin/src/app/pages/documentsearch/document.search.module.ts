@@ -4,6 +4,7 @@ import { routing } from './document.search.routing';
 import { FormsModule as AngularFormsModule } from '@angular/forms';
 import { NgaModule } from '../../theme/nga.module';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import {DocumentSearchComponent} from './document.search.component';
 
@@ -13,7 +14,8 @@ import {DocumentSearchComponent} from './document.search.component';
       routing,
       AngularFormsModule,
       NgaModule,
-      NgbModule
+      NgbModule,
+      Ng2SmartTableModule,
     ],
     declarations: [
         DocumentSearchComponent,
