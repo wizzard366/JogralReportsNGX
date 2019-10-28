@@ -82,8 +82,8 @@ export class DocumentSearchComponent {
             Fecha: {
                 title: 'Fecha',
                 filter: false,
-                type: 'text'
-
+                type: 'text',
+                valuePrepareFunction:this.getParsedDate
             },
             Total: {
                 title: 'Total',
@@ -240,7 +240,10 @@ export class DocumentSearchComponent {
         return this.subAreaSuggestionList.length > 0;
     }
 
-
+    getParsedDate(date){
+        let parsedDate = new Date(Date.parse(date));
+        return `${parsedDate.getDate()}-${parsedDate.getMonth()+1}-${parsedDate.getFullYear()}`
+    }
 
     inputMarca() {
         if (this.marca_description.length > 1) {

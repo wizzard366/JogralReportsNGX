@@ -112,7 +112,7 @@ export const PAGES_MENU = [
         data: { // custom menu declaration
           menu: {
             title: 'Documentos', // menu title
-            icon: 'fa fa-balance-scale', // menu icon
+            icon: 'fa fa-file-o', // menu icon
             pathMatch: 'prefix', // use it if item children not displayed in menu
             selected: false,
             expanded: false,
