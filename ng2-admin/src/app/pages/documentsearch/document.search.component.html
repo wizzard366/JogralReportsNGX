@@ -75,9 +75,13 @@
                                 <label class="col-sm-2 form-control-label" for="descripcion">Sub-Area:</label>
                                 <div class="col-sm-10">
                                     <input type="hidden" [(ngModel)]="subarea_id" name="subarea_id" class="form-control" id="subarea_id">
+                                    <input class="desktop-and-up form-control" type="text" (click)="showSubAreaSelect()" [(ngModel)]="subarea_description" name="subarea_id" id="subarea" disabled>
                                     <select class="form-control tablet-landscape-and-below" id="subareadesc" name="subareadesc" [(ngModel)]="subarea_id">
                                         <option *ngFor="let subarea of subAreaSuggestionList" [value]="subarea.SubAreaId" (click)="selectClickOptionSubArea($event,subarea.SubAreaId)">{{subarea.Descripcion}} - {{subarea.SubAreaId}}</option>
                                     </select>
+                                    <div class="desktop-and-up form-control" *ngIf="showSelectSubArea">
+                                        <div tabindex="1" class="clickablediv" *ngFor="let subarea of subAreaSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionSubArea($event,subarea.SubAreaId)">{{subarea.Descripcion}} - {{subarea.SubAreaId}}</div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -91,7 +95,7 @@
                                         (click)="selectClickMarca()" [(ngModel)]="marca_description">
                                         <option *ngFor="let marca of marcaSuggestionList" [value]="marca.Descripcion + ' - ' + marca.MarcaId" (click)="selectClickOptionMarca($event,marca.MarcaId)">{{marca.Descripcion}} - {{marca.MarcaId}}</option>
                                     </select>
-                                    <div class="desktop-and-up form-control" *ngIf="showSelectArea">
+                                    <div class="desktop-and-up form-control" *ngIf="showSelectMarca">
                                         <div tabindex="1" class="clickablediv" *ngFor="let marca of marcaSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionMarca($event,marca.MarcaId)">{{marca.Descripcion}} - {{marca.MarcaId}}</div>
                                     </div>
                                 </div>
@@ -113,7 +117,7 @@
                                         <option *ngFor="let cliente of clienteSuggestionList" [value]="cliente.ClienteId + ' - ' + cliente.Nombre + ' ' + cliente.Apellido + ' : ' + cliente.NombreComercial" (click)="selectClickOptionCliente($event,cliente.ClienteId)">{{cliente.ClienteId}} - {{cliente.Nombre}} {{cliente.Apellido}} : {{cliente.NombreComercial}}</option>
                                     </select>
                                     <div class="desktop-and-up form-control" *ngIf="showSelectCliente">
-                                        <div tabindex="1" class="clickablediv" *ngFor="let cliente of clienteSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionCliente($event,cliente.ClienteId)">{{cliente.Descripcion}} - {{cliente.ClienteId}}</div>
+                                        <div tabindex="1" class="clickablediv" *ngFor="let cliente of clienteSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionCliente($event,cliente.ClienteId)">{{cliente.ClienteId}} - {{cliente.Nombre}} {{cliente.Apellido}} : {{cliente.NombreComercial}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -127,7 +131,7 @@
                                         (click)="selectClickDepto()" [(ngModel)]="departamento_description">
                                         <option *ngFor="let depto of deptoSuggestionList" [value]="depto.Nombre" (click)="selectClickOptionDepto($event,depto.DeptoId)">{{depto.Nombre}}</option>
                                     </select>
-                                    <div class="desktop-and-up form-control" *ngIf="showSelectCliente">
+                                    <div class="desktop-and-up form-control" *ngIf="showSelectDepto">
                                         <div tabindex="1" class="clickablediv" *ngFor="let depto of deptoSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionDepto($event,depto.DeptoId)">{{depto.Nombre}}</div>
                                     </div>
                                 </div>
@@ -142,7 +146,7 @@
                                         (click)="selectClickMuni()" [(ngModel)]="municipio_description">
                                         <option *ngFor="let muni of muniSuggestionList" [value]="muni.Nombre" (click)="selectClickOptionMuni($event,muni.MunicipoId)">{{muni.Nombre}}</option>
                                     </select>
-                                    <div class="desktop-and-up form-control" *ngIf="showSelectCliente">
+                                    <div class="desktop-and-up form-control" *ngIf="showSelectMuni">
                                         <div tabindex="1" class="clickablediv" *ngFor="let muni of muniSuggestionList" style="overflow-x: hidden;" (click)="selectClickOptionMuni($event,muni.MunicipoId)">{{muni.Nombre}}</div>
                                     </div>
                                 </div>
@@ -176,6 +180,7 @@
                 <div class="row" *ngIf="documents">
                     <div class="col-md-12">
                         <ng2-smart-table [settings]="settings" [source]="smartTabledata"></ng2-smart-table>
+                        <button class="btn btn-info" (click)="download()">Exportar Datos</button>
                     </div>
                 </div>
         </ba-card>

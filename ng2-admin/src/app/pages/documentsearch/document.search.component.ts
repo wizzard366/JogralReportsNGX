@@ -8,6 +8,9 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/map';
 
+import * as XLSX from 'xlsx';
+import { SmartTablesService } from '../tables/components/smartTables/smartTables.service';
+
 
 @Component({
     selector: 'document-search-component',
@@ -51,6 +54,8 @@ export class DocumentSearchComponent {
     smartTabledata: LocalDataSource;
     documents: any;
     checked:boolean=false;
+    showSelectSubArea:any = false;
+    subarea_description: any;
     public settings = {
         actions: {
             add: false,
@@ -91,9 +96,8 @@ export class DocumentSearchComponent {
                 valuePrepareFunction: this.parseNumbers
             }
         }
-
-
     }
+    
 
 
 
@@ -101,6 +105,7 @@ export class DocumentSearchComponent {
         private dateService: DateService, ) {
         this.showSelect = false;
         this.showSelectArea = false;
+        this.showSelectSubArea = false;
         this.showSelectMarca = false;
         this.productSuggestionList = [];
         this.smartTabledata = new LocalDataSource(this.documents);
@@ -110,7 +115,9 @@ export class DocumentSearchComponent {
         return 'Q.' + cell.toLocaleString('en-US');
     }
 
-    
+    showSubAreaSelect(){
+        this.showSelectSubArea = true;
+    }
 
     selectClick() {
         this.showSelect = false;
@@ -204,36 +211,54 @@ export class DocumentSearchComponent {
     }
 
     selectClickOptionArea($event, areaid) {
+        this.area_description = $event.target.innerText
         this.area_id = areaid;
         this.getSubAreaOptions(this.area_id);
+        this.showSelectArea=false;
     }
 
     getSubAreaOptions(areaid) {
         this.subarea_id = null;
         this.productSerive.getSubAreaById(areaid).subscribe(data => {
             this.subAreaSuggestionList = data;
+            this.showSelectSubArea = true;
         })
     }
 
+    selectClickOption($event,productid){
+        this.product_id = productid
+        this.showSelect = false;
+    }
+
     selectClickOptionSubArea($event, subareaid) {
-        console.log('subarea:', subareaid)
         this.subarea_id = subareaid;
+        this.showSelectArea=false;
+        this.showSelectSubArea = false;
+        this.subarea_description = $event.target.innerText;
     }
 
     selectClickOptionCliente($event, clienteid) {
         this.cliente_id = clienteid
+        this.showSelectCliente = false;
+        this.cliente_name = $event.target.innerText
     }
 
     selectClickOptionDepto($event, deptoid) {
         this.departamento_id = deptoid;
+        this.showSelectDepto = false;
+        this.departamento_description = $event.target.innerText
     }
 
     selectClickOptionMuni($event, muniid) {
         this.municipio_id = muniid;
+        this.showSelectMuni = false;
+        this.municipio_description = $event.target.innerText
     }
 
     selectClickOptionVendedor($event, vendedorid) {
         this.vendedor_id = vendedorid;
+        this.showSelectVendedor = false;
+        this.vendedor_name = $event.target.innerText
     }
 
     isSubAreaListFull() {
@@ -263,6 +288,8 @@ export class DocumentSearchComponent {
 
     selectClickOptionMarca($event, marcaid) {
         this.marca_id = marcaid;
+        this.showSelectMarca = false;
+        this.marca_description = $event.target.innerText;
     }
 
     selectClickCliente() {
@@ -282,6 +309,7 @@ export class DocumentSearchComponent {
     }   
 
     searchForDocuments() {
+        this.clearSearchData();
         if (this.startDate && this.endDate) {
             let startDate = this.startDate;
             let endDate = this.endDate;
@@ -293,7 +321,7 @@ export class DocumentSearchComponent {
                 + endDate.month.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + '-'
                 + endDate.day.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
 
-            this.documentsService.getdocuments(this.cliente_id, this.product_id, this.area_id, this.subarea_id, this.vendedor_id, this.departamento_id, this.municipio_id, start, end).subscribe(data => {
+            this.documentsService.getdocuments(this.marca_id,this.cliente_id, this.product_id, this.area_id, this.subarea_id, this.vendedor_id, this.departamento_id, this.municipio_id, start, end).subscribe(data => {
                 this.smartTabledata.load(data);
                 this.documents = data;
             })
@@ -303,5 +331,49 @@ export class DocumentSearchComponent {
 
 
 
+    }
+
+    download(){
+        
+        
+        this.documents.forEach(element => {
+            element.Fecha = this.getParsedDate(element.Fecha);
+        });
+
+        /* generate worksheet */
+		const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.documents);
+
+		/* generate workbook and add the worksheet */
+		const wb: XLSX.WorkBook = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+		/* save to file */
+		XLSX.writeFile(wb, "Documentos-exportados" + new Date().getTime + ".xlsx");
+
+    }
+
+    clearSearchData(){
+        this.smartTabledata = new LocalDataSource();
+        if(!this.area_description){
+            this.area_id=null;
+        }
+        if(!this.subarea_description){
+            this.subarea_id=null;
+        }
+        if(!this.marca_description){
+            this.marca_id = null;
+        }
+        if(!this.cliente_name){
+            this.cliente_id=null;
+        }
+        if(!this.departamento_description){
+            this.departamento_id=null;
+        }
+        if(!this.municipio_description){
+            this.municipio_id=null;
+        }
+        if(!this.vendedor_name){
+            this.vendedor_id=null;
+        }
     }
 }

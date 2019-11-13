@@ -9,7 +9,7 @@ import 'style-loader!../../../../theme/chartistJs.scss';
 import { ChartistJsService } from '../../../charts/components/chartistJs/chartistJs.service';
 import { chartistColorClasses } from '../../../../theme/chartist-color-classes';
 import { LocalDataSource } from 'ng2-smart-table';
-
+import {RenderLinkComponent} from "./render-link.component";
 
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
@@ -67,6 +67,10 @@ export class LaboratoriesComponent {
 
             })
 
+            this.productService.getProductsByMarca("011").subscribe(date =>{
+                console.log("products by marca 011",date);
+            })
+
         });
 
 
@@ -84,92 +88,19 @@ export class LaboratoriesComponent {
         hideSubHeader: false,
         noDataMessage: 'No se encontraron datos',
         columns: {
-            Ano: {
-                title: 'Año',
-                class: 'ano-class'
-            },
-            Producto: {
-                title: 'Producto',
-                type: 'html',
-                class: 'producto-class',
-                valuePrepareFunction: this.parseProductName
-
-            },
             ProductoId: {
-                title: 'P. ID',
+                title: 'PID',
                 class: 'pid-class',
-                type: 'text',
-
+                filter: false
             },
-            Enero: {
-                title: 'Enero',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-
-            },
-            Febrero: {
-                title: 'Febrero',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Marzo: {
-                title: 'Marzo',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Abril: {
-                title: 'Abril',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Mayo: {
-                title: 'Mayo',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Junio: {
-                title: 'Junio',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Julio: {
-                title: 'Julio',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Agosto: {
-                title: 'Agosto',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Septiembre: {
-                title: 'Septiembre',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Octubre: {
-                title: 'Octubre',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Noviembre: {
-                title: 'Noviembre',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Diciembre: {
-                title: 'Diciembre',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
-            Total: {
-                title: 'Total',
-                filter: false,
-                valuePrepareFunction: this.parseNumbers
-            },
+            Descripcion: {
+                title: 'Descripcion',
+                type: 'custom',
+                renderComponent: RenderLinkComponent,
+                class: 'producto-class',
+                filter: false
+            }
         }
-
-
     }
 
     parseNumbers(cell, row) {
@@ -177,7 +108,7 @@ export class LaboratoriesComponent {
         return 'Q.' + cell.toLocaleString('en-US');
     }
     parseProductName(cell, row) {
-
+        console.log('cell:',cell)
 
         return "<a href='/#/pages/labs/productinfo/" + row.ProductoId + "'>" + cell + "</a>";
 
@@ -188,11 +119,7 @@ export class LaboratoriesComponent {
         this.lab_sales_by_lab_and_product_source.setFilter([
             // fields we want to include in the search
             {
-                field: 'Ano',
-                search: query
-            },
-            {
-                field: 'Producto',
+                field: 'Descripcion',
                 search: query
             },
             {
@@ -210,7 +137,8 @@ export class LaboratoriesComponent {
             this.showLoading = true;
             
             this.getLabById(this.selectedMarcaId);
-            this.getLabSalesPerProduct(this.selectedMarcaId);
+            //this.getLabSalesPerProduct(this.selectedMarcaId);
+            this.getProductsByMarca(this.selectedMarcaId)
         }
     }
     selectClick($event) {
@@ -232,7 +160,8 @@ export class LaboratoriesComponent {
         this.showSelect = false;
         this.showLoading = true;
         this.getLabById(this.selectedMarcaId);
-        this.getLabSalesPerProduct(this.selectedMarcaId);
+        //this.getLabSalesPerProduct(this.selectedMarcaId);
+        this.getProductsByMarca(this.selectedMarcaId)
     }
 
     getLabById(id) {
@@ -277,6 +206,22 @@ export class LaboratoriesComponent {
                 this.showNotFoundAlert = true;
             } else {
                 this.lab_sales_by_lab_and_product_data = data;
+                this.lab_sales_by_lab_and_product_source.load(data);
+            }
+            this.showLoading = false;
+        });
+    }
+
+    getProductsByMarca(id){
+        id = new String(id);
+        id = id.trim();
+
+        this.showNotFoundAlert = false;
+        this.productService.getProductsByMarca(id).subscribe(data => {
+
+            if (data === [] || typeof data[0] === 'undefined') {
+                this.showNotFoundAlert = true;
+            } else {
                 this.lab_sales_by_lab_and_product_source.load(data);
             }
             this.showLoading = false;

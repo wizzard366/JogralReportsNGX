@@ -5,6 +5,7 @@ import { chartistColorClasses } from '../../../../theme/chartist-color-classes';
 import { ProductService } from '../../../services/product.service';
 
 import 'style-loader!../../../../theme/chartistJs.scss';
+import { SalesGraphService } from './sales-graph.service';
 
 
 
@@ -38,10 +39,22 @@ export class SalesGraphComponent {
 
   public display=false;
 
-  constructor(private productSerive: ProductService,private _chartistJsService:ChartistJsService) {
+  constructor(private productSerive: ProductService,private _chartistJsService:ChartistJsService,private salesGraphService: SalesGraphService) {
     this.chart_options = this._chartistJsService.getAll()['simpleLineOptions'];
 
+    this.salesGraphService.change.subscribe(prodId => {
+      console.log("received data from click on product list:",prodId);
+      this.render(prodId)
+    });
+
   }
+
+  /* ngOnInit() {
+    this.salesGraphService.change.subscribe(marcaid => {
+      console.log("received data from click on product list:",marcaid);
+    });
+  } */
+
 
   render(productId){
     

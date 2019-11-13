@@ -36,9 +36,12 @@ export class DocumentsService {
         return Observable.throw(errMsg);
     }
 
-    getdocuments(clienteid,productoid,area,subarea,vendedorid,deptoid,muniid,startDate,endDate) {
+    getdocuments(marcaid,clienteid,productoid,area,subarea,vendedorid,deptoid,muniid,startDate,endDate) {
         let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server});
         let myParams = {}
+        if(marcaid){
+            myParams['marcaid']=marcaid;
+        }
         if(clienteid){
             myParams['clienteid']=clienteid;
         }
