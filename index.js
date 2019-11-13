@@ -1140,6 +1140,7 @@ apiRoutes.get('/:serverid/documents', function (req, res) {
     let muniid = req.query.muniid;
     let startDate = req.query.startDate;
     let endDate = req.query.endDate;
+    let marcaid = req.query.marcaid;
 
     var query1 = "SELECT distinct docu.NumeroDoc, docu.ClienteId,docu.Direccion,docu.NIT,docu.VendedorId, docu.Total, docu.Nombre, docu.Fecha, departamento.Nombre as dptoName,municipio.Nombre as numiName,vendedor.Nombre as vendedorName \
     FROM [PCINVJes].[dbo].FACDocumentoDet as detalle, \
@@ -1148,18 +1149,21 @@ apiRoutes.get('/:serverid/documents', function (req, res) {
       PCINVJes.dbo.CXCCliente as cliente, \
       PCINVJes.dbo.PLADepartamentos as departamento, \
       PCINVJes.dbo.PLAMunicipios as municipio, \
-      PCINVJes.dbo.FACXVendedor as vendedor \
+      PCINVJes.dbo.FACXVendedor as vendedor, \
+      PCINVJes.dbo.INVXMarca as marca \
     where docu.NumeroDoc = detalle.NumeroDoc \
       and docu.ClienteId = cliente.ClienteId \
+      and docu.VendedorId = vendedor.VendedorId \
       and cliente.DeptoId = departamento.DeptoId \
       and cliente.MunicipioId = municipio.MunicipoId \
-      and docu.VendedorId = vendedor.VendedorId "
+      and detalle.ProductoId = producto.ProductoId \
+      and producto.MarcaId = marca.MarcaId "
 
     if(clienteid){
         query1 = query1 + " and cliente.ClienteId = @clienteid "
     }
     if(productoid){
-        query1 = query1 + " and producto.ProductoId = @productoid "
+        query1 = query1 + " and detalle.ProductoId = @productoid "
     }
     if(areaid){
         query1 = query1 + " and producto.AreaID = @areaid "
@@ -1176,12 +1180,15 @@ apiRoutes.get('/:serverid/documents', function (req, res) {
     if(muniid){
         query1 = query1 + " and cliente.MunicipioId = @muniid "
     }
+    if(marcaid){
+        query1 = query1 + " and producto.MarcaId = @marcaid "
+    }
 
     var queryEnd="order by docu.NumeroDoc";
     var query = query1 + queryEnd;
 
-    console.log('\n\n'+query+'\n\n')
     
+    console.log("\n" + query + "\n" );
     connectionPools[poolKey].request()
         .input('EmpresaId',sql.Int,empresaId)
         .input('clienteid',sql.Int,clienteid)
@@ -1191,17 +1198,17 @@ apiRoutes.get('/:serverid/documents', function (req, res) {
         .input('vendedorid',sql.Int,vendedorid)
         .input('deptoid',sql.Int,deptoid)
         .input('muniid',sql.Int,muniid)
-        .input('desde',sql.NVarChar,startDate)
-        .input('hasta',sql.NVarChar,endDate)
+        .input('desde',sql.NVarChar,startDate+" 00:00:00.000")
+        .input('hasta',sql.NVarChar,endDate+" 23:59:59.000")
+        .input('marcaid',sql.Int,marcaid)
         .query(query, (err, result) => {
+            
             if(err){
+                
                 res.send(err)
             }else{
-
                 res.send(result);
             }
-            
-            
     });
 })
 
@@ -1247,7 +1254,7 @@ apiRoutes.get('/:serverid/marca/description/:desc', function (req, res) {
     let poolKey = req.params.serverid;
     let empresaId = storeCodes[poolKey];
 
-    var query = 'select MarcaId,Descripcion from PCINVJes.dbo.INVXMarca where EmpresaId = @EmpresaId and Descripcion like @descParam ';
+    var query = 'select MarcaId,Descripcion from PCINVJes.dbo.INVXMarca where EmpresaId = @EmpresaId and (Descripcion like @descParam or MarcaId like @descParam) ';
 
     connectionPools[poolKey].request()
         .input('descParam', sql.NVarChar, desc_queryParam)
@@ -1330,6 +1337,23 @@ apiRoutes.get('/:serverid/vendedor/description/:desc', function (req, res) {
     });
 
 });
+
+apiRoutes.get('/:serverid/productsbymarca/:marcaid', function (req, res) {
+
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+    let marcaid = req.params.marcaid;
+
+    var query = 'select ProductoId, Descripcion, MarcaId from PCINVJes.dbo.INVProducto where MarcaId = @marcaid and StatusId = 01 and EmpresaId = @EmpresaId; ';
+
+    connectionPools[poolKey].request()
+        .input('EmpresaId',sql.Int,empresaId)
+        .input('marcaid',sql.Int,marcaid)
+        .query(query, (err, result) => {
+
+        res.send(result);
+    });
+})
 
 
 // apply the routes to our application with the prefix /api

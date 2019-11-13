@@ -12,6 +12,8 @@ import { LaboratoriesComponent } from './components/laboratories/laboratories.co
 import { routing }       from './labs.routing';
 import {ProductInfoComponent} from  './components/produtInfo/productInfo.component';
 import {SellersSharedModule} from '../productSalesInfo/product.sales.info.sharedModule';
+import {RenderLinkComponent} from './components/laboratories/render-link.component';
+import {PreciosSharedModule} from '../precios/precios.shared.module';
 
 
 
@@ -24,14 +26,18 @@ import {SellersSharedModule} from '../productSalesInfo/product.sales.info.shared
     routing,
     Ng2SmartTableModule,
     NgbModule,
-    SellersSharedModule
+    SellersSharedModule,
+    PreciosSharedModule
   ],
   declarations: [
     LabsComponent,
     LaboratoriesComponent,
-    ProductInfoComponent
-
+    ProductInfoComponent,
+    RenderLinkComponent
   ],
+  entryComponents: [
+    RenderLinkComponent
+  ]
  
   
 })

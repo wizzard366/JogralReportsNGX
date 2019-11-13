@@ -11,6 +11,7 @@ import { PricesTable } from './components/pricesTable/prices-table.component';
 import { Stock } from './components/stock/stock.component';
 import { MeasuresComponent } from './components/measurements/measures.component';
 import { SalesGraphComponent } from './components/salesGraph/sales-graph.component';
+import {PreciosSharedModule} from './precios.shared.module';
 
 
 
@@ -20,14 +21,14 @@ import { SalesGraphComponent } from './components/salesGraph/sales-graph.compone
     routing,
     AngularFormsModule,
     NgaModule,
+    PreciosSharedModule
   ],
   declarations: [
     PreciosComponent,
     PsearchComponent,
     PricesTable,
     Stock,
-    MeasuresComponent,
-    SalesGraphComponent
+    MeasuresComponent
   ]
 })
 export class PreciosModule {}
