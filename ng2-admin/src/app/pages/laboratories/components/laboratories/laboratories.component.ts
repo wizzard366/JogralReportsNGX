@@ -15,12 +15,14 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 
 import 'style-loader!./smartTable-custom.scss';
+import { isString } from 'util';
+
 
 @Component({
     selector: 'dash-laboratories',
     templateUrl: 'laboratories.html',
     providers: [ProductService, ChartistJsService, DateService],
-    styleUrls: ['../../../forms/components/inputs/components/selectInputs/selectInput.scss', '../../../../theme/sass/user-defined/media-querys.scss']
+    styleUrls: ['./laboratories.component.scss','../../../forms/components/inputs/components/selectInputs/selectInput.scss', '../../../../theme/sass/user-defined/media-querys.scss']
 })
 export class LaboratoriesComponent {
 
@@ -36,6 +38,7 @@ export class LaboratoriesComponent {
     public lab_sales_last_3yrs_table_data = [];
     public lab_sales_by_lab_and_product_source: any;
     public lab_sales_by_lab_and_product_data = [];
+    private keys=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
     public date: any;
     public model;
     public model1;
@@ -65,10 +68,6 @@ export class LaboratoriesComponent {
 
                 }
 
-            })
-
-            this.productService.getProductsByMarca("011").subscribe(date =>{
-                console.log("products by marca 011",date);
             })
 
         });
@@ -108,7 +107,6 @@ export class LaboratoriesComponent {
         return 'Q.' + cell.toLocaleString('en-US');
     }
     parseProductName(cell, row) {
-        console.log('cell:',cell)
 
         return "<a href='/#/pages/labs/productinfo/" + row.ProductoId + "'>" + cell + "</a>";
 
@@ -116,6 +114,11 @@ export class LaboratoriesComponent {
 
 
     onSearch(query: string = '') {
+
+        if(query === ''){
+            query = ' ';
+        }
+
         this.lab_sales_by_lab_and_product_source.setFilter([
             // fields we want to include in the search
             {
@@ -248,6 +251,7 @@ export class LaboratoriesComponent {
                         }
                     } else if ((key !== 'MarcaId') && (key !== 'EmpresaId')) {
                         tempRow_tableData[key] = element[key].toLocaleString('en-US');
+                        tempRow_tableData[key+'Raw'] = element[key];
                         tempRow_series.push(Number(element[key]) / 10000);
                         if (index === 0) {
                             labels.push(key.slice(0, 3));
@@ -263,15 +267,44 @@ export class LaboratoriesComponent {
             labels: labels
         }
         this.lab_sales_last_3yrs_show = true;
-        this.lab_sales_last_3yrs_table_data = tableData;
+        this.lab_sales_last_3yrs_table_data = this.setTableDataQuarterTotals(tableData);
+        
     }
 
 
-    getFilterElements() {
-
-        /* console.log("get all elements:")
-        console.log(this.lab_sales_by_lab_and_product_source.getElements()); */
-    }
+    setTableDataQuarterTotals(tabledata){
+        tabledata.forEach(element => {
+          let index=0;
+          this.keys.forEach(monthKey=>{
+            if(typeof element[monthKey] === 'undefined'){
+              element[monthKey] = 0;
+            }
+          })
+          element.firstQt = (this.checkfornullvalue(element.EneroRaw) + this.checkfornullvalue(element.FebreroRaw) + this.checkfornullvalue(element.MarzoRaw)).toLocaleString('en-US');
+          if(element.firstQt === "NaN"){
+            element.firstQt = 0;
+          }
+          element.secondQt = (this.checkfornullvalue(element.AbrilRaw) + this.checkfornullvalue(element.MayoRaw) + this.checkfornullvalue(element.JunioRaw)).toLocaleString('en-US');
+          if(element.secondQt === "NaN"){
+            element.secondQt = 0;
+          }
+          element.thirdQt = (this.checkfornullvalue(element.JulioRaw) + this.checkfornullvalue(element.AgostoRaw) + this.checkfornullvalue(element.SeptiembreRaw)).toLocaleString('en-US');
+          if(element.thirdQt === "NaN"){
+            element.thirdQt = 0;
+          }
+          element.fourthQt = (this.checkfornullvalue(element.OctubreRaw) + this.checkfornullvalue(element.NoviembreRaw) + this.checkfornullvalue(element.DiciembreRaw)).toLocaleString('en-US');
+          if(element.fourthQt === "NaN"){
+            element.fourthQt = 0;
+          }
+        });
+        return tabledata;
+      }
+      checkfornullvalue(element){
+        if (isNaN(element)){
+          return 0;
+        }
+        return element;
+      }
 
     
     

@@ -43,7 +43,6 @@ export class SalesGraphComponent {
     this.chart_options = this._chartistJsService.getAll()['simpleLineOptions'];
 
     this.salesGraphService.change.subscribe(prodId => {
-      console.log("received data from click on product list:",prodId);
       this.render(prodId)
     });
 
@@ -69,7 +68,7 @@ export class SalesGraphComponent {
   }
 
   transformData(data){
-    console.log('data from server',data);
+
     let currentYear=0;
     let temp_money_total=0;
     let temp_qty_total=0;
@@ -81,9 +80,6 @@ export class SalesGraphComponent {
 
     let tableDataMoney=[]
     let tableDataQuantity=[]
-
-
-    
     let tempGraphDataQuantityRow=[];
     let tempGraphDataMoneyRow=[];
     let tempTableQuantityDataRow={}
@@ -91,13 +87,14 @@ export class SalesGraphComponent {
 
     let class_index=0;
     data.forEach(element=>{
-
+      
       if(currentYear===0){
         currentYear=element.Ano;
         tempTableQuantityDataRow["Ano"]=currentYear;
         tempTableQuantityDataRow["class"]=chartistColorClasses[class_index];
         tempTableQuantityDataRow["Tipo"]="Cantidad Unidades";
         tempTableQuantityDataRow[this.keys[element.Mes-1]]=element.Cantidad.toLocaleString('en-US');
+        tempTableQuantityDataRow[this.keys[element.Mes-1]+"Raw"]=element.Cantidad;
         temp_qty_total = temp_qty_total + element.Cantidad;
         temp_month_average_qty = temp_qty_total/element.Mes;
         tempTableQuantityDataRow['Total'] = temp_qty_total.toLocaleString('en-US');
@@ -106,6 +103,7 @@ export class SalesGraphComponent {
         tempTableMoneyDataRow["class"]=chartistColorClasses[class_index];
         tempTableMoneyDataRow["Tipo"]="Monto Quetzalez";
         tempTableMoneyDataRow[this.keys[element.Mes-1]]=element.Monto.toLocaleString('en-US');
+        tempTableMoneyDataRow[this.keys[element.Mes-1]+"Raw"]=element.Monto;
         temp_money_total = temp_money_total + element.Monto;
         temp_month_average_money = temp_money_total/element.Mes;
         tempTableMoneyDataRow['Total'] = temp_money_total.toLocaleString('en-US');
@@ -130,9 +128,9 @@ export class SalesGraphComponent {
 
         tempTableQuantityDataRow["Ano"]=currentYear;
         tempTableQuantityDataRow["class"]=chartistColorClasses[class_index];
-        tempTableQuantityDataRow[this.keys[element.Mes-1]]=element.Cantidad;
         tempTableQuantityDataRow["Tipo"]="Cantidad Unidades";
         tempTableQuantityDataRow[this.keys[element.Mes-1]]=element.Cantidad.toLocaleString('en-US');
+        tempTableQuantityDataRow[this.keys[element.Mes-1]+"Raw"]=element.Cantidad;
         temp_qty_total = temp_qty_total + element.Cantidad;
         temp_month_average_qty = temp_qty_total/element.Mes;
         tempTableQuantityDataRow['Total'] = temp_qty_total.toLocaleString('en-US');
@@ -141,6 +139,7 @@ export class SalesGraphComponent {
         tempTableMoneyDataRow["class"]=chartistColorClasses[class_index];
         tempTableMoneyDataRow["Tipo"]="Monto Quetzalez";
         tempTableMoneyDataRow[this.keys[element.Mes-1]]=element.Monto.toLocaleString('en-US');
+        tempTableMoneyDataRow[this.keys[element.Mes-1]+"Raw"]=element.Monto;
         temp_money_total = temp_money_total + element.Monto;
         temp_month_average_money = temp_money_total/element.Mes;
         tempTableMoneyDataRow['Total'] = temp_money_total.toLocaleString('en-US');
@@ -151,11 +150,13 @@ export class SalesGraphComponent {
 
       }else{
         tempTableQuantityDataRow[this.keys[element.Mes-1]]=element.Cantidad.toLocaleString('en-US');
+        tempTableQuantityDataRow[this.keys[element.Mes-1]+"Raw"]=element.Cantidad;
         temp_qty_total = temp_qty_total + element.Cantidad;
         temp_month_average_qty = temp_qty_total/element.Mes;
         tempTableQuantityDataRow['Total'] = temp_qty_total.toLocaleString('en-US');
         tempTableQuantityDataRow['MAverage'] = temp_month_average_qty.toLocaleString('en-US');
         tempTableMoneyDataRow[this.keys[element.Mes-1]]=element.Monto.toLocaleString('en-US');
+        tempTableMoneyDataRow[this.keys[element.Mes-1]+"Raw"]=element.Monto;
         temp_money_total = temp_money_total + element.Monto;
         temp_month_average_money = temp_money_total/element.Mes;
         tempTableMoneyDataRow['MAverage'] = temp_month_average_money.toLocaleString('en-US');
@@ -171,6 +172,13 @@ export class SalesGraphComponent {
     graphDataMoney.push(tempGraphDataMoneyRow);
     graphDataQuantity.push(tempGraphDataQuantityRow);
 
+
+    tableDataMoney = this.setTableDataQuarterTotals(tableDataMoney);
+    tableDataQuantity = this.setTableDataQuarterTotals(tableDataQuantity);
+ 
+
+    graphDataMoney =  this.generateGraphData(tableDataMoney);
+    graphDataQuantity = this.generateGraphData(tableDataQuantity);
 
 
     this.money_graph_data={
@@ -192,6 +200,54 @@ export class SalesGraphComponent {
     
 
 
+  }
+
+  setTableDataQuarterTotals(tabledata){
+    tabledata.forEach(element => {
+      let index=0;
+      this.keys.forEach(monthKey=>{
+        if(typeof element[monthKey] === 'undefined'){
+          element[monthKey] = 0;
+        }
+      })
+      element.firstQt = (this.checkfornullvalue(element.EneroRaw) + this.checkfornullvalue(element.FebreroRaw) + this.checkfornullvalue(element.MarzoRaw)).toLocaleString('en-US');
+      if(element.firstQt === "NaN"){
+        element.firstQt = 0;
+      }
+      element.secondQt = (this.checkfornullvalue(element.AbrilRaw) + this.checkfornullvalue(element.MayoRaw) + this.checkfornullvalue(element.JunioRaw)).toLocaleString('en-US');
+      if(element.secondQt === "NaN"){
+        element.secondQt = 0;
+      }
+      element.thirdQt = (this.checkfornullvalue(element.JulioRaw) + this.checkfornullvalue(element.AgostoRaw) + this.checkfornullvalue(element.SeptiembreRaw)).toLocaleString('en-US');
+      if(element.thirdQt === "NaN"){
+        element.thirdQt = 0;
+      }
+      element.fourthQt = (this.checkfornullvalue(element.OctubreRaw) + this.checkfornullvalue(element.NoviembreRaw) + this.checkfornullvalue(element.DiciembreRaw)).toLocaleString('en-US');
+      if(element.fourthQt === "NaN"){
+        element.fourthQt = 0;
+      }
+    });
+    return tabledata;
+  }
+
+  generateGraphData(tabledata){
+    let returnArray=[];
+
+    tabledata.forEach(element => {
+      let tempYearArray=[];
+      this.keys.forEach(monthKey=>{
+        tempYearArray.push(element[monthKey + 'Raw']);
+      })
+      returnArray.push(tempYearArray);
+    })
+    return returnArray;
+  }
+
+  checkfornullvalue(element){
+    if (isNaN(element)){
+      return 0;
+    }
+    return element;
   }
 
 }
