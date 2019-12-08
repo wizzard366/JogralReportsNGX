@@ -12,6 +12,7 @@ var public_app = express();
 
 
 var PUBLIC_PORT = 80;
+//var conf_file = JSON.parse(fs.readFileSync('/home/mtaracena/jogralReports/server_config.json', 'utf8'));
 var conf_file = JSON.parse(fs.readFileSync('server_config.json', 'utf8'));
 var environment = conf_file.conf.environment;
 var servers = conf_file.servers;
@@ -301,7 +302,7 @@ apiRoutes.get('/:serverid/producto/:id/ventas', function (req, res) {
 // Get product by id
 apiRoutes.get('/:serverid/producto/:id', function (req, res) {
 
-
+    console.log('\n\n aqui');
     var id_parameter = req.params.id;
 
     let poolKey = req.params.serverid;
@@ -315,7 +316,7 @@ apiRoutes.get('/:serverid/producto/:id', function (req, res) {
         'And m.EmpresaId=p.EmpresaId and m.MarcaId=p.MarcaId;';
 
     connectionPools[poolKey].request()
-        .input('id_parameter', sql.Int, id_parameter)
+        .input('id_parameter', sql.VarChar, id_parameter)
         .input('EmpresaId',sql.Int,empresaId)
         .query(query, (err, result) => {
             res.send(result);
@@ -374,7 +375,7 @@ apiRoutes.get('/:serverid/producto/:id/umedida', function (req, res) {
 
 
     connectionPools[poolKey].request()
-        .input('id_parameter', sql.Int, id_parameter)
+        .input('id_parameter', sql.VarChar, id_parameter)
         .input('EmpresaId',sql.Int,empresaId)
         .query(query, (err, result) => {
             res.send(result);
@@ -407,7 +408,7 @@ apiRoutes.get('/:serverid/precios/producto/:id/umedida/:umid/:umdesc', function 
     connectionPools[poolKey].request()
         .input('id_umedida', sql.NVarChar, id_umedida)
         .input('desc_umedida', sql.NVarChar, desc_umedida)
-        .input('id_parameter', sql.Int, id_parameter)
+        .input('id_parameter', sql.VarChar, id_parameter)
         .input('EmpresaId',sql.Int,empresaId)
         .query(query, (err, result) => {
             res.send(result);
@@ -445,7 +446,7 @@ apiRoutes.get('/:serverid/precios/rangos/producto/:id/umedida/:umid/:umdesc/pric
         .input('id_ptype', sql.Int, id_ptype)
         .input('id_umedida', sql.NVarChar, id_umedida)
         .input('desc_umedida', sql.NChar, desc_umedida)
-        .input('id_parameter', sql.Int, id_parameter)
+        .input('id_parameter', sql.VarChar, id_parameter)
         .input('EmpresaId',sql.Int,empresaId)
         .query(query, (err, result) => {
             console.log({'err':err,'result':result})
@@ -472,7 +473,7 @@ apiRoutes.get('/:serverid/producto/:id/existencias/umedida/factor/:factor', func
 
 
     connectionPools[poolKey].request()
-        .input('id_parameter', sql.Int, id_parameter)
+        .input('id_parameter', sql.VarChar, id_parameter)
         .input('Factor', sql.Int, factor_umedida)
         .input('EmpresaId',sql.Int,empresaId)
         .query(query, (err, result) => {
@@ -835,7 +836,7 @@ apiRoutes.get('/:serverid/sales/labs/:year', function (req, res) {
                     Sum(Case When Mes=8  Then Proyeccion Else 0 END) AS Agosto, \
                     Sum(Case When Mes=9  Then Proyeccion Else 0 END) AS Septiembre, \
                     Sum(Case When Mes=10 Then Proyeccion Else 0 END) AS Octubre, \
-                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Novimebre, \
+                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Noviembre, \
                     Sum(Case When Mes=12 Then Proyeccion Else 0 END) AS Diciembre, \
                     Sum(Total) as Total \
                 From (Select m.MarcaId, m.Descripcion, Year(mp.Desde) as Ano, Month(mp.Desde) as Mes, Proyeccion as Proyeccion, Sum(Proyeccion) as Total \
@@ -858,7 +859,7 @@ apiRoutes.get('/:serverid/sales/labs/:year', function (req, res) {
                     Sum(Case When Mes=8  Then Proyeccion Else 0 END) AS Agosto, \
                     Sum(Case When Mes=9  Then Proyeccion Else 0 END) AS Septiembre, \
                     Sum(Case When Mes=10 Then Proyeccion Else 0 END) AS Octubre, \
-                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Novimebre, \
+                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Noviembre, \
                     Sum(Case When Mes=12 Then Proyeccion Else 0 END) AS Diciembre, \
                     Sum(Total) as Total \
                 From (Select m.MarcaId, m.Descripcion, Year(mp.Desde) as Ano, Month(mp.Desde) as Mes, Ejecutado as Proyeccion, Sum(Ejecutado) as Total \
@@ -899,7 +900,7 @@ apiRoutes.get('/:serverid/sales/labsbyseller/', function (req, res) {
                     Sum(Case When Mes=8  Then Proyeccion Else 0 END) AS Agosto, \
                     Sum(Case When Mes=9  Then Proyeccion Else 0 END) AS Septiembre, \
                     Sum(Case When Mes=10 Then Proyeccion Else 0 END) AS Octubre, \
-                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Novimebre, \
+                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Noviembre, \
                     Sum(Case When Mes=12 Then Proyeccion Else 0 END) AS Diciembre, \
                     Sum(Total) as Total \
                 From (Select mp.VendedorId, v.NombreCompleto, m.MarcaId, m.Descripcion, Year(mp.Desde) as Ano, Month(mp.Desde) as Mes, Proyeccion as Proyeccion, Sum(Proyeccion) as Total \
@@ -922,7 +923,7 @@ apiRoutes.get('/:serverid/sales/labsbyseller/', function (req, res) {
                     Sum(Case When Mes=8  Then Proyeccion Else 0 END) AS Agosto, \
                     Sum(Case When Mes=9  Then Proyeccion Else 0 END) AS Septiembre, \
                     Sum(Case When Mes=10 Then Proyeccion Else 0 END) AS Octubre, \
-                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Novimebre, \
+                    Sum(Case When Mes=11 Then Proyeccion Else 0 END) AS Noviembre, \
                     Sum(Case When Mes=12 Then Proyeccion Else 0 END) AS Diciembre, \
                     Sum(Total) as Total \
                 From (Select  mp.VendedorId,v.NombreCompleto,m.MarcaId, m.Descripcion, Year(mp.Desde) as Ano, Month(mp.Desde) as Mes, Ejecutado as Proyeccion, Sum(Ejecutado) as Total \
@@ -1200,7 +1201,7 @@ apiRoutes.get('/:serverid/documents', function (req, res) {
         .input('muniid',sql.Int,muniid)
         .input('desde',sql.NVarChar,startDate+" 00:00:00.000")
         .input('hasta',sql.NVarChar,endDate+" 23:59:59.000")
-        .input('marcaid',sql.Int,marcaid)
+        .input('marcaid',sql.NVarChar,marcaid)
         .query(query, (err, result) => {
             
             if(err){
@@ -1348,7 +1349,61 @@ apiRoutes.get('/:serverid/productsbymarca/:marcaid', function (req, res) {
 
     connectionPools[poolKey].request()
         .input('EmpresaId',sql.Int,empresaId)
-        .input('marcaid',sql.Int,marcaid)
+        .input('marcaid',sql.NVarChar,marcaid)
+        .query(query, (err, result) => {
+
+        res.send(result);
+    });
+})
+
+
+apiRoutes.get('/:serverid/sellinsellout/:marcaid', function (req, res) {
+
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+    let marcaid = req.params.marcaid;
+
+    var query = "Select Operacion,Ano,Marca, \
+                    Sum(Enero) as Enero, \
+                    Sum(Febrero) as Febrero, \
+                    Sum(Marzo) as Marzo, \
+                    Sum(Abril) as Abril, \
+                    Sum(Mayo) as Mayo, \
+                    Sum(Junio) as Junio, \
+                    Sum(Julio) as Julio, \
+                    Sum(Agosto) as Agosto, \
+                    Sum(Septiembre) as Septiembre, \
+                    Sum(Octubre) as Octubre, \
+                    Sum(Noviembre) as Noviembre, \
+                    Sum(Diciembre) as Diciembre, \
+                    Sum(Total) as Total \
+                    from INVRepWEBMarcaSELLINOUT Where MarcaId=@marcaid \
+                    Group By Ano,Operacion,Marca \
+                    Order by Ano,Operacion,Marca"; 
+
+    connectionPools[poolKey].request()
+        .input('EmpresaId',sql.Int,empresaId)
+        .input('marcaid',sql.NVarChar,marcaid)
+        .query(query, (err, result) => {
+
+        res.send(result);
+    });
+})
+
+apiRoutes.get('/:serverid/sellinsellout/:marcaid/prod/:pid', function (req, res) {
+
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+    let marcaid = req.params.marcaid;
+    let pid = req.params.pid;
+
+    var query = "Select * from INVRepWEBMarcaSELLINOUT Where MarcaId=@marcaid And ProductoId=@pid \
+    Order by ProductoId,Ano,Operacion";
+
+    connectionPools[poolKey].request()
+        .input('EmpresaId',sql.Int,empresaId)
+        .input('marcaid',sql.NVarChar,marcaid)
+        .input('pid',sql.NVarChar,pid)
         .query(query, (err, result) => {
 
         res.send(result);

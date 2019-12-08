@@ -77,4 +77,20 @@ export class LaboratoriesService {
         return this.http.get('/api/'+server+'/sales/labsbyseller/', options)
             .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
     }
+
+    getSellInSellOutByMarca(marca) {
+        let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
+        let options = new RequestOptions({ headers: headers });
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/sellinsellout/'+marca, options)
+            .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
+    }
+
+    getSellInSellOutByMarcaAndProduct(marca,product) {
+        let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
+        let options = new RequestOptions({ headers: headers });
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/sellinsellout/'+marca+'/prod/'+product, options)
+            .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
+    }
 }
