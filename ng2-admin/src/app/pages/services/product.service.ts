@@ -159,7 +159,6 @@ export class ProductService {
     }
 
     getSalesByProductIdAndVendedorIdByDateInterval(pid, startDate, endDate) {
-        console.log("start:" + startDate + "hasta:" + endDate);
         let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
         let params = new URLSearchParams();
         let server = this.authenticationService.server

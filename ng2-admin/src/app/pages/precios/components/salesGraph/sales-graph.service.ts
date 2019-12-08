@@ -7,7 +7,6 @@ export class SalesGraphService {
   @Output() change: EventEmitter<boolean> = new EventEmitter();
 
   renderGraph(productid) {
-    console.log("on service",productid);
     this.change.emit(productid);
   }
 

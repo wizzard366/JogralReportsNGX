@@ -93,8 +93,8 @@
 
     </div>
     <div class="row">
-        <div class="col-md-6">
-            <ba-card *ngIf="lab_sales_last_3yrs_show" cardTitle="Ventas ultimos 3 años todos los productos" baCardClass="with-scroll">
+        <div class="col-md-3">
+            <ba-card *ngIf="lab_sales_last_3yrs_show" cardTitle="Listado de Productos" baCardClass="with-scroll">
                 <form>
                     <div class="form-group" *ngIf='true'>
                         <input #search class="form-control" type="text" placeholder="Búsqueda Año, Producto, Producto ID..." (keydown.enter)="onSearch(search.value)"
@@ -105,8 +105,8 @@
                 <ng2-smart-table [settings]="settings" [source]="lab_sales_by_lab_and_product_source"></ng2-smart-table>
             </ba-card>
         </div>
-        <div class="col-md-6">
-            <ba-card cardTitle="Ventas Últimos 3 años" baCardClass="with-scroll">
+        <div class="col-md-9">
+            <ba-card cardTitle="Ventas Producto Últimos 3 años" baCardClass="with-scroll">
                 <sales-graph #salesGraph ></sales-graph>
             </ba-card>
         </div>

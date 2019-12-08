@@ -37,7 +37,6 @@ export class PieCharts implements AfterViewChecked{
 
       this.date=new Date(date.server_date);
       this.productSerive.getSalesBySalesManProyectionsByYear(this.date.getFullYear()).subscribe(data=>{
-        console.log('charts data:',data);
         this.processChartData(data);
       });
     })
@@ -113,8 +112,7 @@ export class PieCharts implements AfterViewChecked{
       this.total_percentage=(this.current_sum/this.proyection_sum)*100;
       this.total_percentage_locale = this.current_sum.toLocaleString('en-US');
       this.total_proyection_locale = this.proyection_sum.toLocaleString('en-US');
-      console.log('chart_processed_data:',this.charts);
-      console.log('total_percentage:',this.total_percentage);
+      
 
   }
 

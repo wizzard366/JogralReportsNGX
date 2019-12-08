@@ -56,7 +56,7 @@ export class LabsBySellercomponent {
         if(this.selectedMonth && this.seller){
             let month= Number.parseInt(this.selectedMonth);
             let seller= Number.parseInt(this.seller);
-            console.log("selectedData",this.labsBySellerParsedData[seller]);
+            
             this.updateChartsData(this.labsBySellerParsedData[seller],month)
         }
     }
@@ -88,7 +88,7 @@ export class LabsBySellercomponent {
                 percentage:percentage
             })
         }
-        console.log(charts)
+        
         this.chartsData=charts;
         this._loadPieCharts(1000);
     }

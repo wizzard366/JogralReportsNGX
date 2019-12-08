@@ -102,7 +102,6 @@ export class LabsProyectionsComponent implements AfterViewChecked{
         }else{
           this.charts[item].percentageOfProyection=0;
         }
-        
         this.charts[item].localizedSales = this.charts[item].Ventas.toLocaleString('en-US');
         this.charts[item].localizedProyection = this.charts[item].Proyeccion.toLocaleString('en-US');
         this.chartArray.push(this.charts[item]);
@@ -118,6 +117,7 @@ export class LabsProyectionsComponent implements AfterViewChecked{
   }
 
   addElement(element:any){
+    
     let id =Number.parseInt(element.MarcaId)
     if (typeof this.charts[id] === 'undefined'){
         this.charts[id]={};
@@ -125,6 +125,7 @@ export class LabsProyectionsComponent implements AfterViewChecked{
     this.charts[id][element.Fuente]=element[this.key];
     this.charts[id]['Description']=element.Descripcion;
     this.charts[id]['Ano']=element.Ano;
+
   }
 
   ngAfterViewChecked() {

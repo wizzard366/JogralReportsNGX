@@ -6,7 +6,7 @@ import { SalesGraphService } from 'app/pages/precios/components/salesGraph/sales
 
 @Component({
     selector: 'render-link',
-    template: '<a href="javascript:void(0);" (click)="renderGraph(renderValue)">{{renderValue}}</a>',
+    template: '<a href="javascript:void(0);" (click)="renderGraph()">{{renderValue}}</a>',
     
 })
 export class RenderLinkComponent implements ViewCell, OnInit{
@@ -21,7 +21,6 @@ export class RenderLinkComponent implements ViewCell, OnInit{
     }
 
     renderGraph(){
-        console.log([this.renderValue,this.value,this.rowData]);
         this.salesGraphService.renderGraph(this.rowData.ProductoId);
     }
   
