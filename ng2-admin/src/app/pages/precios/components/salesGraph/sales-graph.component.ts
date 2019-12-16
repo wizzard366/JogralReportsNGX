@@ -48,12 +48,6 @@ export class SalesGraphComponent {
 
   }
 
-  /* ngOnInit() {
-    this.salesGraphService.change.subscribe(marcaid => {
-      console.log("received data from click on product list:",marcaid);
-    });
-  } */
-
 
   render(productId){
     
@@ -193,16 +187,12 @@ export class SalesGraphComponent {
     this.money_table_data=tableDataMoney;
     this.quantities_table_data=tableDataQuantity;
 
-    /* this.global_graph_data=this.money_graph_data;
-    this.global_table_data=this.money_table_data; */
-
     this.display=true;
-    
-
-
+  
   }
 
   setTableDataQuarterTotals(tabledata){
+    let tempItems = 0;
     tabledata.forEach(element => {
       let index=0;
       this.keys.forEach(monthKey=>{
@@ -210,22 +200,75 @@ export class SalesGraphComponent {
           element[monthKey] = 0;
         }
       })
-      element.firstQt = (this.checkfornullvalue(element.EneroRaw) + this.checkfornullvalue(element.FebreroRaw) + this.checkfornullvalue(element.MarzoRaw)).toLocaleString('en-US');
+      tempItems=0;
+
+      element.firstQt = (this.checkfornullvalue(element.EneroRaw) + this.checkfornullvalue(element.FebreroRaw) + this.checkfornullvalue(element.MarzoRaw));
       if(element.firstQt === "NaN"){
         element.firstQt = 0;
       }
-      element.secondQt = (this.checkfornullvalue(element.AbrilRaw) + this.checkfornullvalue(element.MayoRaw) + this.checkfornullvalue(element.JunioRaw)).toLocaleString('en-US');
+      if(!isNaN(element.EneroRaw)){
+        tempItems = tempItems + 1;
+      }
+      if(!isNaN(element.FebreroRaw)){
+        tempItems = tempItems + 1;
+      }
+      if(!isNaN(element.MarzoRaw)){
+        tempItems = tempItems + 1;
+      }
+      element.firstQtAvg = this.checkfornullvalue(element.firstQt/tempItems).toLocaleString('en-US');
+      element.firstQt = element.firstQt.toLocaleString('en-US')
+      element.firstQtAvg = element.firstQtAvg.toLocaleString('en-US')
+      tempItems=0;
+
+      element.secondQt = (this.checkfornullvalue(element.AbrilRaw) + this.checkfornullvalue(element.MayoRaw) + this.checkfornullvalue(element.JunioRaw));
       if(element.secondQt === "NaN"){
         element.secondQt = 0;
       }
-      element.thirdQt = (this.checkfornullvalue(element.JulioRaw) + this.checkfornullvalue(element.AgostoRaw) + this.checkfornullvalue(element.SeptiembreRaw)).toLocaleString('en-US');
+      if(!isNaN(element.AbrilRaw)){
+        tempItems = tempItems + 1;
+      }
+      if(!isNaN(element.MayoRaw)){
+        tempItems = tempItems + 1;
+      }
+      if(!isNaN(element.JunioRaw)){
+        tempItems = tempItems + 1;
+      }
+      element.secondQtAvg = this.checkfornullvalue(element.secondQt/tempItems).toLocaleString('en-US');
+      element.secondQt = element.secondQt.toLocaleString('en-US')
+      tempItems=0;
+
+      element.thirdQt = (this.checkfornullvalue(element.JulioRaw) + this.checkfornullvalue(element.AgostoRaw) + this.checkfornullvalue(element.SeptiembreRaw));
       if(element.thirdQt === "NaN"){
         element.thirdQt = 0;
       }
-      element.fourthQt = (this.checkfornullvalue(element.OctubreRaw) + this.checkfornullvalue(element.NoviembreRaw) + this.checkfornullvalue(element.DiciembreRaw)).toLocaleString('en-US');
+      if(!isNaN(element.JulioRaw)){
+        tempItems = tempItems + 1;
+      }
+      if(!isNaN(element.AgostoRaw)){
+        tempItems = tempItems + 1;
+      }
+      if(!isNaN(element.SeptiembreRaw)){
+        tempItems = tempItems + 1;
+      }
+      element.thirdQtAvg = this.checkfornullvalue(element.thirdQt/tempItems).toLocaleString('en-US');
+      element.thirdQt = element.thirdQt.toLocaleString('en-US')
+      tempItems=0;
+
+      element.fourthQt = (this.checkfornullvalue(element.OctubreRaw) + this.checkfornullvalue(element.NoviembreRaw) + this.checkfornullvalue(element.DiciembreRaw));
       if(element.fourthQt === "NaN"){
         element.fourthQt = 0;
       }
+      if(!isNaN(element.OctubreRaw)){
+        tempItems = tempItems + 1;
+      }
+      if(!isNaN(element.NoviembreRaw)){
+        tempItems = tempItems + 1;
+      }
+      if(!isNaN(element.DiciembreRaw)){
+        tempItems = tempItems + 1;
+      }
+      element.fourthQtAvg = this.checkfornullvalue(element.fourthQt/tempItems).toLocaleString('en-US');
+      element.fourthQt = element.fourthQt.toLocaleString('en-US')
     });
     return tabledata;
   }

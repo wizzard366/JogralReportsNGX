@@ -1,0 +1,45 @@
+<ba-chartist-chart *ngIf="renderData" baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="graphData"
+                            [baChartistChartOptions]="chart_options">
+</ba-chartist-chart>
+<div *ngIf="renderData" class="table-responsive">
+    <table class="table table-bordered table-condensed">
+        <thead>
+            <tr class="black-muted-bg">
+                <th class="align-center"></th>
+                <th class="align-center">Total</th>
+                <th class="align-center">Enero</th>
+                <th class="align-center">Febrero</th>
+                <th class="align-center">Marzo</th>
+                <th class="align-center">Abril</th>
+                <th class="align-center">Mayo</th>
+                <th class="align-center">Junio</th>
+                <th class="align-center">Julio</th>
+                <th class="align-center">Agosto</th>
+                <th class="align-center">Septiembre</th>
+                <th class="align-center">Octubre</th>
+                <th class="align-center">Noviembre</th>
+                <th class="align-center">Diciembre</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of tableData" class="no-top-border">
+                <td class="align-right nowrap">
+                    <i class="ion-ios-circle-filled {{item.class}} ct-point">{{item.Operacion}}</i>
+                </td>
+                <td class="align-right prod-total">{{item.Total}}</td>
+                <td class="align-right">{{item.Enero}}</td>
+                <td class="align-right">{{item.Febrero}}</td>
+                <td class="align-right">{{item.Marzo}}</td>
+                <td class="align-right">{{item.Abril}}</td>
+                <td class="align-right">{{item.Mayo}}</td>
+                <td class="align-right">{{item.Junio}}</td>
+                <td class="align-right">{{item.Julio}}</td>
+                <td class="align-right">{{item.Agosto}}</td>
+                <td class="align-right">{{item.Septiembre}}</td>
+                <td class="align-right">{{item.Octubre}}</td>
+                <td class="align-right">{{item.Noviembre}}</td>
+                <td class="align-right">{{item.Diciembre}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>                           

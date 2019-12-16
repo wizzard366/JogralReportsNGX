@@ -1362,6 +1362,8 @@ apiRoutes.get('/:serverid/sellinsellout/:marcaid', function (req, res) {
     let poolKey = req.params.serverid;
     let empresaId = storeCodes[poolKey];
     let marcaid = req.params.marcaid;
+    let server_date = new Date();
+    let year = server_date.getFullYear();
 
     var query = "Select Operacion,Ano,Marca, \
                     Sum(Enero) as Enero, \
@@ -1377,13 +1379,14 @@ apiRoutes.get('/:serverid/sellinsellout/:marcaid', function (req, res) {
                     Sum(Noviembre) as Noviembre, \
                     Sum(Diciembre) as Diciembre, \
                     Sum(Total) as Total \
-                    from INVRepWEBMarcaSELLINOUT Where MarcaId=@marcaid \
+                    from INVRepWEBMarcaSELLINOUT Where MarcaId=@marcaid and Ano=@year \
                     Group By Ano,Operacion,Marca \
                     Order by Ano,Operacion,Marca"; 
 
     connectionPools[poolKey].request()
         .input('EmpresaId',sql.Int,empresaId)
         .input('marcaid',sql.NVarChar,marcaid)
+        .input('year',sql.Int,year)
         .query(query, (err, result) => {
 
         res.send(result);
@@ -1397,13 +1400,17 @@ apiRoutes.get('/:serverid/sellinsellout/:marcaid/prod/:pid', function (req, res)
     let marcaid = req.params.marcaid;
     let pid = req.params.pid;
 
-    var query = "Select * from INVRepWEBMarcaSELLINOUT Where MarcaId=@marcaid And ProductoId=@pid \
+    let server_date = new Date();
+    let year = server_date.getFullYear();
+
+    var query = "Select * from INVRepWEBMarcaSELLINOUT Where MarcaId=@marcaid And ProductoId=@pid and Ano=@year \
     Order by ProductoId,Ano,Operacion";
 
     connectionPools[poolKey].request()
         .input('EmpresaId',sql.Int,empresaId)
         .input('marcaid',sql.NVarChar,marcaid)
         .input('pid',sql.NVarChar,pid)
+        .input('year',sql.Int,year)
         .query(query, (err, result) => {
 
         res.send(result);

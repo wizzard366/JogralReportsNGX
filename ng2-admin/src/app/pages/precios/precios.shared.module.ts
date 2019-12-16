@@ -6,6 +6,9 @@ import { NgaModule } from '../../theme/nga.module';
 import {SalesGraphComponent} from './components/salesGraph/sales-graph.component';
 import { SalesGraphService } from './components/salesGraph/sales-graph.service';
 
+import {SellInSellOutComponent} from './components/sellInSellOut/sell-in-sell-out.component';
+import {SellInSellOutService} from './components/sellInSellOut/sell-in-sell-out.service';
+
 
 
 @NgModule({
@@ -15,13 +18,16 @@ import { SalesGraphService } from './components/salesGraph/sales-graph.service';
         NgaModule
         ],
     declarations: [
-        SalesGraphComponent
+        SalesGraphComponent,
+        SellInSellOutComponent
     ],
     exports:[
-        SalesGraphComponent
+        SalesGraphComponent,
+        SellInSellOutComponent
     ],
     providers:[
-        SalesGraphService
+        SalesGraphService,
+        SellInSellOutService
     ]
 })
 export class PreciosSharedModule {}

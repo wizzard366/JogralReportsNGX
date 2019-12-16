@@ -13,6 +13,8 @@ import {RenderLinkComponent} from "./render-link.component";
 
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
+import { SellInSellOutService } from 'app/pages/precios/components/sellInSellOut/sell-in-sell-out.service';
+
 
 import 'style-loader!./smartTable-custom.scss';
 import { isString } from 'util';
@@ -52,7 +54,8 @@ export class LaboratoriesComponent {
         private dateService: DateService,
         private modalService: NgbModal,
         private route: ActivatedRoute,
-        private router: Router) {
+        private router: Router,
+        private sellInSellOutService :SellInSellOutService) {
         this.lab_sales_last_3yrs_options = this._chartistJsService.getAll()['simpleLineOptions'];
         this.lab_sales_by_lab_and_product_source = new LocalDataSource(this.lab_sales_by_lab_and_product_data);
         this.dateService.getServerDate().subscribe(date => {
@@ -64,6 +67,7 @@ export class LaboratoriesComponent {
 
                     if (!isNaN(parseInt(this.pid))) {
                         this.selectClickOption({}, this.pid);
+                        this.sellInSellOutService.rendermarca(this.pid);
                     }
 
                 }

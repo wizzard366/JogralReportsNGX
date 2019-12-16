@@ -22,18 +22,22 @@
                     <th class="align-center">Febrero</th>
                     <th class="align-center">Marzo</th>
                     <th class="align-center">Total 1er. Trim.</th>
+                    <th class="align-center">Prom. 1er. Trim.</th>
                     <th class="align-center">Abril</th>
                     <th class="align-center">Mayo</th>
                     <th class="align-center">Junio</th>
                     <th class="align-center">Total 2do. Trim.</th>
+                    <th class="align-center">Prom. 2do. Trim.</th>
                     <th class="align-center">Julio</th>
                     <th class="align-center">Agosto</th>
                     <th class="align-center">Septiembre</th>
                     <th class="align-center">Total 3er. Trim.</th>
+                    <th class="align-center">Prom. 3er. Trim.</th>
                     <th class="align-center">Octubre</th>
                     <th class="align-center">Noviembre</th>
                     <th class="align-center">Diciembre</th>
                     <th class="align-center">Total 4to. Trim.</th>
+                    <th class="align-center">Prom. 4to. Trim.</th>
                 </tr>
             </thead>
             <tbody *ngIf="show_quantites">
@@ -48,18 +52,22 @@
                     <td class="align-right">{{item.Febrero}}</td>
                     <td class="align-right">{{item.Marzo}}</td>
                     <td class="align-right prod-total">{{item.firstQt}}</td>
+                    <td class="align-right prod-avg">{{item.firstQtAvg}}</td>
                     <td class="align-right">{{item.Abril}}</td>
                     <td class="align-right">{{item.Mayo}}</td>
                     <td class="align-right">{{item.Junio}}</td>
                     <td class="align-right prod-total">{{item.secondQt}}</td>
+                    <td class="align-right prod-avg">{{item.secondQtAvg}}</td>
                     <td class="align-right">{{item.Julio}}</td>
                     <td class="align-right">{{item.Agosto}}</td>
                     <td class="align-right">{{item.Septiembre}}</td>
                     <td class="align-right prod-total">{{item.thirdQt}}</td>
+                    <td class="align-right prod-avg">{{item.thirdQtAvg}}</td>
                     <td class="align-right">{{item.Octubre}}</td>
                     <td class="align-right">{{item.Noviembre}}</td>
                     <td class="align-right">{{item.Diciembre}}</td>
                     <td class="align-right prod-total">{{item.fourthQt}}</td>
+                    <td class="align-right prod-avg">{{item.fourthQtAvg}}</td>
                 </tr>
             </tbody>
             <tbody  *ngIf="!show_quantites">
@@ -74,18 +82,22 @@
                         <td class="align-right">Q.{{item.Febrero}}</td>
                         <td class="align-right">Q.{{item.Marzo}}</td>
                         <td class="align-right prod-total">Q.{{item.firstQt}}</td>
+                        <td class="align-right prod-avg">Q.{{item.firstQtAvg}}</td>
                         <td class="align-right">Q.{{item.Abril}}</td>
                         <td class="align-right">Q.{{item.Mayo}}</td>
                         <td class="align-right">Q.{{item.Junio}}</td>
                         <td class="align-right prod-total">Q.{{item.secondQt}}</td>
+                        <td class="align-right prod-avg">Q.{{item.secondQtAvg}}</td>
                         <td class="align-right">Q.{{item.Julio}}</td>
                         <td class="align-right">Q.{{item.Agosto}}</td>
                         <td class="align-right">Q.{{item.Septiembre}}</td>
                         <td class="align-right prod-total">Q.{{item.thirdQt}}</td>
+                        <td class="align-right prod-avg">Q.{{item.thirdQtAvg}}</td>
                         <td class="align-right">Q.{{item.Octubre}}</td>
                         <td class="align-right">Q.{{item.Noviembre}}</td>
                         <td class="align-right">Q.{{item.Diciembre}}</td>
                         <td class="align-right prod-total">Q.{{item.fourthQt}}</td>
+                        <td class="align-right prod-avg">Q.{{item.fourthQtAvg}}</td>
                     </tr>
             </tbody>
         </table>
