@@ -18,9 +18,5 @@ export class DisplayDescriptionComponent implements ViewCell, OnInit {
 
     ngOnInit() {
         this.pdescription = this.value
-        console.log(this.value)
     }
-
-
-
 }

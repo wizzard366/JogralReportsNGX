@@ -3,7 +3,13 @@
 <div class="row">
     <div class="col-md-12 purchases">
             <ba-card  cardTitle="Compras" baCardClass="with-scroll">
-                    <ng2-smart-table [settings]="settings" [source]="table_data"></ng2-smart-table>
+                <form>
+                        <div class="form-group" *ngIf='true'>
+                                <input #search class="form-control" type="text" placeholder="Búsqueda..." (keydown.enter)="onSearch(search.value)"
+                                autocomplete="off">
+                        </div>
+                </form>
+                <ng2-smart-table [settings]="settings" [source]="table_data"></ng2-smart-table>
             </ba-card>
         
     </div>
