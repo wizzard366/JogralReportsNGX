@@ -1,0 +1,60 @@
+<div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-12">
+        <div class="row">
+            <div class="col-xs-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label for="descripcion">Mes</label>
+                    <select  class="form-control" id="selectedMonth" name="selectedMonth" (change)="selectMonth($event.target.value)" [(ngModel)]="selectedMonth">
+                            <option *ngFor="let key of keys; let i = index" [value]="i">{{key}}</option>
+                    </select>
+                  </div>
+            </div>
+            <div class="col-xs-12 col-md-6 col-lg-6">
+                <form (submit)="input($event)">
+                    <div class="form-group">
+                        <label for="description">Búsqueda de Laboratorios (Marcas)</label>
+                        <input autocomplete="off" type="text" [(ngModel)]="description" name="description" class="form-control" id="description"
+                            (input)="input($event)" (blur)="blurInput($event)">
+                        <select #focusable multiple class="form-control tablet-landscape-and-below" id="selectedMarcaId" name="selectedMarcaId" *ngIf="showSelect"
+                             [(ngModel)]="selectedMarcaId">
+                            <option (click)="selectClick(lab.MarcaId,lab.Descripcion)" [value]="-1">Todos</option>
+                            <option *ngFor="let lab of laboratories" (click)="selectClick(lab.MarcaId,lab.Descripcion)" [value]="lab.MarcaId">{{lab.Descripcion}} - {{lab.MarcaId}}</option>
+                        </select>
+                        <div class="desktop-and-up form-control" *ngIf="showSelect">
+                            <div tabindex="1" class="clickablediv" style="overflow-x: hidden;" (click)="selectClickOption(-1,'Todos')">Todos</div>
+                            <div tabindex="1" class="clickablediv" *ngFor="let lab of laboratories" style="overflow-x: hidden;" (click)="selectClickOption(lab.MarcaId,lab.Descripcion)">{{lab.Descripcion}} - {{lab.MarcaId}}</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div *ngFor="let elem of chartDataArray; let i = index;" class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xlg-3 chart-card-holder">
+        <div class="chart-card">
+            <div class="chart-left">
+                <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Pie" [baChartistChartData]="chartDataArray[i]"
+                [baChartistChartOptions]="chartOptionsArray[i]">
+                </ba-chartist-chart>
+                
+            </div>
+            <div class="chart-right">
+                    <div class="name-percent">
+                        <div class="chart-percent {{barColor(chartDisplayArray[i].percentage)}}"> {{chartDisplayArray[i].percentage}}%</div>
+                        <div class="chart-name">{{chartDisplayArray[i].name}}</div>
+                    </div>
+                    <div class="data-section">
+                        <div class="sales">
+                            <strong>Vent:</strong> Q.{{chartDisplayArray[i].total}}
+                        </div>
+                        <div class="proyection">
+                            <strong>Proyec:</strong> Q.{{chartDisplayArray[i].proyection}}
+                        </div>
+                        <div class="lab" *ngIf="selectedMarcaId !== '-1'">
+                            <strong>{{selectedMarcaDesc}}:</strong> Q.{{chartDisplayArray[i].lab}}
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,7 +1,12 @@
 <div class="row">
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <ba-card cardTitle="Ventas Por Vendedor Año Actual" baCardClass="with-scroll">
+            <detail-piechart-seller></detail-piechart-seller>
+        </ba-card>
+        
 
         <pie-charts [mode]="'mensual'" (onYearSelected)="onYearSelected($event)"></pie-charts>
+        
     </div>
 </div>
 <div class="row">
@@ -19,7 +24,7 @@
                     <label *ngIf="display_graph">Ventas Anuales</label>
                     <ba-chartist-chart baChartistChartClass="ct-chart" baChartistChartType="Line" [baChartistChartData]="sellers_graph_data"
                         [baChartistChartOptions]="chart_options" *ngIf="display_graph">
-                    </ba-chartist-chart>    
+                    </ba-chartist-chart>                 
                     <div *ngIf="display_graph">
 
                         <div class="table-responsive">

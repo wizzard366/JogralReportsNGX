@@ -8,7 +8,7 @@ import { ChartistJsService } from '../charts/components/chartistJs/chartistJs.se
 
 import { AuthenticationService } from '../services/oauth/authentication.service';
 import { chartistColorClasses } from '../../theme/chartist-color-classes';
-import 'style-loader!../../theme/chartistJs.scss';
+import 'style-loader!../../theme/chartistJs.scss'; 
 import { EventEmitter } from 'events';
 import { MoneyflowService } from '../services/money.flow.service';
 

@@ -302,7 +302,6 @@ apiRoutes.get('/:serverid/producto/:id/ventas', function (req, res) {
 // Get product by id
 apiRoutes.get('/:serverid/producto/:id', function (req, res) {
 
-    console.log('\n\n aqui');
     var id_parameter = req.params.id;
 
     let poolKey = req.params.serverid;
@@ -502,7 +501,7 @@ apiRoutes.get('/:serverid/sales/year/:year', function (req, res) {
     Sum(Octubre) As Octubre, Sum(Noviembre) As Noviembre, Sum(Diciembre) As Diciembre   \
                 From INVRepWEBVentasVendedor where Ano>=@Year And Fuente=\'Ventas\' \
                 Group By Ano';
-
+    
 
     connectionPools[poolKey].request().input('Year', sql.Int, year).query(query, (err, result) => {
         res.send(result);
@@ -909,7 +908,7 @@ apiRoutes.get('/:serverid/sales/labsbyseller/', function (req, res) {
                             mp.EmpresaId=m.EmpresaId And mp.MarcaId=m.MarcaId And \
                             v.EmpresaId=mp.EmpresaId And v.VendedorId=mp.VendedorId \
                     Group By mp.VendedorId,v.NombreCompleto,m.MarcaId, m.Descripcion, Year(mp.Desde), Month(mp.Desde),Proyeccion \
-                ) as D \
+                ) as D where Ano=2020\
                 Group By  VendedorId, NombreCompleto,MarcaId, Descripcion, Ano \
                 Union \
                 Select 'Ventas' as Fuente, VendedorId, NombreCompleto,MarcaId, Descripcion, Ano, \
@@ -932,7 +931,7 @@ apiRoutes.get('/:serverid/sales/labsbyseller/', function (req, res) {
                             mp.EmpresaId=m.EmpresaId And mp.MarcaId=m.MarcaId And \
                             v.EmpresaId=mp.EmpresaId And v.VendedorId=mp.VendedorId \
                     Group By  mp.VendedorId,v.NombreCompleto,m.MarcaId, m.Descripcion, Year(mp.Desde), Month(mp.Desde),Ejecutado \
-                ) as D \
+                ) as D where Ano=2020\
                 Group By  VendedorId, NombreCompleto,MarcaId, Descripcion, Ano ";
 
     connectionPools[poolKey].request()
