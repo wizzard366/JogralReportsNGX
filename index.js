@@ -430,8 +430,6 @@ apiRoutes.get('/:serverid/precios/rangos/producto/:id/umedida/:umid/:umdesc/pric
     let poolKey = req.params.serverid;
     let empresaId = storeCodes[poolKey];
 
-
-
     var query = 'Select pr.EmpresaId, pr.ProductoId, pr.UMedidaId, pr.DescUMedidaId, pr.TipoPrecioId, pr.Desde, pr.Hasta, pr.PrecioVenta, Round(pr.MargenSobreCosto,4) as MargenSobreCosto  ' +
         'From INVProductoPRRango pr ' +
         'Where pr.EmpresaId=@EmpresaId And pr.ProductoId=@id_parameter ' +
@@ -439,6 +437,16 @@ apiRoutes.get('/:serverid/precios/rangos/producto/:id/umedida/:umid/:umdesc/pric
         'And pr.DescUMedidaId=@desc_umedida ' +
         'And TipoPrecioId=@id_ptype;'
 
+    var query2 =  'Select DISTINCT pr.EmpresaId, pr.ProductoId, pr.UMedidaId, pr.DescUMedidaId, pr.TipoPrecioId, pr.Desde, pr.Hasta, pr.PrecioVenta, Round(pr.MargenSobreCosto,4) as MargenSobreCosto, tp.Descripcion as TipoPrecioDesc  ' +
+    'From INVProductoPRRango pr, INVXTipoPrecio tp ' +
+    'Where pr.EmpresaId=@EmpresaId And pr.ProductoId=@id_parameter ' +
+    'And pr.UMedidaId=@id_umedida ' +
+    'And pr.DescUMedidaId=@desc_umedida ' +
+    'And pr.TipoPrecioId = tp.TipoPrecioId;'
+
+    if(id_ptype === '-1'){
+        query = query2;
+    }
 
 
     connectionPools[poolKey].request()

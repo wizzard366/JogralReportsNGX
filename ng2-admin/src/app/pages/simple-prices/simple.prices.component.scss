@@ -1,0 +1,51 @@
+@import '../../theme/sass/conf/conf.scss';
+
+.simple-prices{
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.product-data{
+    .product-section{
+        padding-top: 10px;
+        padding-bottom: 6px;
+        display: inline-block;
+        border-bottom: solid gainsboro 1px;
+        width: 100%;
+        &:last-child{
+            border-bottom: 0;
+        }
+        .label{
+            float: left;
+            width: 50%;
+            color: $info;
+        }
+        .value{
+            float: right;
+            width: 50%;
+        }
+    }
+}
+
+
+.product-name{
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 16px;
+    color:$primary;
+}
+
+.price-table-title{
+    margin-top: 20px;
+    margin-bottom: 16px;
+    color:$primary;
+}
+
+.precios-col{
+    border: solid gainsboro 1px;
+    margin-top: 20px;
+}
+
+.stock-col{
+    margin-top: 20px;
+}
