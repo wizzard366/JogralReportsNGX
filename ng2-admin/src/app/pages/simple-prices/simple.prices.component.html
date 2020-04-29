@@ -1,0 +1,126 @@
+
+<div class="row simple-prices">
+    <div class="col-md-12">
+        <ba-card cardTitle="Producto / Unidad de Medida" baCardClass="with-scroll">
+            <form class="form-horizontal">
+                <div class="form-group row">
+                    <label class="col-sm-3 form-control-label simple-prices">Código:</label>
+                    <div class="col-sm-9">
+                        <input type="text" [(ngModel)]="productoId" name="productoId" class="form-control simple-prices" id="productoId">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 form-control-label simple-prices" for="descripcion">Descripción de Producto:</label>
+                    <div class="col-sm-9">
+                        <input type="text" [(ngModel)]="description" name="description" class="form-control simple-prices" id="description"
+                        (input)="input($event)">
+                        <select multiple  class="form-control tablet-landscape-and-below simple-prices" id="selectedProductId" name="selectedProductId" *ngIf="showSelect"
+                            (click)="selectClick()" [(ngModel)]="selectedProductId">
+                            <option *ngFor="let product of productSuggestionList; let i = index" [value]="product.productoId">{{product.descripcion}} - {{product.productoId}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 form-control-label simple-prices" for="descripcion">Unidad de Medida:</label>
+                    <div class="col-sm-9">
+                        <select class="form-control tablet-landscape-and-below simple-prices" id="selectedUmedida" name="selectedUmedida"
+                             [(ngModel)]="selectedUMedidaObj" (change)="umedidaChanged()">
+                            
+                            <option *ngFor="let medida of umedidaList; let i = index" [ngValue]="medida" [attr.selected]="i == 0 ? true : null" >{{medida.Descripcion}}</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <div class="row precios" *ngIf="selectedProduct.descripcion">
+                <div class="col-md-5 precios-col">
+                    <div class="product-name"><h2>{{selectedProduct.descripcion}}</h2></div>
+                    <div class="product-data">
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Marca:</strong></div>
+                            <div class="value">{{selectedProduct.marca}}</div>
+                        </div>
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Area:</strong></div>
+                            <div class="value">{{selectedProduct.area}}</div>
+                        </div>
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Sub Area:</strong></div>
+                            <div class="value">{{selectedProduct.subArea}}</div>
+                        </div>
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Costo:</strong></div>
+                            <div class="value">Q. {{selectedProduct.costo}}</div>
+                        </div>
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>I.V.A.:</strong></div>
+                            <div class="value">{{selectedProduct.afectoIva ? 'Afecto' : 'No'}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+
+                    <div class="product-name price"><h2>Preios Actuales</h2></div>
+                    <div class="product-data price">
+                        <div class="product-section price" *ngFor="let price of pricesList">
+                            <div class="label price"><strong>{{price.TipoPrecio}}:</strong></div>
+                            <div class="value">Q.{{price.PrecioVenta}}</div>
+                        </div>
+                    </div>
+
+
+                    
+                </div>
+            </div>
+            <div class="row precios" *ngIf="selectedProduct.descripcion">
+                <div class="col-md-5 ">
+                    <div class="price-table-title"><h2>Disponibilidad</h2></div>
+                    <div class="vertical-scroll">
+                        <table class="table table-striped table-bordered prices-stock">
+                          <thead>
+                          <tr>
+                            <th class="table-id">#</th>
+                            <th>Bodega</th>
+                            <th>SaldoActual</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+
+                            <ng-container *ngFor="let item of stockList; let i = index;">
+                                <tr *ngIf="item.Bodega === 'ALMACENAJE (TF)' || item.Bodega === 'TIENDA (TF)' || item.Bodega === 'ALMACENAJE' || item.Bodega === 'TIENDA'">
+                                    <td class="table-id">{{ i }}</td>
+                                    <td >{{ item.Bodega }}</td>
+                                    <td>{{ item.SaldoActual.toLocaleString('en-us') }}</td>
+                                </tr>
+                            </ng-container>
+                          
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-7 ">
+                    <div class="price-table-title"><h2>Ofertas</h2></div>
+                    <div class="vertical-scroll">
+                        <table class="table table-striped table-bordered prices-stock">
+                          <thead>
+                          <tr>
+                            <th class="table-id">#</th>
+                            <th>TipoPrecioDesc</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of rangesList; let i = index;">
+                            <td class="table-id">{{ i }}</td>
+                            <td >{{ item.TipoPrecioDesc }}</td>
+                            <td >De {{ item.Desde }} a {{item.Hasta.toLocaleString('en-us')}}</td>
+                            <td>Q.{{ item.PrecioVenta.toLocaleString('en-us') }}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                </div>
+            </div>
+        </ba-card>
+    </div>
+</div>

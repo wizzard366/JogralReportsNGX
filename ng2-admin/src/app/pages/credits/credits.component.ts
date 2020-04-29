@@ -6,6 +6,8 @@ import 'style-loader!../../theme/chartistJs.scss';
 
 import { ChartistJsService } from '../charts/components/chartistJs/chartistJs.service';
 
+import * as XLSX from 'xlsx';
+
 
 @Component({
   selector: 'credits-component',
@@ -18,43 +20,56 @@ export class CreditsComponent {
     cretids_chart_data:any;
     labels_array=['Más de 120 días','De 90 - 120 días','De 60 - 90 días','De 30 - 60 días','De 15 - 30 días','Corriente'];
     keys_array=['Ciento20Mas','NoventaCiento20','SesentaNoventa','TreintaSesenta','QuinceTreinta','Corriente'];
+    worksheet_names_array=['120+ dias','90 - 120 días','60 - 90 días','30 - 60 días','15 - 30 días','Corriente'];
     chart_options:any;
     table_data=[];
     table_data_detail=[];
     total_amount:any;
     show_detail:any;
     detail_title:any;
+    date:any;
+
+    workBook: XLSX.WorkBook;
+
+    downloadData:any=[];
     constructor(private moneyflowService: MoneyflowService,
         private dateService: DateService,
         private _chartistJsService: ChartistJsService) {
-            
-            moneyflowService.getCurrentMoneyFlowBallance().subscribe(data=>{
-                this.chart_options = {
-                    fullWidth: true,
-                    height: '300px',
-                    weight: '300px',
-                    labelDirection: 'explode',
-                    labelInterpolationFnc:this.returnLabel
-    
-                }
-                let series_array=[];
-                this.keys_array.forEach((element,index)=>{
-                    series_array.push(data[0][element]);
-                    this.table_data.push({
-                        class:chartistColorClasses[index],
-                        number:data[0][element].toLocaleString('en-US'),
-                        label:this.labels_array[index],
-                    })
-                })
-                
-                this.total_amount=data[0]['Saldo'].toLocaleString('en-US');
-                
-                this.cretids_chart_data={
-                    labels:this.labels_array,
-                    series:series_array
-                }
 
+            dateService.getServerDate().subscribe(data=>{
+                this.date = new Date(data.server_date);
+
+                moneyflowService.getCurrentMoneyFlowBallance().subscribe(data=>{
+                    this.chart_options = {
+                        fullWidth: true,
+                        height: '300px',
+                        weight: '300px',
+                        labelDirection: 'explode',
+                        labelInterpolationFnc:this.returnLabel
+        
+                    }
+                    let series_array=[];
+                    this.keys_array.forEach((element,index)=>{
+                        series_array.push(data[0][element]);
+                        this.table_data.push({
+                            class:chartistColorClasses[index],
+                            number:data[0][element].toLocaleString('en-US'),
+                            label:this.labels_array[index],
+                        })
+                    })
+                    
+                    this.total_amount=data[0]['Saldo'].toLocaleString('en-US');
+                    
+                    this.cretids_chart_data={
+                        labels:this.labels_array,
+                        series:series_array
+                    }
+    
+                })
             })
+            
+
+            
 
       }
 
@@ -78,4 +93,31 @@ export class CreditsComponent {
           return number.toLocaleString('en-US');
       }
 
+
+    downloadXLSX(){
+        this.workBook = XLSX.utils.book_new();
+        this.getDownloadData(0);
+    }
+
+    getDownloadData(index){
+
+        if(index < this.keys_array.length){
+            this.moneyflowService.getCurrentMoneyFlowBallancePerInterval(this.keys_array[index]).subscribe((data)=>{
+            
+
+                let workSheet:XLSX.WorkSheet  =  XLSX.utils.json_to_sheet(data);
+                XLSX.utils.book_append_sheet(this.workBook, workSheet, this.worksheet_names_array[index]);
+
+                workSheet["!cols"]=[
+                    { width: 15 },  
+                    { width: 50 }, 
+                    { width: 15 }, 
+                    { width: 15 }
+                ]
+                this.getDownloadData(index+1);
+            })
+        }else{
+            XLSX.writeFile(this.workBook, "cuenta_corriente"+this.date.getFullYear()+"-"+(this.date.getMonth()+1)+"-"+this.date.getDate()+".xlsx");
+        }
+    }
 }
