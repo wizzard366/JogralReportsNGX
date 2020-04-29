@@ -12,7 +12,7 @@
         display: inline-block;
         border-bottom: solid gainsboro 1px;
         width: 100%;
-        &:last-child{
+        &:last-child.prod-data{
             border-bottom: 0;
         }
         .label{

@@ -32,32 +32,47 @@
                 </div>
             </form>
             <div class="row precios" *ngIf="selectedProduct.descripcion">
-                <div class="col-md-4 precios-col">
+                <div class="col-md-5 precios-col">
                     <div class="product-name"><h2>{{selectedProduct.descripcion}}</h2></div>
                     <div class="product-data">
-                        <div class="product-section">
+                        <div class="product-section prod-data">
                             <div class="label"><strong>Marca:</strong></div>
                             <div class="value">{{selectedProduct.marca}}</div>
                         </div>
-                        <div class="product-section">
+                        <div class="product-section prod-data">
                             <div class="label"><strong>Area:</strong></div>
                             <div class="value">{{selectedProduct.area}}</div>
                         </div>
-                        <div class="product-section">
+                        <div class="product-section prod-data">
                             <div class="label"><strong>Sub Area:</strong></div>
                             <div class="value">{{selectedProduct.subArea}}</div>
                         </div>
-                        <div class="product-section">
+                        <div class="product-section prod-data">
                             <div class="label"><strong>Costo:</strong></div>
                             <div class="value">Q. {{selectedProduct.costo}}</div>
                         </div>
-                        <div class="product-section">
+                        <div class="product-section prod-data">
                             <div class="label"><strong>I.V.A.:</strong></div>
                             <div class="value">{{selectedProduct.afectoIva ? 'Afecto' : 'No'}}</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8 stock-col">
+                <div class="col-md-7">
+
+                    <div class="product-name price"><h2>Preios Actuales</h2></div>
+                    <div class="product-data price">
+                        <div class="product-section price" *ngFor="let price of pricesList">
+                            <div class="label price"><strong>{{price.TipoPrecio}}:</strong></div>
+                            <div class="value">Q.{{price.PrecioVenta}}</div>
+                        </div>
+                    </div>
+
+
+                    
+                </div>
+            </div>
+            <div class="row precios" *ngIf="selectedProduct.descripcion">
+                <div class="col-md-5 ">
                     <div class="price-table-title"><h2>Disponibilidad</h2></div>
                     <div class="vertical-scroll">
                         <table class="table table-striped table-bordered prices-stock">
@@ -69,27 +84,20 @@
                           </tr>
                           </thead>
                           <tbody>
-                          <tr *ngFor="let item of stockList; let i = index;">
-                            <td class="table-id">{{ i }}</td>
-                            <td >{{ item.Bodega }}</td>
-                            <td>{{ item.SaldoActual.toLocaleString('en-us') }}</td>
-                          </tr>
+
+                            <ng-container *ngFor="let item of stockList; let i = index;">
+                                <tr *ngIf="item.Bodega === 'ALMACENAJE (TF)' || item.Bodega === 'TIENDA (TF)' || item.Bodega === 'ALMACENAJE' || item.Bodega === 'TIENDA'">
+                                    <td class="table-id">{{ i }}</td>
+                                    <td >{{ item.Bodega }}</td>
+                                    <td>{{ item.SaldoActual.toLocaleString('en-us') }}</td>
+                                </tr>
+                            </ng-container>
+                          
                           </tbody>
                         </table>
-                      </div>
-                </div>
-            </div>
-            <div class="row precios" *ngIf="selectedProduct.descripcion">
-                <div class="col-md-4 precios-col">
-                    <div class="product-name price"><h2>Preios Actuales</h2></div>
-                    <div class="product-data price">
-                        <div class="product-section price" *ngFor="let price of pricesList">
-                            <div class="label price"><strong>{{price.TipoPrecio}}:</strong></div>
-                            <div class="value">Q.{{price.PrecioVenta}}</div>
-                        </div>
                     </div>
                 </div>
-                <div class="col-md-8 stock-col">
+                <div class="col-md-7 ">
                     <div class="price-table-title"><h2>Ofertas</h2></div>
                     <div class="vertical-scroll">
                         <table class="table table-striped table-bordered prices-stock">
