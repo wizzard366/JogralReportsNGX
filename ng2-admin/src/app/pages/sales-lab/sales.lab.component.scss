@@ -1,0 +1,71 @@
+@import '../../theme/sass/conf/conf.scss';
+/*  @import '../../theme/chartistJs.scss'; */
+
+.series-a-light {
+    background-color: rgba($info,.3) !important;
+  }
+  .series-b-light {
+    background-color: rgba($warning,.3) !important;
+  }
+
+.simple-pricess{
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.avg-val{
+    font-weight: bold;
+}
+
+.product-data{
+    .product-section{
+        padding-top: 10px;
+        padding-bottom: 6px;
+        display: inline-block;
+        border-bottom: solid gainsboro 1px;
+        width: 100%;
+        &:last-child.prod-data{
+            border-bottom: 0;
+        }
+        .label{
+            float: left;
+            width: 50%;
+            color: $info;
+        }
+        .value{
+            float: right;
+            width: 50%;
+        }
+    }
+}
+
+
+.product-name{
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 16px;
+    color:$primary;
+}
+
+.price-table-title{
+    margin-top: 20px;
+    margin-bottom: 16px;
+    color:$primary;
+}
+
+.precios-col,.precios-row{
+    border: solid gainsboro 1px;
+    margin-top: 20px;
+}
+
+.stock-col{
+    margin-top: 20px;
+}
+
+.chart-row{
+    display:flex;
+    .chart-container{
+        align-self: center;
+        width:100%;
+    }
+}

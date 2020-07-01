@@ -1,0 +1,119 @@
+@import "../../theme/sass/conf/conf";
+
+
+.ct-area {
+  fill-opacity: .5;
+}
+
+.ct-label{
+  color: $default-text;
+  opacity: 0.9;
+  fill: $default-text;
+}
+
+.ct-chart .ct-label{
+  font-size: 0.8em;
+}
+
+.ct-label.ct-horizontal.ct-end {
+    
+    display: block;
+    text-align: center;
+}
+.ct-label.ct-vertical.ct-start {
+    
+    display: block;
+    text-align: center;
+}
+
+.ct-chart svg{
+  width: 100%;
+  display: block;
+  
+}
+
+.series-a {
+  color: $info !important;
+}
+.series-b {
+  color: $warning!important;
+}
+.series-c {
+  color: $danger!important;
+}
+.series-d {
+  color: $warning!important;
+}
+.series-e {
+  color: $info!important;
+}
+.series-f {
+  fill: #59922b; }
+
+.series-g {
+  stroke: #0544d3; }
+
+.series-h  {
+  stroke: #6b0392; }
+
+
+.series-i  {
+  stroke: #f05b4f; }
+
+
+.series-j  {
+  stroke: #dda458; }
+
+
+
+
+
+.ct-series-a {
+  .ct-bar,  .ct-line, .ct-point, .ct-slice-donut, .ct-slice-pie {
+    stroke: $info;
+  }
+  .ct-slice-pie, .ct-area{
+    fill: $info;
+  }
+}
+
+.ct-series-b {
+  .ct-bar,  .ct-line, .ct-point, .ct-slice-donut, .ct-slice-pie {
+    stroke: $warning;
+  }
+  .ct-slice-pie, .ct-area{
+    fill: $warning;
+  }
+}
+
+.ct-series-c {
+  .ct-bar,  .ct-line, .ct-point, .ct-slice-donut, .ct-slice-pie {
+    stroke: $danger;
+  }
+  .ct-slice-pie, .ct-area{
+    fill: $danger;
+  }
+}
+
+.ct-series-d {
+  .ct-bar,  .ct-line, .ct-point, .ct-slice-donut, .ct-slice-pie {
+    stroke: $warning;
+  }
+  .ct-slice-pie, .ct-area{
+    fill: $warning;
+  }
+
+}
+
+.ct-series-e {
+  .ct-bar,  .ct-line, .ct-point, .ct-slice-donut, .ct-slice-pie {
+    stroke: $info;
+  }
+  .ct-slice-pie, .ct-area{
+    fill: $info;
+  }
+}
+
+.stacked-bar .ct-bar{
+  stroke-width: 14px;
+}

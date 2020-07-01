@@ -35,6 +35,7 @@ export const routes: Routes = [
       { path: 'creditos', loadChildren: 'app/pages/credits/credits.module#CreditsModule', canActivate: [AuthGuard]},
       { path: 'documentos', loadChildren: 'app/pages/documentsearch/document.search.module#DocumentSearchModule', canActivate: [AuthGuard]},
       { path: 'simple-prices', loadChildren: 'app/pages/simple-prices/simple.prices.module#SimplePricesModule', canActivate: [AuthGuard]},
+      { path: 'sales-lab', loadChildren: 'app/pages/sales-lab/sales.lab.module#SalesLabModule', canActivate: [AuthGuard]},
       /* 
       { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
       { path: 'editors', loadChildren: './editors/editors.module#EditorsModule' },

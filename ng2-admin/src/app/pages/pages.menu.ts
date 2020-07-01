@@ -125,7 +125,20 @@ export const PAGES_MENU = [
         data: { // custom menu declaration
           menu: {
             title: 'Precios Simple', // menu title
-            icon: 'fa fa-file-o', // menu icon
+            icon: 'fa fa fa-money', // menu icon
+            pathMatch: 'prefix', // use it if item children not displayed in menu
+            selected: false,
+            expanded: false,
+            order: 0
+          }
+        }
+      },
+      {
+        path: 'sales-lab',  // path for our page
+        data: { // custom menu declaration
+          menu: {
+            title: 'Ventas Lab', // menu title
+            icon: 'fa fa-area-chart', // menu icon
             pathMatch: 'prefix', // use it if item children not displayed in menu
             selected: false,
             expanded: false,

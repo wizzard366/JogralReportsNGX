@@ -1,0 +1,1 @@
+export * from './sales.lab.component';

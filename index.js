@@ -7,8 +7,8 @@ var morgan = require('morgan');
 var jwt = require('jsonwebtoken');
 var compression = require('compression');
 var fs = require('fs');
-
 var public_app = express();
+var ventas = require('./ventasApi');
 
 
 var PUBLIC_PORT = 80;
@@ -110,6 +110,8 @@ public_app.get('/', function (req, res) {
 // get an instance of the router for api routes
 var apiRoutes = express.Router();
 
+
+
 // TODO: route to authenticate a user (POST http://localhost:8080/api/authenticate)
 apiRoutes.post('/:serverid/authenticate', function (req, res) {
 
@@ -117,13 +119,15 @@ apiRoutes.post('/:serverid/authenticate', function (req, res) {
 
     let UsuarioId = req.body.username;
     let query = "Select Nombre,Password,UsuarioId,Corre1 from ERPUsuarios where UsuarioId=@usuarioid";
+    let query2 = "DECLARE @outvar3 varchar(50) \
+    EXEC dbo.getUsuarioAuto 'Profcoms','prograVN2003',@Resultado=@outvar3 OUTPUT; \
+    select @outvar3;"
     
     pool = req.params.serverid;
 
     
     
     connectionPools[pool].request().input('usuarioid', sql.VarChar, UsuarioId).query(query, (err, result) => {
-
 
         if (err) {
             console.log(err);
@@ -183,7 +187,7 @@ apiRoutes.get('/servers', function (req, res) {
 apiRoutes.get('/:serverid/test/', function (req, res) {
 
     pool = req.params.serverid;
-    console.log("serverid",req.params.serverid);
+
     if (pool) {
 
         //request = new sql.Request(connectionPools[pool]);
@@ -1196,7 +1200,6 @@ apiRoutes.get('/:serverid/documents', function (req, res) {
     var query = query1 + queryEnd;
 
     
-    console.log("\n" + query + "\n" );
     connectionPools[poolKey].request()
         .input('EmpresaId',sql.Int,empresaId)
         .input('clienteid',sql.Int,clienteid)
@@ -1363,6 +1366,23 @@ apiRoutes.get('/:serverid/productsbymarca/:marcaid', function (req, res) {
     });
 })
 
+apiRoutes.get('/:serverid/saleslab/:pid', function (req, res) {
+
+    let poolKey = req.params.serverid;
+    let empresaId = storeCodes[poolKey];
+    let pid = req.params.pid;
+
+    var query = 'SELECT * FROM ERPINVVentasLab WHERE ProductoId=@productId AND EmpresaId=@EmpresaId; ';
+
+    connectionPools[poolKey].request()
+        .input('EmpresaId',sql.Int,empresaId)
+        .input('productId',sql.NVarChar,pid)
+        .query(query, (err, result) => {
+
+        res.send(result);
+    });
+})
+
 
 apiRoutes.get('/:serverid/sellinsellout/:marcaid', function (req, res) {
 
@@ -1424,9 +1444,27 @@ apiRoutes.get('/:serverid/sellinsellout/:marcaid/prod/:pid', function (req, res)
     });
 })
 
+// Ventas Routes
+apiRoutes.get('/:serverid/test',(req,res)=>{
+
+    let pool=connectionPools[req.params.serverid]
+    ventas.callStoredProcedure(req,res,pool);
+
+});
+
+
 
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
+
+// Example Ventas routes with no JWT
+app.get('/:serverid/test',(req,res)=>{
+
+    let pool=connectionPools[req.params.serverid]
+    ventas.test(req,res,pool);
+
+});
+
 
 /* server listening */
 if (environment == "prod") {

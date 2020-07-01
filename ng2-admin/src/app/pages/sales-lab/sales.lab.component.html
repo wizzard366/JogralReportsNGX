@@ -1,0 +1,238 @@
+
+<div class="row simple-prices">
+    <div class="col-md-12">
+        <ba-card cardTitle="Producto / Unidad de Medida" baCardClass="with-scroll">
+            <form class="form-horizontal">
+                <div class="form-group row">
+                    <label class="col-sm-3 form-control-label simple-prices">Código:</label>
+                    <div class="col-sm-9">
+                        <input type="text" [(ngModel)]="productoId" name="productoId" class="form-control simple-prices" id="productoId">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 form-control-label simple-prices" for="descripcion">Descripción de Producto:</label>
+                    <div class="col-sm-9">
+                        <input type="text" [(ngModel)]="description" name="description" class="form-control simple-prices" id="description"
+                        (input)="input($event)">
+                        <select size="5"  class="form-control simple-prices tablet-landscape-and-below" id="selectedProductId" name="selectedProductId" *ngIf="showSelect"
+                            (click)="selectClick()" [(ngModel)]="selectedProductId">
+                            <option *ngFor="let product of productSuggestionList; let i = index" [value]="product.productoId">{{product.descripcion}} - {{product.productoId}}</option>
+                        </select>
+                        <div class="desktop-and-up form-control" *ngIf="showSelect">
+                            <div tabindex="1"  class="clickablediv"  *ngFor="let product of productSuggestionList" style="overflow-x: hidden;" (click)="selectClickOption($event,product.productoId)">{{product.descripcion}}</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="form-group row">
+                    <label class="col-sm-3 form-control-label simple-prices" for="descripcion">Unidad de Medida:</label>
+                    <div class="col-sm-9">
+                        <select class="form-control tablet-landscape-and-below simple-prices" id="selectedUmedida" name="selectedUmedida"
+                             [(ngModel)]="selectedUMedidaObj" (change)="umedidaChanged()">
+                            
+                            <option *ngFor="let medida of umedidaList; let i = index" [ngValue]="medida" [attr.selected]="i == 0 ? true : null" >{{medida.Descripcion}}</option>
+                        </select>
+                    </div>
+                </div> -->
+            </form>
+            <div class="row precios" *ngIf="sales_lab_data">
+                <div class="col-md-4 precios-col">
+                    <div class="product-name"><h2>Datos de Producto</h2></div>
+                    <div class="product-data">
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Descripción:</strong></div>
+                            <div class="value">{{sales_lab_data.Descripcion}}</div>
+                        </div>
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Marca:</strong></div>
+                            <div class="value">{{sales_lab_data.NombreMarca}}</div>
+                        </div>
+                        
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Medida Compra:</strong></div>
+                            <div class="value">{{sales_lab_data.DescUMedida}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Saldo Actual:</strong></div>
+                            <div class="value">{{sales_lab_data.SaldoActual}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Proveedor:</strong></div>
+                            <div class="value">{{sales_lab_data.NomProveedor}}</div>
+                        </div>
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Afecto I.V.A.:</strong></div>
+                            <div class="value">{{sales_lab_data.AfectoIva ? 'Afecto' : 'No'}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 precios-col">
+                    <div class="product-name price"><h2>Precios Actuales</h2></div>
+                    <div class="product-data price">
+                        <div class="product-section price prod-data">
+                            <div class="label price"><strong>Sugerido:</strong></div>
+                            <div class="value">Q.{{getLocaleValue(sales_lab_data.Sugerido)}}</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price"><strong>PrecioFarmacia:</strong></div>
+                            <div class="value">Q.{{getLocaleValue(sales_lab_data.PrecioFarmacia)}}</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price"><strong>PrecioRutero:</strong></div>
+                            <div class="value">Q.{{getLocaleValue(sales_lab_data.PrecioRutero)}}</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price"><strong>PrecioMayorista:</strong></div>
+                            <div class="value">Q.{{getLocaleValue(sales_lab_data.PrecioMayorista)}}</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price"><strong>PrecioDirecto:</strong></div>
+                            <div class="value">Q.{{getLocaleValue(sales_lab_data.PrecioDirecto)}}</div>
+                        </div>
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Costo Sin IVA:</strong></div>
+                            <div class="value">Q.{{getLocaleValue(sales_lab_data.CostoActualSI)}}</div>
+                        </div>
+                        <div class="product-section prod-data">
+                            <div class="label"><strong>Costo Con IVA:</strong></div>
+                            <div class="value">Q.{{getLocaleValue(sales_lab_data.CostoActualCI)}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 precios-col">
+                    <div class="product-name price"><h2>Transacciónes</h2></div>
+                    <div class="product-data price">
+                        <div class="product-section price prod-data">
+                            <div class="label price"><strong>Última Compra:</strong></div>
+                            <div class="value">{{getFormattedDate(sales_lab_data.FechaUCompra)}}</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price"><strong>Cant. Última Compra:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.CantidadUCompra)}}</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price"><strong>Días Última Compra:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.DiasUCompra)}}</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price"><strong>Última Venta:</strong></div>
+                            <div class="value">{{getFormattedDate(sales_lab_data.FechaUVenta)}}</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price"><strong>Cant. Última Venta:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.CantidadUVenta)}}</div>
+                        </div>
+                    
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="row precios precios-row" *ngIf="sales_lab_data">
+                <div class="col-md-4 ">
+                    <div class="product-name price"><h2>Reporte Ventas</h2></div>
+                    <div class="product-data price">
+                        <div class="product-section price prod-data">
+                            <div class="label price series-a"><strong>Prom. Fecha {{years[0]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.PromedioFecha)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-b"><strong>Prom. Fecha {{years[1]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.AAPromedioFecha)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-a"><strong>Mes Actual {{years[0]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.VentasMesActual)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-b"><strong>Mes Actual {{years[1]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.VentasMesActualAA)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-a"><strong>Mes Anterior {{years[0]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.VentasMesAnterior)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-b"><strong>Mes Anterior {{years[1]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.VentasMesAnteriorAA)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-a"><strong>Prom. 2 meses {{years[0]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.Promedio2Meses)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-b"><strong>Prom. 2 meses {{years[1]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.Promedio2AAMeses)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-a"><strong>Prom. 3 meses {{years[0]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.Promedio3Meses)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-b"><strong>Prom. 3 meses {{years[1]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.Promedio3AAMeses)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-a"><strong>Prom. 6 meses {{years[0]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.Promedio6Meses)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        <div class="product-section price prod-data">
+                            <div class="label price series-b"><strong>Prom. 6 meses {{years[1]}}:</strong></div>
+                            <div class="value">{{getLocaleValue(sales_lab_data.Promedio6AAMeses)}} ({{sales_lab_data.UMedidaId}})</div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-md-8 chart-row">
+                    <div class="chart-container">
+                        <ba-chartist-chart *ngIf="sales_lab_data" baChartistChartClass="ct-chart stacked-bar" baChartistChartType="Bar" [baChartistChartData]="prom_data"
+                        [baChartistChartOptions]="simpleBarOptions">
+                        </ba-chartist-chart>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="row precios precios-row" *ngIf="sales_lab_data">
+                <div class="col-md-12">
+                    <div class="product-name price"><h2>Ventas Anuales</h2></div>
+                    <ba-chartist-chart *ngIf="sales_lab_data" baChartistChartClass="ct-chart stacked-bar" baChartistChartType="Line" [baChartistChartData]="sales_year"
+                        [baChartistChartOptions]="simpleLineOptions">
+                    </ba-chartist-chart>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <thead>
+                                <tr class="black-muted-bg">
+                                    <th class="align-center"><strong>Año</strong></th>
+                                    <th class="align-center"><strong>Enero</strong></th>
+                                    <th class="align-center"><strong>Febrero</strong></th>
+                                    <th class="align-center"><strong>Prom. Ene-Feb</strong></th>
+                                    <th class="align-center"><strong>Marzo</strong></th>
+                                    <th class="align-center"><strong>Abril</strong></th>
+                                    <th class="align-center"><strong>Prom. Mar-Abr</strong></th>
+                                    <th class="align-center"><strong>Mayo</strong></th>
+                                    <th class="align-center"><strong>Junio</strong></th>
+                                    <th class="align-center"><strong>Prom. May-Jun</strong></th>
+                                    <th class="align-center"><strong>Julio</strong></th>
+                                    <th class="align-center"><strong>Agosto</strong></th>
+                                    <th class="align-center"><strong>Prom. Jul-Ago</strong></th>
+                                    <th class="align-center"><strong>Septiembre</strong></th>
+                                    <th class="align-center"><strong>Octubre</strong></th>
+                                    <th class="align-center"><strong>Prom. Sep-Oct</strong></th>
+                                    <th class="align-center"><strong>Noviembre</strong></th>
+                                    <th class="align-center"><strong>Diciembre</strong></th>
+                                    <th class="align-center"><strong>Prom. Nov-Dic</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of sales_year_table; let i = index" class="no-top-border {{getColorFromIndex(i)}}">
+                                    <td class="align-right {{getClassFromIndexColor(x)}}">{{years[i]}}</td>
+                                    <td class="align-right {{getClassFromIndexColor(x)}}" *ngFor="let currentvalue of item; let x = index">{{getLocaleValue(currentvalue)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </ba-card>
+    </div>
+</div>
