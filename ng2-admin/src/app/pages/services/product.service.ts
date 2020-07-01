@@ -242,5 +242,14 @@ export class ProductService {
         return this.http.get('/api/'+server+'/productsbymarca/' + marcaid, options)
             .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
     }
+
+
+    getSalesLabByPid(pid) {
+        let headers = new Headers({ 'x-access-token': this.authenticationService.token, 'db-pool': this.authenticationService.server });
+        let options = new RequestOptions({ headers: headers });
+        let server = this.authenticationService.server
+        return this.http.get('/api/'+server+'/saleslab/' + pid, options)
+            .map(res => res.json()).catch((err: Response, obj) => { return this.handleError(err, obj, this.router); });
+    }
     
 }
