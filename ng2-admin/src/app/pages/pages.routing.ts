@@ -3,6 +3,7 @@ import { Pages } from './pages.component';
 import { ModuleWithProviders } from '@angular/core';
 // noinspection TypeScriptValidateTypes
 import { AuthGuard } from './services/oauth/auth.guard.component';
+import { AuthGuarPED } from './services/oauth/auth.guard.ped.component';
 // export function loadChildren(path) { return System.import(path); };
 
 export const routes: Routes = [
@@ -15,8 +16,9 @@ export const routes: Routes = [
     loadChildren: 'app/pages/sellers/live_dashboard/liveDashboard.module#LiveDashboardModule'
   },
   {
-    path: 'register',
-    loadChildren: 'app/pages/register/register.module#RegisterModule'
+    path: 'pos',
+    loadChildren: 'app/pages/pos/pos.module#PosModule',
+    canActivate: [AuthGuarPED]
   },
   {
     path: 'pages',

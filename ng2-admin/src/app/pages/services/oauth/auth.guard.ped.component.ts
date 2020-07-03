@@ -4,7 +4,7 @@ import { Router, CanActivate } from '@angular/router';
 import { AuthenticationService } from './authentication.service';
  
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthGuarPED implements CanActivate {
  
     constructor(private router: Router ) { }
  
@@ -16,6 +16,8 @@ export class AuthGuard implements CanActivate {
         
             if(user.dashboard){
                 return true;
+            }else if(this.checkModule('PED',user.modules) || user.supervisor){
+                return true;
             }
             this.router.navigate(['/livedashboard']);
             return false;
@@ -25,5 +27,15 @@ export class AuthGuard implements CanActivate {
         
         this.router.navigate(['/login']);
         return false;
+    }
+
+    checkModule(moduleId, modulesArray:Array<String>){
+        let returnVal = false;
+        modulesArray.forEach(element => {
+            if(moduleId === element){
+            returnVal = true;
+            }
+        });
+        return returnVal;
     }
 }

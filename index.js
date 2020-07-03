@@ -119,15 +119,15 @@ apiRoutes.post('/:serverid/authenticate', function (req, res) {
 
     let UsuarioId = req.body.username;
     let query = "Select Nombre,Password,UsuarioId,Corre1 from ERPUsuarios where UsuarioId=@usuarioid";
-    let query2 = "DECLARE @outvar3 varchar(50) \
-    EXEC dbo.getUsuarioAuto 'Profcoms','prograVN2003',@Resultado=@outvar3 OUTPUT; \
-    select @outvar3;"
+    let query2 = "Select u.UsuarioId,u.Password,u.Nombre,u.Corre1,u.Supervisor,u.Autoriza,Corre2 as Dashboard,\
+    m.ModuloId From ERPUsuarios u LEFT OUTER JOIN ERPgpModulos m on (m.GrupoId=u.GrupoId) \
+    Where UsuarioId=@usuarioid"
     
     pool = req.params.serverid;
 
     
     
-    connectionPools[pool].request().input('usuarioid', sql.VarChar, UsuarioId).query(query, (err, result) => {
+    connectionPools[pool].request().input('usuarioid', sql.VarChar, UsuarioId).query(query2, (err, result) => {
 
         if (err) {
             console.log(err);
@@ -141,6 +141,15 @@ apiRoutes.post('/:serverid/authenticate', function (req, res) {
             let userid = result[0].UsuarioId;
             let name = result[0].Nombre;
             let corre = result[0].Corre1;
+            let supervisor = result[0].Supervisor;
+            let autoriza = result[0].Autoriza;
+            let dashboard = result[0].Dashboard;
+            let modules = [];
+            console.log('resp',result);
+            result.forEach(elem=>{
+                modules.push(elem.ModuloId);
+            })
+
             if (pass === req.body.password) {
                 // if user is found and password is right
                 // create a token
@@ -154,7 +163,11 @@ apiRoutes.post('/:serverid/authenticate', function (req, res) {
                     message: 'Enjoy your token!',
                     token: token,
                     name: name,
-                    corre: corre
+                    corre: corre,
+                    supervisor: supervisor,
+                    autoriza: autoriza,
+                    dashboard: dashboard,
+                    modules: modules
                 });
             } else {
                 res.json({ success: false, message: 'Authentication failed. Wrong password.' });
@@ -1452,6 +1465,15 @@ apiRoutes.get('/:serverid/test',(req,res)=>{
 
 });
 
+/**
+ * get grupos por usuarioId
+ */
+apiRoutes.get('/:serverid/WFACPedidoGrupoUsuario/:UsuarioId',(req,res)=>{
+
+    let pool=connectionPools[req.params.serverid]
+    ventas.WFACPedidoGrupoUsuarioRetrieveAsJson(req,res,pool);
+
+});
 
 
 // apply the routes to our application with the prefix /api

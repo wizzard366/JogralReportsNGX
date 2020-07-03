@@ -10,7 +10,11 @@ export class AuthenticationService {
     public name: string;
     public corre: string;
     public server: string;
- 
+    public supervisor: any;
+    public modules: any;
+    public autoriza: any; 
+    public dashboard:any;
+
     constructor(private http: Http,private router: Router) {
         // set token if saved in local storage
         var currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -27,9 +31,14 @@ export class AuthenticationService {
         return this.http.post('/api/'+server+'/authenticate/', body, { headers: headers })
             .map((response: Response) => {
                 // login successful if there's a jwt token in the response
-                let token = response.json() && response.json().token;
-                let name = response.json().name;
-                let corre = response.json().corre;
+                let responseJson = response.json();
+                let token = responseJson && responseJson.token;
+                let name = responseJson.name;
+                let corre = responseJson.corre;
+                let supervisor = responseJson.supervisor;
+                let modules = responseJson.modules;
+                let autoriza = responseJson.autoriza;
+                let dashboard = responseJson.dashboard;
                 let store = server;
                 if (token) {
                     // set token property
@@ -37,13 +46,20 @@ export class AuthenticationService {
                     this.name = name;
                     this.corre = corre;
                     this.server = store;
+                    this.autoriza = autoriza;
+                    this.supervisor = supervisor;
+                    this.modules = modules;
+                    this.dashboard = dashboard;
+                    
                     // store username and jwt token in local storage to keep user logged in between page refreshes
-                    localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token, name:name,corre:corre, server:store }));
+                    localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token, name:name,corre:corre, server:store, autoriza:autoriza,dashboard:dashboard,supervisor:supervisor,modules:modules }));
                     
                     // return true to indicate successful login
+                    console.log('login service',true)
                     return true;
                 } else {
                     // return false to indicate failed login
+                    console.log('login service',false)
                     return false;
                 }
             });
@@ -66,4 +82,7 @@ export class AuthenticationService {
         localStorage.setItem('currentUser', JSON.stringify(currentUser))
         this.router.navigate(['/']);
     }
+
+
+    
 }

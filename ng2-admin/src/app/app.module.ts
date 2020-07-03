@@ -18,6 +18,7 @@ import { NgaModule } from './theme/nga.module';
 import { PagesModule } from './pages/pages.module';
 
 import { AuthGuard } from './pages/services/oauth/auth.guard.component';
+import { AuthGuarPED } from './pages/services/oauth/auth.guard.ped.component';
 import { AuthenticationService } from './pages/services/oauth/authentication.service';
 import { ProductService }  from './pages/services/product.service';
 import { LaboratoriesService } from './pages/services/laboratories.service';
@@ -31,6 +32,7 @@ const APP_PROVIDERS = [
   GlobalState,
   AuthenticationService,
   AuthGuard,
+  AuthGuarPED,
   ProductService,
   LaboratoriesService,
   ClientsService,
