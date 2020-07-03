@@ -38,3 +38,23 @@ exports.callStoredProcedure = function(req,res,pool){
     })
 
 }
+
+
+exports.WFACPedidoGrupoUsuarioRetrieveAsJson=(req,res,pool)=>{
+
+    let UsuarioId = req.params.UsuarioId;
+
+    let query = 'Select * From \
+    dbo.WFACPedidoGrupoUsuarioRetrieveAsJson(@UsuarioId);'
+    
+    pool.request()
+        .input('UsuarioId',sql.VarChar,UsuarioId)
+        .query(query,(err, result) => {
+
+            if(err){
+                res.send(err)
+            }
+            res.send(result);
+    })
+
+}

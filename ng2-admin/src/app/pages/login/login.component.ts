@@ -44,25 +44,42 @@ export class Login implements AfterViewInit {
     
   }
 
+  checkModule(moduleId, modulesArray:Array<String>){
+    let returnVal = false;
+    modulesArray.forEach(element => {
+      if(moduleId === element){
+        returnVal = true;
+      }
+    });
+    return returnVal;
+  }
+
 
   public login(): void {
     this.submitted = true;
     // your code goes here
     // console.log(values);
 
-    
+
 
     this.authenticationService.login(this.model.username, this.model.password,this.model.server)
     
       .subscribe(result => {
         if (result === true) {
           // login successful
-          console.log('success on login');
-          this.router.navigate(['/pages/reportes']);
+
+          let userinfo = JSON.parse(localStorage.getItem('currentUser'));
+
+          if(userinfo.dashboard){
+            this.router.navigate(['/pages/reportes']);
+          }else if(this.checkModule('PED',userinfo.modules) || userinfo.supervisor){
+            this.router.navigate(['/pos'])
+          }else{
+            this.error = 'Usuario o contraseña son incorrectos.';
+          }
         } else {
           // login failed
           this.error = 'Usuario o contraseña son incorrectos.';
-
         }
       });
   }
