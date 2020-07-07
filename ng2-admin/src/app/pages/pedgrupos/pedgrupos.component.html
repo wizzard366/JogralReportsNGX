@@ -1,1 +1,20 @@
-<h1>This is pedidos Grupos Component</h1>
+<ba-card  cardTitle="Pedidos Grupo Listado" baCardClass="with-scroll">
+
+    <form>
+        <div class="form-group controls">
+            <div class="row">
+                <div class="col-md-10 col-sm-12 col-lg-8 search-input">
+                    <input #search class="form-control" type="text" placeholder="Búsqueda por Número / Nombre Cliente" (keydown.enter)="onSearch(search.value)"
+                        autocomplete="off">
+                </div>
+                <div class="col-md-2 col-sm-6 col-lg-2 new-grupo">
+                    <button class="btn btn-primary">Nuevo Grupo</button>
+                </div>
+                <div class="col-md-12 col-sm-6 col-lg-2 actualizar">
+                    <button class="btn btn-info">Actualizar</button>
+                </div> 
+            </div>
+        </div>
+    </form>
+    <ng2-smart-table [settings]="settings" [source]="table_data"></ng2-smart-table>
+</ba-card>
