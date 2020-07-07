@@ -6,6 +6,9 @@ import { NgaModule } from '../../theme/nga.module';
 import { PosComponent } from './pos.component';
 import { PedGruposComponent } from '../pedgrupos/pedgrupos.component';
 import { PedidosService } from '../services/pedidos.service';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { BoolShowComponent } from '../pedgrupos/boolshow.cell.component';
+import { GrupoNumberComponent } from '../pedgrupos/gruponumber.cell.component';
 
 
 
@@ -14,11 +17,18 @@ import { PedidosService } from '../services/pedidos.service';
     CommonModule,
     routing,
     AngularFormsModule,
-    NgaModule
+    NgaModule,
+    Ng2SmartTableModule
+  ],
+  entryComponents:[
+    BoolShowComponent,
+    GrupoNumberComponent
   ],
   declarations: [
       PosComponent,
-      PedGruposComponent
+      PedGruposComponent,
+      BoolShowComponent,
+      GrupoNumberComponent
   ],
   providers:[ PedidosService ]
 })
